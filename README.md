@@ -16,6 +16,32 @@ The primary subsystem is the **Aquarium Water Management Suite (AWMS)**.
 
 ---
 
+# Screenshots
+
+## Peninsula
+
+![Peninsula water parameters and status chips](docs/assets/screenshots/dashboard-01.png)
+
+## 200XL
+
+![200XL water parameters and status chips](docs/assets/screenshots/dashboard-02.png)
+
+## Water Management
+
+![Maintenance tab with reservoir gauges and AWMS quick actions](docs/assets/screenshots/dashboard-03.png)
+
+![AWMS Make New Salt preview and apply controls](docs/assets/screenshots/dashboard-04.png)
+
+## Equipment Sections
+
+![Water flow section with pump and flow gauges](docs/assets/screenshots/dashboard-05.png)
+
+![Dosing section with Red Sea and Hydros dosing gauges](docs/assets/screenshots/dashboard-06.png)
+
+![Filtration and general equipment section with usage graph](docs/assets/screenshots/dashboard-07.png)
+
+---
+
 # Objectives
 
 - Maintain accurate water inventory
