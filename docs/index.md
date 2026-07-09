@@ -112,24 +112,29 @@ Repository snippets:
 
 ## Dashboard Preview
 
-Screenshots of the full dashboard can be added here before publishing.
+These screenshots show the dashboard in mobile portrait layout.
 
-Recommended captures:
+### Peninsula
 
-- Reservoir status with RODI and Salt gauges
-- Water Management panel with each workflow selected
-- Make New Salt preview
-- 200XL ATO transfer preview
-- Recent activity card
-- 200XL ATO gauge
+![Peninsula water parameters and status chips](assets/screenshots/dashboard-01.png)
 
-Example Markdown:
+### 200XL
 
-```md
-![Aquarium dashboard overview](assets/dashboard-overview.png)
-![Water Management quick actions](assets/water-management.png)
-![200XL ATO gauge](assets/200xl-ato-gauge.png)
-```
+![200XL water parameters and status chips](assets/screenshots/dashboard-02.png)
+
+### Water Management
+
+![Maintenance tab with reservoir gauges and AWMS quick actions](assets/screenshots/dashboard-03.png)
+
+![AWMS Make New Salt preview and apply controls](assets/screenshots/dashboard-04.png)
+
+### Equipment Sections
+
+![Water flow section with pump and flow gauges](assets/screenshots/dashboard-05.png)
+
+![Dosing section with Red Sea and Hydros dosing gauges](assets/screenshots/dashboard-06.png)
+
+![Filtration and general equipment section with usage graph](assets/screenshots/dashboard-07.png)
 
 ## Required Home Assistant Pieces
 
