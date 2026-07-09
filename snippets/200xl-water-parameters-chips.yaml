@@ -1,0 +1,159 @@
+type: custom:mushroom-chips-card
+alignment: center
+card_mod:
+  style: |
+    ha-card {
+      background: transparent !important;
+      box-shadow: none !important;
+      padding: 0 4px;
+
+      /* global chip sizing */
+      --chip-height: 30px;
+      --chip-icon-size: 20px;
+      --chip-font-size: 0.8rem;
+    }
+
+    ha-card .chip-container {
+      gap: 8px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    ha-card mushroom-chip .chip {
+      border-radius: 999px !important;
+    }
+chips:
+  - type: template
+    entity: sensor.bedroom_aquarium_temperature
+    icon: mdi:thermometer
+    content: Display {{ states('sensor.bedroom_aquarium_temperature') | round(2)  }}
+    tap_action:
+      action: more-info
+    card_mod:
+      style: |
+        :host {
+          {% set n = states('sensor.bedroom_aquarium_temperature')|float %}
+          --chip-background:
+            {% if n < 77 %}
+              rgba(110, 205, 219, 0.4)   /* Low - Blue*/
+            {% elif n < 78 %}
+              rgba(158, 203, 145, 0.4) /* Good - Green */
+            {% elif n < 78.9 %}
+              rgba(246, 243, 169, 0.4) /* Warning - Yellow */
+            {% else %}
+               rgba(194, 89, 100, 0.4) /* HIGH - Red */
+            {% endif %};
+          --color:
+            {% if n > 0 %}
+              var(--primary-text-color)
+            {% else %}
+              var(--disabled-text-color)
+            {% endif %};
+        }
+  - type: template
+    entity: sensor.bedroom_aquarium_ph
+    icon: mdi:fish
+    content: pH {{ states('sensor.bedroom_aquarium_ph') | round(2) }}
+    tap_action:
+      action: more-info
+    card_mod:
+      style: |
+        :host {
+          {% set n = states('sensor.bedroom_aquarium_ph')|float %}
+          --chip-background:
+            {% if n < 7.7 %}
+              rgba(194, 89, 100, 0.4)   /* Too low - Red */
+            {% elif n < 8.5 %}
+              rgba(158, 203, 145, 0.4)  /* Good */
+            {% else %}
+               rgba(255, 179, 71, 0.4)  /* Too high - Orange */
+            {% endif %};
+          --color:
+            {% if n > 0 %}
+              var(--primary-text-color)
+            {% else %}
+              var(--disabled-text-color)
+            {% endif %};
+        }
+  - type: template
+    entity: input_number.200xl_alkalinity_dkh
+    icon: mdi:water-check
+    content: dKH {{ states('input_number.200xl_alkalinity_dkh') | round(2)  }}
+    alignment: center
+    tap_action:
+      action: more-info
+    card_mod:
+      style: |
+        :host {
+          {% set n = states('input_number.200xl_alkalinity_dkh') | float %}
+          --chip-background:
+            {% if n < 7.7 %}
+              rgba(194, 89, 100, 0.4)    /* Too Low - Red */
+            {% elif n < 8 %}
+               rgba(246, 243, 169, 0.4)   /*  Yellow */
+            {% elif n < 11.5 %}
+              rgba(158, 203, 145, 0.4) /*  Green */
+            {% else %}
+               rgba(255, 179, 71, 0.4) /* Orange */
+            {% endif %};
+          --color:
+            {% if n > 0 %}
+              var(--primary-text-color)
+            {% else %}
+              var(--disabled-text-color)
+            {% endif %};
+        }
+  - type: template
+    entity: input_number.200xl_nitrate_no3_ppm
+    icon: null
+    content: NO3 {{ states('input_number.200xl_nitrate_no3_ppm') | round(2)  }} ppm
+    tap_action:
+      action: more-info
+    card_mod:
+      style: |
+        :host {
+          {% set n = states('input_number.200xl_nitrate_no3_ppm') | float %}
+          --chip-background:
+            {% if n < 5 %}
+              rgba(194, 89, 100, 0.4)    /* Too Low - Red */
+            {% elif n < 10 %}
+              rgba(158, 203, 145, 0.4) /*  Green */
+            {% elif n < 20 %}
+               rgba(246, 243, 169, 0.4)   /*  Yellow */
+            {% else %}
+               rgba(255, 179, 71, 0.4) /* Orange */
+            {% endif %};
+          --color:
+            {% if n > 0 %}
+              var(--primary-text-color)
+            {% else %}
+              var(--disabled-text-color)
+            {% endif %};
+        }
+  - type: template
+    entity: input_number.200xl_phosphate_po4_ppm
+    icon: null
+    content: PO4 {{ states('input_number.200xl_phosphate_po4_ppm') | round(3)  }} ppm
+    tap_action:
+      action: more-info
+    card_mod:
+      style: |
+        :host {
+          {% set n = states('input_number.200xl_phosphate_po4_ppm') | float %}
+          --chip-background:
+            {% if n < 0.03 %}
+              rgba(194, 89, 100, 0.4)    /* Too Low - Red */
+            {% elif n < 0.1 %}
+              rgba(158, 203, 145, 0.4) /*  Green */
+            {% elif n < 0.2 %}
+               rgba(246, 243, 169, 0.4)   /*  Yellow */
+            {% else %}
+               rgba(255, 179, 71, 0.4) /* Orange */
+            {% endif %};
+          --color:
+            {% if n > 0 %}
+              var(--primary-text-color)
+            {% else %}
+              var(--disabled-text-color)
+            {% endif %};
+        }

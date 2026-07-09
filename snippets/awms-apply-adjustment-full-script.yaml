@@ -1,0 +1,417 @@
+alias: AWMS Apply Adjustment
+description: >-
+  Applies Aquarium Water Management Suite inventory changes. Inventory is always
+  stored in milliliters. The selected dashboard amount unit is converted inline
+  inside each service value template because Home Assistant 2026.7.x Script UI
+  Variables actions are not reliable for this workflow.
+mode: single
+sequence:
+  # Plants use Peninsula RODI.
+  - if:
+      - condition: state
+        entity_id: input_select.awms_workflow
+        state: Plants
+      - condition: template
+        value_template: >-
+          {% set amount = states('input_number.awms_adjustment_amount') | float(0) %}
+          {% if is_state('input_select.awms_adjustment_unit', 'mL') %}
+            {% set amount_ml = amount %}
+          {% elif is_state('input_select.awms_adjustment_unit', 'L') %}
+            {% set amount_ml = amount * 1000 %}
+          {% elif is_state('input_select.awms_adjustment_unit', 'oz') %}
+            {% set amount_ml = amount * 29.5735 %}
+          {% else %}
+            {% set amount_ml = amount * 3785.41 %}
+          {% endif %}
+          {{ amount_ml > 0 }}
+    then:
+      - action: logbook.log
+        data:
+          name: AWMS
+          entity_id: input_number.awms_rodi_remaining_ml
+          message: >-
+            {% set before_ml = states('input_number.awms_rodi_remaining_ml') | float(0) %}
+            {% set amount = states('input_number.awms_adjustment_amount') | float(0) %}
+            {% if is_state('input_select.awms_adjustment_unit', 'mL') %}
+              {% set amount_ml = amount %}
+            {% elif is_state('input_select.awms_adjustment_unit', 'L') %}
+              {% set amount_ml = amount * 1000 %}
+            {% elif is_state('input_select.awms_adjustment_unit', 'oz') %}
+              {% set amount_ml = amount * 29.5735 %}
+            {% else %}
+              {% set amount_ml = amount * 3785.41 %}
+            {% endif %}
+            {% set after_ml = [before_ml - amount_ml, 0] | max %}
+            Removed {{ (amount_ml / 3785.41) | round(2) }} gal
+            ({{ amount_ml | round(0) | int }} mL) from RODI for Plants.
+            RODI: {{ (before_ml / 3785.41) | round(2) }} gal ->
+            {{ (after_ml / 3785.41) | round(2) }} gal.
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.awms_rodi_remaining_ml
+        data:
+          value: >-
+            {% set current_ml = states('input_number.awms_rodi_remaining_ml') | float(0) %}
+            {% set amount = states('input_number.awms_adjustment_amount') | float(0) %}
+            {% if is_state('input_select.awms_adjustment_unit', 'mL') %}
+              {% set amount_ml = amount %}
+            {% elif is_state('input_select.awms_adjustment_unit', 'L') %}
+              {% set amount_ml = amount * 1000 %}
+            {% elif is_state('input_select.awms_adjustment_unit', 'oz') %}
+              {% set amount_ml = amount * 29.5735 %}
+            {% else %}
+              {% set amount_ml = amount * 3785.41 %}
+            {% endif %}
+            {{ [current_ml - amount_ml, 0] | max | round(0) }}
+
+  # Notify before a 200xl ATO fill if the full amount cannot fit safely.
+  - if:
+      - condition: state
+        entity_id: input_select.awms_workflow
+        state: 200xl ATO
+      - condition: template
+        value_template: >-
+          {% set source_ml = states('input_number.awms_rodi_remaining_ml') | float(0) %}
+          {% set destination_ml = states('input_number.awms_200xl_ato_remaining_ml') | float(0) %}
+          {% set amount = states('input_number.awms_adjustment_amount') | float(0) %}
+          {% if is_state('input_select.awms_adjustment_unit', 'mL') %}
+            {% set amount_ml = amount %}
+          {% elif is_state('input_select.awms_adjustment_unit', 'L') %}
+            {% set amount_ml = amount * 1000 %}
+          {% elif is_state('input_select.awms_adjustment_unit', 'oz') %}
+            {% set amount_ml = amount * 29.5735 %}
+          {% else %}
+            {% set amount_ml = amount * 3785.41 %}
+          {% endif %}
+          {{ amount_ml <= 0 or amount_ml > source_ml or amount_ml > (94635 - destination_ml) }}
+    then:
+      - action: persistent_notification.create
+        data:
+          title: AWMS 200xl ATO fill not applied
+          message: >-
+            The 200xl ATO fill was not applied. Make sure Peninsula RODI has
+            enough water and the 200xl ATO reservoir has enough remaining
+            capacity for the full requested amount.
+
+  # 200xl ATO manual fills move water from Peninsula RODI into the 200xl ATO reservoir.
+  # The full requested amount must fit both source and destination.
+  - if:
+      - condition: state
+        entity_id: input_select.awms_workflow
+        state: 200xl ATO
+      - condition: template
+        value_template: >-
+          {% set source_ml = states('input_number.awms_rodi_remaining_ml') | float(0) %}
+          {% set destination_ml = states('input_number.awms_200xl_ato_remaining_ml') | float(0) %}
+          {% set amount = states('input_number.awms_adjustment_amount') | float(0) %}
+          {% if is_state('input_select.awms_adjustment_unit', 'mL') %}
+            {% set amount_ml = amount %}
+          {% elif is_state('input_select.awms_adjustment_unit', 'L') %}
+            {% set amount_ml = amount * 1000 %}
+          {% elif is_state('input_select.awms_adjustment_unit', 'oz') %}
+            {% set amount_ml = amount * 29.5735 %}
+          {% else %}
+            {% set amount_ml = amount * 3785.41 %}
+          {% endif %}
+          {{ amount_ml > 0 and amount_ml <= source_ml and amount_ml <= (94635 - destination_ml) }}
+    then:
+      - action: logbook.log
+        data:
+          name: AWMS
+          entity_id: input_number.awms_200xl_ato_remaining_ml
+          message: >-
+            {% set rodi_before_ml = states('input_number.awms_rodi_remaining_ml') | float(0) %}
+            {% set bedroom_before_ml = states('input_number.awms_200xl_ato_remaining_ml') | float(0) %}
+            {% set amount = states('input_number.awms_adjustment_amount') | float(0) %}
+            {% if is_state('input_select.awms_adjustment_unit', 'mL') %}
+              {% set amount_ml = amount %}
+            {% elif is_state('input_select.awms_adjustment_unit', 'L') %}
+              {% set amount_ml = amount * 1000 %}
+            {% elif is_state('input_select.awms_adjustment_unit', 'oz') %}
+              {% set amount_ml = amount * 29.5735 %}
+            {% else %}
+              {% set amount_ml = amount * 3785.41 %}
+            {% endif %}
+            {% set rodi_after_ml = [rodi_before_ml - amount_ml, 0] | max %}
+            {% set bedroom_after_ml = [bedroom_before_ml + amount_ml, 94635] | min %}
+            Moved {{ (amount_ml / 3785.41) | round(2) }} gal
+            ({{ amount_ml | round(0) | int }} mL) from RODI to 200xl ATO.
+            RODI: {{ (rodi_before_ml / 3785.41) | round(2) }} gal ->
+            {{ (rodi_after_ml / 3785.41) | round(2) }} gal.
+            200xl ATO: {{ (bedroom_before_ml / 3785.41) | round(2) }} gal ->
+            {{ (bedroom_after_ml / 3785.41) | round(2) }} gal.
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.awms_rodi_remaining_ml
+        data:
+          value: >-
+            {% set current_ml = states('input_number.awms_rodi_remaining_ml') | float(0) %}
+            {% set amount = states('input_number.awms_adjustment_amount') | float(0) %}
+            {% if is_state('input_select.awms_adjustment_unit', 'mL') %}
+              {% set amount_ml = amount %}
+            {% elif is_state('input_select.awms_adjustment_unit', 'L') %}
+              {% set amount_ml = amount * 1000 %}
+            {% elif is_state('input_select.awms_adjustment_unit', 'oz') %}
+              {% set amount_ml = amount * 29.5735 %}
+            {% else %}
+              {% set amount_ml = amount * 3785.41 %}
+            {% endif %}
+            {{ [current_ml - amount_ml, 0] | max | round(0) }}
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.awms_200xl_ato_remaining_ml
+        data:
+          value: >-
+            {% set current_ml = states('input_number.awms_200xl_ato_remaining_ml') | float(0) %}
+            {% set amount = states('input_number.awms_adjustment_amount') | float(0) %}
+            {% if is_state('input_select.awms_adjustment_unit', 'mL') %}
+              {% set amount_ml = amount %}
+            {% elif is_state('input_select.awms_adjustment_unit', 'L') %}
+              {% set amount_ml = amount * 1000 %}
+            {% elif is_state('input_select.awms_adjustment_unit', 'oz') %}
+              {% set amount_ml = amount * 29.5735 %}
+            {% else %}
+              {% set amount_ml = amount * 3785.41 %}
+            {% endif %}
+            {{ [current_ml + amount_ml, 94635] | min | round(0) }}
+
+  # 200xl water changes use Salt.
+  - if:
+      - condition: state
+        entity_id: input_select.awms_workflow
+        state: 200xl Water Change
+      - condition: template
+        value_template: >-
+          {% set amount = states('input_number.awms_adjustment_amount') | float(0) %}
+          {% if is_state('input_select.awms_adjustment_unit', 'mL') %}
+            {% set amount_ml = amount %}
+          {% elif is_state('input_select.awms_adjustment_unit', 'L') %}
+            {% set amount_ml = amount * 1000 %}
+          {% elif is_state('input_select.awms_adjustment_unit', 'oz') %}
+            {% set amount_ml = amount * 29.5735 %}
+          {% else %}
+            {% set amount_ml = amount * 3785.41 %}
+          {% endif %}
+          {{ amount_ml > 0 }}
+    then:
+      - action: logbook.log
+        data:
+          name: AWMS
+          entity_id: input_number.awms_salt_remaining_ml
+          message: >-
+            {% set before_ml = states('input_number.awms_salt_remaining_ml') | float(0) %}
+            {% set amount = states('input_number.awms_adjustment_amount') | float(0) %}
+            {% if is_state('input_select.awms_adjustment_unit', 'mL') %}
+              {% set amount_ml = amount %}
+            {% elif is_state('input_select.awms_adjustment_unit', 'L') %}
+              {% set amount_ml = amount * 1000 %}
+            {% elif is_state('input_select.awms_adjustment_unit', 'oz') %}
+              {% set amount_ml = amount * 29.5735 %}
+            {% else %}
+              {% set amount_ml = amount * 3785.41 %}
+            {% endif %}
+            {% set after_ml = [before_ml - amount_ml, 0] | max %}
+            Removed {{ (amount_ml / 3785.41) | round(2) }} gal
+            ({{ amount_ml | round(0) | int }} mL) from Salt for 200xl Water Change.
+            Salt: {{ (before_ml / 3785.41) | round(2) }} gal ->
+            {{ (after_ml / 3785.41) | round(2) }} gal.
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.awms_salt_remaining_ml
+        data:
+          value: >-
+            {% set current_ml = states('input_number.awms_salt_remaining_ml') | float(0) %}
+            {% set amount = states('input_number.awms_adjustment_amount') | float(0) %}
+            {% if is_state('input_select.awms_adjustment_unit', 'mL') %}
+              {% set amount_ml = amount %}
+            {% elif is_state('input_select.awms_adjustment_unit', 'L') %}
+              {% set amount_ml = amount * 1000 %}
+            {% elif is_state('input_select.awms_adjustment_unit', 'oz') %}
+              {% set amount_ml = amount * 29.5735 %}
+            {% else %}
+              {% set amount_ml = amount * 3785.41 %}
+            {% endif %}
+            {{ [current_ml - amount_ml, 0] | max | round(0) }}
+
+  # Other removals use the selected reservoir.
+  - if:
+      - condition: state
+        entity_id: input_select.awms_workflow
+        state: Other
+      - condition: state
+        entity_id: input_select.awms_source_reservoir
+        state: RODI
+      - condition: template
+        value_template: >-
+          {% set amount = states('input_number.awms_adjustment_amount') | float(0) %}
+          {% if is_state('input_select.awms_adjustment_unit', 'mL') %}
+            {% set amount_ml = amount %}
+          {% elif is_state('input_select.awms_adjustment_unit', 'L') %}
+            {% set amount_ml = amount * 1000 %}
+          {% elif is_state('input_select.awms_adjustment_unit', 'oz') %}
+            {% set amount_ml = amount * 29.5735 %}
+          {% else %}
+            {% set amount_ml = amount * 3785.41 %}
+          {% endif %}
+          {{ amount_ml > 0 }}
+    then:
+      - action: logbook.log
+        data:
+          name: AWMS
+          entity_id: input_number.awms_rodi_remaining_ml
+          message: >-
+            {% set before_ml = states('input_number.awms_rodi_remaining_ml') | float(0) %}
+            {% set amount = states('input_number.awms_adjustment_amount') | float(0) %}
+            {% if is_state('input_select.awms_adjustment_unit', 'mL') %}
+              {% set amount_ml = amount %}
+            {% elif is_state('input_select.awms_adjustment_unit', 'L') %}
+              {% set amount_ml = amount * 1000 %}
+            {% elif is_state('input_select.awms_adjustment_unit', 'oz') %}
+              {% set amount_ml = amount * 29.5735 %}
+            {% else %}
+              {% set amount_ml = amount * 3785.41 %}
+            {% endif %}
+            {% set after_ml = [before_ml - amount_ml, 0] | max %}
+            Removed {{ (amount_ml / 3785.41) | round(2) }} gal
+            ({{ amount_ml | round(0) | int }} mL) from RODI for Other.
+            RODI: {{ (before_ml / 3785.41) | round(2) }} gal ->
+            {{ (after_ml / 3785.41) | round(2) }} gal.
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.awms_rodi_remaining_ml
+        data:
+          value: >-
+            {% set current_ml = states('input_number.awms_rodi_remaining_ml') | float(0) %}
+            {% set amount = states('input_number.awms_adjustment_amount') | float(0) %}
+            {% if is_state('input_select.awms_adjustment_unit', 'mL') %}
+              {% set amount_ml = amount %}
+            {% elif is_state('input_select.awms_adjustment_unit', 'L') %}
+              {% set amount_ml = amount * 1000 %}
+            {% elif is_state('input_select.awms_adjustment_unit', 'oz') %}
+              {% set amount_ml = amount * 29.5735 %}
+            {% else %}
+              {% set amount_ml = amount * 3785.41 %}
+            {% endif %}
+            {{ [current_ml - amount_ml, 0] | max | round(0) }}
+
+  - if:
+      - condition: state
+        entity_id: input_select.awms_workflow
+        state: Other
+      - condition: state
+        entity_id: input_select.awms_source_reservoir
+        state: Salt
+      - condition: template
+        value_template: >-
+          {% set amount = states('input_number.awms_adjustment_amount') | float(0) %}
+          {% if is_state('input_select.awms_adjustment_unit', 'mL') %}
+            {% set amount_ml = amount %}
+          {% elif is_state('input_select.awms_adjustment_unit', 'L') %}
+            {% set amount_ml = amount * 1000 %}
+          {% elif is_state('input_select.awms_adjustment_unit', 'oz') %}
+            {% set amount_ml = amount * 29.5735 %}
+          {% else %}
+            {% set amount_ml = amount * 3785.41 %}
+          {% endif %}
+          {{ amount_ml > 0 }}
+    then:
+      - action: logbook.log
+        data:
+          name: AWMS
+          entity_id: input_number.awms_salt_remaining_ml
+          message: >-
+            {% set before_ml = states('input_number.awms_salt_remaining_ml') | float(0) %}
+            {% set amount = states('input_number.awms_adjustment_amount') | float(0) %}
+            {% if is_state('input_select.awms_adjustment_unit', 'mL') %}
+              {% set amount_ml = amount %}
+            {% elif is_state('input_select.awms_adjustment_unit', 'L') %}
+              {% set amount_ml = amount * 1000 %}
+            {% elif is_state('input_select.awms_adjustment_unit', 'oz') %}
+              {% set amount_ml = amount * 29.5735 %}
+            {% else %}
+              {% set amount_ml = amount * 3785.41 %}
+            {% endif %}
+            {% set after_ml = [before_ml - amount_ml, 0] | max %}
+            Removed {{ (amount_ml / 3785.41) | round(2) }} gal
+            ({{ amount_ml | round(0) | int }} mL) from Salt for Other.
+            Salt: {{ (before_ml / 3785.41) | round(2) }} gal ->
+            {{ (after_ml / 3785.41) | round(2) }} gal.
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.awms_salt_remaining_ml
+        data:
+          value: >-
+            {% set current_ml = states('input_number.awms_salt_remaining_ml') | float(0) %}
+            {% set amount = states('input_number.awms_adjustment_amount') | float(0) %}
+            {% if is_state('input_select.awms_adjustment_unit', 'mL') %}
+              {% set amount_ml = amount %}
+            {% elif is_state('input_select.awms_adjustment_unit', 'L') %}
+              {% set amount_ml = amount * 1000 %}
+            {% elif is_state('input_select.awms_adjustment_unit', 'oz') %}
+              {% set amount_ml = amount * 29.5735 %}
+            {% else %}
+              {% set amount_ml = amount * 3785.41 %}
+            {% endif %}
+            {{ [current_ml - amount_ml, 0] | max | round(0) }}
+
+  # Notify before Make New Salt when RODI cannot fill Salt to full.
+  - if:
+      - condition: state
+        entity_id: input_select.awms_workflow
+        state: Make New Salt
+      - condition: template
+        value_template: >-
+          {% set source_ml = states('input_number.awms_rodi_remaining_ml') | float(0) %}
+          {% set salt_ml = states('input_number.awms_salt_remaining_ml') | float(0) %}
+          {% set needed_ml = [111700 - salt_ml, 0] | max %}
+          {{ needed_ml <= 0 or needed_ml > source_ml }}
+    then:
+      - action: persistent_notification.create
+        data:
+          title: AWMS Make New Salt not applied
+          message: >-
+            Make sure the Salt reservoir is not already full and Peninsula
+            RODI has enough water to fill Salt to full.
+
+  # Make New Salt is the only transfer: Peninsula RODI to Salt.
+  # This fills Salt to full and deducts exactly that amount from RODI.
+  - if:
+      - condition: state
+        entity_id: input_select.awms_workflow
+        state: Make New Salt
+      - condition: template
+        value_template: >-
+          {% set source_ml = states('input_number.awms_rodi_remaining_ml') | float(0) %}
+          {% set salt_ml = states('input_number.awms_salt_remaining_ml') | float(0) %}
+          {% set needed_ml = [111700 - salt_ml, 0] | max %}
+          {{ needed_ml > 0 and needed_ml <= source_ml }}
+    then:
+      - action: logbook.log
+        data:
+          name: AWMS
+          entity_id: input_number.awms_salt_remaining_ml
+          message: >-
+            {% set rodi_before_ml = states('input_number.awms_rodi_remaining_ml') | float(0) %}
+            {% set salt_before_ml = states('input_number.awms_salt_remaining_ml') | float(0) %}
+            {% set needed_ml = [111700 - salt_before_ml, 0] | max %}
+            {% set rodi_after_ml = [rodi_before_ml - needed_ml, 0] | max %}
+            Transferred {{ (needed_ml / 3785.41) | round(2) }} gal
+            ({{ needed_ml | round(0) | int }} mL) from RODI to Salt for Make New Salt.
+            RODI: {{ (rodi_before_ml / 3785.41) | round(2) }} gal ->
+            {{ (rodi_after_ml / 3785.41) | round(2) }} gal.
+            Salt: {{ (salt_before_ml / 3785.41) | round(2) }} gal ->
+            {{ (111700 / 3785.41) | round(2) }} gal.
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.awms_rodi_remaining_ml
+        data:
+          value: >-
+            {% set current_ml = states('input_number.awms_rodi_remaining_ml') | float(0) %}
+            {% set salt_ml = states('input_number.awms_salt_remaining_ml') | float(0) %}
+            {% set needed_ml = [111700 - salt_ml, 0] | max %}
+            {{ [current_ml - needed_ml, 0] | max | round(0) }}
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.awms_salt_remaining_ml
+        data:
+          value: 111700

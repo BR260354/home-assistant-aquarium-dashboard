@@ -1,0 +1,202 @@
+# AWMS reservoir Gauge Card Pro cards
+# Replace the existing RODI, Salt, and 200xl ATO reservoir gauge cards with this stack.
+
+type: horizontal-stack
+cards:
+  - type: custom:gauge-card-pro
+    header: RODI Reservoir
+    entity: input_number.awms_rodi_remaining_ml
+    needle: true
+    gradient: true
+    titles:
+      primary:
+        value: >-
+          {{
+          (states('sensor.awms_rodi_remaining_gallons') | float(0))
+          | round(2) }} gallons remaining
+      secondary:
+        value: >-
+          {{
+          states('input_number.awms_rodi_last_fill_volume_ml') | float(0) | round(0)
+          }} mL
+
+          RODI added {{
+            states('input_datetime.awms_rodi_last_filled_at')
+            | as_datetime
+            | as_local
+            | as_timestamp
+            | timestamp_custom('%m/%d/%Y %H:%M')
+          }}
+    gradient_resolution: auto
+    entity2: input_number.awms_rodi_last_fill_volume_ml
+    min: 0
+    max: 111700
+    round: full
+    inner:
+      mode: needle
+      min: 0
+      max: 1500
+      round: full
+      gradient: true
+      gradient_resolution: auto
+      segments:
+        - pos: 0
+          color: rgba(194, 89, 100, 1)
+        - pos: 0
+          color: rgba(246, 243, 169, 1)
+        - pos: 0
+          color: rgba(158, 203, 145, 1)
+    animation_speed: fast
+    value_texts:
+      primary:
+        unit_before_value: false
+        font_size_reduction: 15
+        value: >-
+          {{ states('sensor.awms_rodi_remaining_percent') }}% Filled
+      secondary:
+        unit_before_value: false
+    icons: {}
+    segments:
+      - pos: 0
+        color: rgba(194, 89, 100, 1)
+      - pos: 55500
+        color: rgba(246, 243, 169, 1)
+      - pos: 111700
+        color: rgba(158, 203, 145, 1)
+    card_mod:
+      style: |
+        ha-card {
+          --ha-card-header-font-size: 12px;
+        }
+
+  - type: custom:gauge-card-pro
+    header: Salt Water Reservoir
+    entity: input_number.awms_salt_remaining_ml
+    needle: true
+    gradient: true
+    titles:
+      primary:
+        value: >-
+          {{
+          (states('sensor.awms_salt_remaining_gallons') | float(0))
+          | round(2) }} gallons remaining
+      secondary:
+        value: >-
+          {{
+          states('input_number.awms_salt_last_fill_volume_ml') | float(0) | round(0)
+          }} mL
+
+          New Salt added {{
+            states('input_datetime.awms_salt_last_filled_at')
+            | as_datetime
+            | as_local
+            | as_timestamp
+            | timestamp_custom('%m/%d/%Y %H:%M')
+          }}
+    gradient_resolution: auto
+    entity2: input_number.awms_salt_last_fill_volume_ml
+    min: 0
+    max: 111700
+    round: full
+    inner:
+      mode: needle
+      min: 0
+      max: 5000
+      round: full
+      gradient: true
+      gradient_resolution: auto
+      segments:
+        - pos: 0
+          color: rgba(194, 89, 100, 1)
+        - pos: 0
+          color: rgba(246, 243, 169, 1)
+        - pos: 0
+          color: rgba(158, 203, 145, 1)
+    animation_speed: fast
+    value_texts:
+      primary:
+        unit_before_value: false
+        font_size_reduction: 15
+        value: >-
+          {{ states('sensor.awms_salt_remaining_percent') }}% Filled
+      secondary:
+        unit_before_value: false
+    icons: {}
+    segments:
+      - pos: 0
+        color: rgba(194, 89, 100, 1)
+      - pos: 55500
+        color: rgba(246, 243, 169, 1)
+      - pos: 111700
+        color: rgba(158, 203, 145, 1)
+    card_mod:
+      style: |
+        ha-card {
+          --ha-card-header-font-size: 12px;
+        }
+
+  - type: custom:gauge-card-pro
+    header: 200xl ATO Reservoir
+    entity: input_number.awms_200xl_ato_remaining_ml
+    needle: true
+    gradient: true
+    titles:
+      primary:
+        value: >-
+          {{
+          (states('sensor.awms_200xl_ato_remaining_gallons') | float(0))
+          | round(2) }} gallons remaining
+      secondary:
+        value: >-
+          {{
+          states('input_number.awms_200xl_ato_last_fill_volume_ml') | float(0) | round(0)
+          }} mL
+
+          200xl ATO updated {{
+            states('input_datetime.200xl_ato_started_at')
+            | as_datetime
+            | as_local
+            | as_timestamp
+            | timestamp_custom('%m/%d/%Y %H:%M')
+          }}
+    gradient_resolution: auto
+    entity2: input_number.awms_200xl_ato_last_fill_volume_ml
+    min: 0
+    max: 94635
+    round: full
+    inner:
+      mode: needle
+      min: 0
+      max: 1500
+      round: full
+      gradient: true
+      gradient_resolution: auto
+      segments:
+        - pos: 0
+          color: rgba(194, 89, 100, 1)
+        - pos: 0
+          color: rgba(246, 243, 169, 1)
+        - pos: 0
+          color: rgba(158, 203, 145, 1)
+    animation_speed: fast
+    value_texts:
+      primary:
+        unit_before_value: false
+        font_size_reduction: 15
+        value: >-
+          {{ states('sensor.awms_200xl_ato_remaining_percent') }}% Filled
+      secondary:
+        unit_before_value: false
+    icons: {}
+    segments:
+      - pos: 0
+        color: rgba(194, 89, 100, 1)
+      - pos: 47318
+        color: rgba(246, 243, 169, 1)
+      - pos: 94635
+        color: rgba(158, 203, 145, 1)
+    card_mod:
+      style: |
+        ha-card {
+          --ha-card-header-font-size: 12px;
+        }

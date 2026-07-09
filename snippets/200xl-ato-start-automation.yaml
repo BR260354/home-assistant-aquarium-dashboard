@@ -1,0 +1,19 @@
+alias: 200xl - ATO Start
+description: Records when the 200xl Hydros ATO output starts running.
+triggers:
+  - trigger: state
+    entity_id:
+      - binary_sensor.bedroom_aquarium_ato
+    from:
+      - "off"
+    to:
+      - "on"
+conditions: []
+actions:
+  - action: input_datetime.set_datetime
+    target:
+      entity_id:
+        - input_datetime.200xl_ato_started_at
+    data:
+      datetime: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}"
+mode: single

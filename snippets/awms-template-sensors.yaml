@@ -1,0 +1,109 @@
+# Aquarium Water Management Suite template sensors
+# Add under the existing `template:` / `- sensor:` section in template.yaml.
+
+- name: "AWMS RODI Remaining Liters"
+  unique_id: awms_rodi_remaining_liters
+  unit_of_measurement: L
+  state: >
+    {{ (states('input_number.awms_rodi_remaining_ml') | float(0) / 1000) | round(1) }}
+
+- name: "AWMS Salt Remaining Liters"
+  unique_id: awms_salt_remaining_liters
+  unit_of_measurement: L
+  state: >
+    {{ (states('input_number.awms_salt_remaining_ml') | float(0) / 1000) | round(1) }}
+
+- name: "AWMS RODI Remaining Gallons"
+  unique_id: awms_rodi_remaining_gallons
+  unit_of_measurement: gal
+  state: >
+    {{ (states('input_number.awms_rodi_remaining_ml') | float(0) / 3785.41) | round(2) }}
+
+- name: "AWMS Salt Remaining Gallons"
+  unique_id: awms_salt_remaining_gallons
+  unit_of_measurement: gal
+  state: >
+    {{ (states('input_number.awms_salt_remaining_ml') | float(0) / 3785.41) | round(2) }}
+
+- name: "AWMS 200xl ATO Remaining Gallons"
+  unique_id: awms_200xl_ato_remaining_gallons
+  unit_of_measurement: gal
+  state: >
+    {{ (states('input_number.awms_200xl_ato_remaining_ml') | float(0) / 3785.41) | round(2) }}
+
+- name: "AWMS RODI Remaining Percent"
+  unique_id: awms_rodi_remaining_percent
+  unit_of_measurement: "%"
+  state: >
+    {{ ((states('input_number.awms_rodi_remaining_ml') | float(0) / 111700) * 100) | round(0) }}
+
+- name: "AWMS Salt Remaining Percent"
+  unique_id: awms_salt_remaining_percent
+  unit_of_measurement: "%"
+  state: >
+    {{ ((states('input_number.awms_salt_remaining_ml') | float(0) / 111700) * 100) | round(0) }}
+
+- name: "AWMS 200xl ATO Remaining Percent"
+  unique_id: awms_200xl_ato_remaining_percent
+  unit_of_measurement: "%"
+  state: >
+    {{ ((states('input_number.awms_200xl_ato_remaining_ml') | float(0) / 94635) * 100) | round(0) }}
+
+- name: "AWMS Adjustment Amount ML"
+  unique_id: awms_adjustment_amount_ml
+  unit_of_measurement: mL
+  state: >
+    {% set amount = states('input_number.awms_adjustment_amount') | float(0) %}
+    {% if is_state('input_select.awms_adjustment_unit', 'mL') %}
+      {{ amount | round(0) }}
+    {% elif is_state('input_select.awms_adjustment_unit', 'L') %}
+      {{ (amount * 1000) | round(0) }}
+    {% elif is_state('input_select.awms_adjustment_unit', 'oz') %}
+      {{ (amount * 29.5735) | round(0) }}
+    {% elif is_state('input_select.awms_adjustment_unit', 'gal') %}
+      {{ (amount * 3785.41) | round(0) }}
+    {% else %}
+      0
+    {% endif %}
+
+- name: "AWMS Adjustment Preview Remaining Gal"
+  unique_id: awms_adjustment_preview_remaining_gal
+  unit_of_measurement: gal
+  state: >
+    {% set amount_ml = states('sensor.awms_adjustment_amount_ml') | float(0) %}
+    {% set reservoir = states('input_select.awms_source_reservoir') %}
+    {% set action = states('input_select.awms_adjustment_action') %}
+    {% if reservoir == 'RODI' %}
+      {% set current_ml = states('input_number.awms_rodi_remaining_ml') | float(0) %}
+    {% elif reservoir == 'Salt' %}
+      {% set current_ml = states('input_number.awms_salt_remaining_ml') | float(0) %}
+    {% else %}
+      {% set current_ml = 0 %}
+    {% endif %}
+    {% if action == 'Remove' %}
+      {{ ((([current_ml - amount_ml, 0] | max) / 3785.41)) | round(2) }}
+    {% elif action == 'Transfer' %}
+      {{ (current_ml / 3785.41) | round(2) }}
+    {% else %}
+      {{ (current_ml / 3785.41) | round(2) }}
+    {% endif %}
+
+- name: "AWMS Adjustment Validation"
+  unique_id: awms_adjustment_validation
+  state: >
+    {% set amount_ml = states('sensor.awms_adjustment_amount_ml') | float(0) %}
+    {% set reservoir = states('input_select.awms_source_reservoir') %}
+    {% if reservoir == 'RODI' %}
+      {% set current_ml = states('input_number.awms_rodi_remaining_ml') | float(0) %}
+    {% elif reservoir == 'Salt' %}
+      {% set current_ml = states('input_number.awms_salt_remaining_ml') | float(0) %}
+    {% else %}
+      {% set current_ml = 0 %}
+    {% endif %}
+    {% if amount_ml <= 0 %}
+      Enter Amount
+    {% elif amount_ml > current_ml %}
+      Not Enough Water
+    {% else %}
+      Ready
+    {% endif %}

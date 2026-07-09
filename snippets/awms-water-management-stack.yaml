@@ -1,0 +1,595 @@
+# Aquarium Water Management Suite
+# Mobile-safe version without custom:expander-card.
+# Drop this card inside Maintenance > Water Management when expander-card is unreliable.
+
+type: custom:mod-card
+card_mod:
+  style: |
+    ha-card {
+      border: 1px solid rgba(0, 188, 212, 0.28);
+      border-radius: 8px;
+      padding: 8px;
+      background: rgba(0, 188, 212, 0.035);
+    }
+card:
+  type: vertical-stack
+  cards:
+    - type: custom:mushroom-template-card
+      primary: Water Management
+      secondary: >-
+        {% set last_update = state_attr('script.awms_apply_adjustment', 'last_triggered') %}
+        {% set used_for = states('input_select.awms_workflow') | trim %}
+        {% if last_update %}
+          Last Update: {{ as_timestamp(last_update) | timestamp_custom('%b %-d, %-I:%M %p', true) }}
+        {% else %}
+          Last Update: Not yet applied
+        {% endif %}
+        -
+        {% if used_for == 'Make New Salt' %}
+          {% set salt_current_ml = states('input_number.awms_salt_remaining_ml') | float(0) %}
+          {% set needed_ml = [111700 - salt_current_ml, 0] | max %}
+          Transfer {{ (needed_ml / 3785.41) | round(2) }} gal to fill Salt
+        {% else %}
+          Remove
+          {{ states('input_number.awms_adjustment_amount') | float(0) | round(2) }}
+          {{ states('input_select.awms_adjustment_unit') }}
+          - {{ used_for }}
+        {% endif %}
+      icon: mdi:waves
+      icon_color: cyan
+      card_mod:
+        style: |
+          ha-card {
+            border-radius: 8px;
+          }
+  
+    - type: vertical-stack
+      cards:
+        - type: custom:mushroom-template-card
+          primary: Actions
+          icon: mdi:tune-variant
+          icon_color: cyan
+          layout: horizontal
+          tap_action:
+            action: none
+          card_mod:
+            style: |
+              ha-card {
+                --ha-card-background: transparent;
+                box-shadow: none;
+                padding-top: 0;
+                padding-bottom: 0;
+              }
+              mushroom-state-info {
+                --card-primary-font-size: 14px;
+                --card-primary-font-weight: 500;
+              }
+  
+        # Native input_select row is used here because Mushroom select dropdowns
+        # can be clipped or fail to open inside expander-card on narrow mobile screens.
+        - type: entities
+          entities:
+            - entity: input_select.awms_workflow
+              name: Used For
+              icon: mdi:format-list-bulleted
+          show_header_toggle: false
+          card_mod:
+            style: |
+              ha-card {
+                border-radius: 8px;
+                --ha-card-background: rgba(0, 188, 212, 0.08);
+                --paper-item-icon-color: rgb(0, 188, 212);
+              }
+              #states {
+                padding-top: 2px;
+                padding-bottom: 2px;
+              }
+  
+        # These workflow chips are intentionally explicit so each dropdown
+        # option shows the correct action/source immediately.
+        - type: conditional
+          conditions:
+            - entity: input_select.awms_workflow
+              state: Plants
+          card:
+            type: custom:mushroom-chips-card
+            alignment: center
+            chips:
+              - type: template
+                content: Remove
+                icon: mdi:water-minus
+                icon_color: red
+                tap_action:
+                  action: none
+                card_mod:
+                  style: |
+                    ha-card {
+                      --chip-background: rgba(248, 187, 208, 0.34);
+                      --chip-border-color: rgba(239, 154, 154, 0.55);
+                    }
+              - type: template
+                content: RODI
+                icon: mdi:water
+                icon_color: blue
+                tap_action:
+                  action: none
+                card_mod:
+                  style: |
+                    ha-card {
+                      --chip-background: rgba(187, 222, 251, 0.38);
+                      --chip-border-color: rgba(144, 202, 249, 0.55);
+                    }
+  
+        - type: conditional
+          conditions:
+            - entity: input_select.awms_workflow
+              state: 200xl ATO
+          card:
+            type: custom:mushroom-chips-card
+            alignment: center
+            chips:
+              - type: template
+                content: Remove
+                icon: mdi:water-minus
+                icon_color: red
+                tap_action:
+                  action: none
+                card_mod:
+                  style: |
+                    ha-card {
+                      --chip-background: rgba(248, 187, 208, 0.34);
+                      --chip-border-color: rgba(239, 154, 154, 0.55);
+                    }
+              - type: template
+                content: RODI
+                icon: mdi:water
+                icon_color: blue
+                tap_action:
+                  action: none
+                card_mod:
+                  style: |
+                    ha-card {
+                      --chip-background: rgba(187, 222, 251, 0.38);
+                      --chip-border-color: rgba(144, 202, 249, 0.55);
+                    }
+  
+        - type: conditional
+          conditions:
+            - entity: input_select.awms_workflow
+              state: 200xl Water Change
+          card:
+            type: custom:mushroom-chips-card
+            alignment: center
+            chips:
+              - type: template
+                content: Remove
+                icon: mdi:water-minus
+                icon_color: red
+                tap_action:
+                  action: none
+                card_mod:
+                  style: |
+                    ha-card {
+                      --chip-background: rgba(248, 187, 208, 0.34);
+                      --chip-border-color: rgba(239, 154, 154, 0.55);
+                    }
+              - type: template
+                content: Salt
+                icon: mdi:shaker-outline
+                icon_color: purple
+                tap_action:
+                  action: none
+                card_mod:
+                  style: |
+                    ha-card {
+                      --chip-background: rgba(225, 190, 231, 0.34);
+                      --chip-border-color: rgba(206, 147, 216, 0.55);
+                    }
+  
+        - type: conditional
+          conditions:
+            - entity: input_select.awms_workflow
+              state: Make New Salt
+          card:
+            type: custom:mushroom-chips-card
+            alignment: center
+            chips:
+              - type: template
+                content: Transfer
+                icon: mdi:swap-horizontal
+                icon_color: blue
+                tap_action:
+                  action: none
+                card_mod:
+                  style: |
+                    ha-card {
+                      --chip-background: rgba(187, 222, 251, 0.38);
+                      --chip-border-color: rgba(144, 202, 249, 0.55);
+                    }
+              - type: template
+                content: RODI
+                icon: mdi:water
+                icon_color: blue
+                tap_action:
+                  action: none
+                card_mod:
+                  style: |
+                    ha-card {
+                      --chip-background: rgba(187, 222, 251, 0.38);
+                      --chip-border-color: rgba(144, 202, 249, 0.55);
+                    }
+  
+        - type: conditional
+          conditions:
+            - entity: input_select.awms_workflow
+              state: Other
+          card:
+            type: custom:mushroom-chips-card
+            alignment: center
+            chips:
+              - type: template
+                content: Remove
+                icon: mdi:water-minus
+                icon_color: red
+                tap_action:
+                  action: none
+                card_mod:
+                  style: |
+                    ha-card {
+                      --chip-background: rgba(248, 187, 208, 0.34);
+                      --chip-border-color: rgba(239, 154, 154, 0.55);
+                    }
+  
+        # Reservoir chips are only needed when the workflow is Other.
+        - type: conditional
+          conditions:
+            - entity: input_select.awms_workflow
+              state: Other
+          card:
+            type: custom:mushroom-chips-card
+            alignment: center
+            chips:
+              - type: template
+                content: RODI
+                icon: mdi:water
+                icon_color: >-
+                  {% if is_state('input_select.awms_source_reservoir', 'RODI') %}blue{% else %}grey{% endif %}
+                card_mod:
+                  style: |
+                    ha-card {
+                      {% if is_state('input_select.awms_source_reservoir', 'RODI') %}
+                        --chip-background: rgba(187, 222, 251, 0.38);
+                        --chip-border-color: rgba(144, 202, 249, 0.55);
+                      {% else %}
+                        --chip-background: rgba(127, 127, 127, 0.08);
+                      {% endif %}
+                    }
+                tap_action:
+                  action: call-service
+                  service: input_select.select_option
+                  target:
+                    entity_id: input_select.awms_source_reservoir
+                  data:
+                    option: RODI
+              - type: template
+                content: Salt
+                icon: mdi:shaker-outline
+                icon_color: >-
+                  {% if is_state('input_select.awms_source_reservoir', 'Salt') %}purple{% else %}grey{% endif %}
+                card_mod:
+                  style: |
+                    ha-card {
+                      {% if is_state('input_select.awms_source_reservoir', 'Salt') %}
+                        --chip-background: rgba(225, 190, 231, 0.34);
+                        --chip-border-color: rgba(206, 147, 216, 0.55);
+                      {% else %}
+                        --chip-background: rgba(127, 127, 127, 0.08);
+                      {% endif %}
+                    }
+                tap_action:
+                  action: call-service
+                  service: input_select.select_option
+                  target:
+                    entity_id: input_select.awms_source_reservoir
+                  data:
+                    option: Salt
+  
+        - type: conditional
+          conditions:
+            - entity: input_select.awms_workflow
+              state: Make New Salt
+          card:
+            type: custom:mushroom-template-card
+            primary: Transfer Amount
+            secondary: >-
+              {% set salt_current_ml = states('input_number.awms_salt_remaining_ml') | float(0) %}
+              {% set needed_ml = [111700 - salt_current_ml, 0] | max %}
+              {{ (needed_ml / 3785.41) | round(2) }} gal
+              ({{ needed_ml | round(0) | int }} mL)
+            icon: mdi:cup-water
+            icon_color: cyan
+            layout: horizontal
+            tap_action:
+              action: none
+  
+        - type: conditional
+          conditions:
+            - entity: input_select.awms_workflow
+              state_not: Make New Salt
+          card:
+            type: custom:mushroom-template-card
+            primary: Amount
+            secondary: >-
+              {{ states('input_number.awms_adjustment_amount') | float(0) | round(2) }}
+              {{ states('input_select.awms_adjustment_unit') }}
+            icon: mdi:cup-water
+            icon_color: cyan
+            layout: horizontal
+            tap_action:
+              action: more-info
+              entity: input_number.awms_adjustment_amount
+  
+        - type: conditional
+          conditions:
+            - entity: input_select.awms_workflow
+              state_not: Make New Salt
+          card:
+            type: entities
+            entities:
+              - entity: input_number.awms_adjustment_amount
+                name: Adjust Amount
+                icon: mdi:cup-water
+            card_mod:
+              style: |
+                ha-card {
+                  border-radius: 8px;
+                  --ha-card-background: rgba(0, 188, 212, 0.08);
+                  --paper-item-icon-color: rgb(0, 188, 212);
+                }
+  
+        # Unit chips write directly to input_select.awms_adjustment_unit.
+        # The backend script should convert the selected unit back to mL.
+        - type: conditional
+          conditions:
+            - entity: input_select.awms_workflow
+              state_not: Make New Salt
+          card:
+            type: custom:mushroom-chips-card
+            alignment: justify
+            chips:
+              - type: template
+                content: mL
+                icon: mdi:beaker-outline
+                icon_color: >-
+                  {% if is_state('input_select.awms_adjustment_unit', 'mL') %}cyan{% else %}grey{% endif %}
+                card_mod:
+                  style: |
+                    ha-card {
+                      {% if is_state('input_select.awms_adjustment_unit', 'mL') %}
+                        --chip-background: rgba(178, 235, 242, 0.34);
+                        --chip-border-color: rgba(128, 222, 234, 0.55);
+                      {% else %}
+                        --chip-background: rgba(127, 127, 127, 0.08);
+                      {% endif %}
+                    }
+                tap_action:
+                  action: call-service
+                  service: input_select.select_option
+                  target:
+                    entity_id: input_select.awms_adjustment_unit
+                  data:
+                    option: mL
+              - type: template
+                content: L
+                icon: mdi:bottle-tonic-outline
+                icon_color: >-
+                  {% if is_state('input_select.awms_adjustment_unit', 'L') %}cyan{% else %}grey{% endif %}
+                card_mod:
+                  style: |
+                    ha-card {
+                      {% if is_state('input_select.awms_adjustment_unit', 'L') %}
+                        --chip-background: rgba(178, 235, 242, 0.34);
+                        --chip-border-color: rgba(128, 222, 234, 0.55);
+                      {% else %}
+                        --chip-background: rgba(127, 127, 127, 0.08);
+                      {% endif %}
+                    }
+                tap_action:
+                  action: call-service
+                  service: input_select.select_option
+                  target:
+                    entity_id: input_select.awms_adjustment_unit
+                  data:
+                    option: L
+              - type: template
+                content: oz
+                icon: mdi:cup-outline
+                icon_color: >-
+                  {% if is_state('input_select.awms_adjustment_unit', 'oz') %}cyan{% else %}grey{% endif %}
+                card_mod:
+                  style: |
+                    ha-card {
+                      {% if is_state('input_select.awms_adjustment_unit', 'oz') %}
+                        --chip-background: rgba(178, 235, 242, 0.34);
+                        --chip-border-color: rgba(128, 222, 234, 0.55);
+                      {% else %}
+                        --chip-background: rgba(127, 127, 127, 0.08);
+                      {% endif %}
+                    }
+                tap_action:
+                  action: call-service
+                  service: input_select.select_option
+                  target:
+                    entity_id: input_select.awms_adjustment_unit
+                  data:
+                    option: oz
+              - type: template
+                content: gal
+                icon: mdi:bucket-outline
+                icon_color: >-
+                  {% if is_state('input_select.awms_adjustment_unit', 'gal') %}cyan{% else %}grey{% endif %}
+                card_mod:
+                  style: |
+                    ha-card {
+                      {% if is_state('input_select.awms_adjustment_unit', 'gal') %}
+                        --chip-background: rgba(178, 235, 242, 0.34);
+                        --chip-border-color: rgba(128, 222, 234, 0.55);
+                      {% else %}
+                        --chip-background: rgba(127, 127, 127, 0.08);
+                      {% endif %}
+                    }
+                tap_action:
+                  action: call-service
+                  service: input_select.select_option
+                  target:
+                    entity_id: input_select.awms_adjustment_unit
+                  data:
+                    option: gal
+  
+        - type: markdown
+          content: >-
+            {% set used_for = states('input_select.awms_workflow') | trim %}
+            {% set action = 'Transfer' if used_for == 'Make New Salt' else 'Remove' %}
+            {% set reservoir = states('input_select.awms_source_reservoir') %}
+            {% set amount = states('input_number.awms_adjustment_amount') | float(0) %}
+            {% set unit = states('input_select.awms_adjustment_unit') %}
+            {% set rodi_current_ml = states('input_number.awms_rodi_remaining_ml') | float(0) %}
+            {% set salt_current_ml = states('input_number.awms_salt_remaining_ml') | float(0) %}
+            {% set bedroom_current_ml = states('input_number.awms_200xl_ato_remaining_ml') | float(0) %}
+            {% set rodi_capacity_ml = 111700 %}
+            {% set salt_capacity_ml = 111700 %}
+            {% set bedroom_capacity_ml = 94635 %}
+            {% if unit == 'mL' %}
+              {% set ml = amount %}
+            {% elif unit == 'L' %}
+              {% set ml = amount * 1000 %}
+            {% elif unit == 'oz' %}
+              {% set ml = amount * 29.5735 %}
+            {% else %}
+              {% set ml = amount * 3785.41 %}
+            {% endif %}
+            {% set gallons = ml / 3785.41 %}
+            {% set salt_needed_ml = [salt_capacity_ml - salt_current_ml, 0] | max %}
+            {% set salt_needed_gal = salt_needed_ml / 3785.41 %}
+            {% if action == 'Transfer' and used_for == 'Make New Salt' %}
+              {% set source = 'RODI' %}
+              {% set destination = 'Salt' %}
+            {% elif used_for == 'Plants' %}
+              {% set source = 'RODI' %}
+              {% set destination = 'used water' %}
+            {% elif used_for == '200xl ATO' %}
+              {% set source = 'RODI' %}
+              {% set destination = '200xl ATO reservoir' %}
+            {% elif used_for == '200xl Water Change' %}
+              {% set source = 'Salt' %}
+              {% set destination = '200xl water change' %}
+            {% elif used_for == 'Other' %}
+              {% set source = reservoir %}
+              {% set destination = 'used water' %}
+            {% else %}
+              {% set source = 'selected reservoir' %}
+              {% set destination = 'selected workflow' %}
+            {% endif %}
+  
+            {% if used_for == 'Make New Salt' %}
+            **Preview**
+  
+            Fill **Salt** to full from **RODI**.
+  
+            Current Salt:
+            **{{ (salt_current_ml / 3785.41) | round(2) }} gal**
+            (**{{ salt_current_ml | round(0) | int }} mL**).
+  
+            Current RODI:
+            **{{ (rodi_current_ml / 3785.41) | round(2) }} gal**
+            (**{{ rodi_current_ml | round(0) | int }} mL**).
+  
+            Needed: **{{ salt_needed_gal | round(2) }} gal**
+            (**{{ salt_needed_ml | round(0) | int }} mL**).
+  
+            RODI after transfer:
+            **{{ ((([rodi_current_ml - salt_needed_ml, 0] | max) / 3785.41)) | round(2) }} gal**
+            (**{{ [rodi_current_ml - salt_needed_ml, 0] | max | round(0) | int }} mL**).
+  
+            Salt after transfer:
+            **{{ (salt_capacity_ml / 3785.41) | round(2) }} gal**
+            (**{{ salt_capacity_ml | round(0) | int }} mL**).
+  
+            {% if salt_needed_ml <= 0 %}
+            Salt is already full.
+            {% elif salt_needed_ml > rodi_current_ml %}
+            Not enough RODI to fill Salt.
+            {% endif %}
+            {% elif amount <= 0 %}
+            **Preview**
+  
+            Choose an amount before applying this adjustment.
+            {% elif action == 'Remove' %}
+            **Preview**
+  
+            {% if used_for == '200xl ATO' %}
+            Move **{{ amount | round(2) }} {{ unit }}**
+            (**{{ ml | round(0) | int }} mL / {{ gallons | round(2) }} gal**)
+            from **RODI** to **200xl ATO**.
+  
+            RODI after move:
+            **{{ ((([rodi_current_ml - ml, 0] | max) / 3785.41)) | round(2) }} gal**
+            (**{{ [rodi_current_ml - ml, 0] | max | round(0) | int }} mL**).
+  
+            200xl ATO after move:
+            **{{ ((([bedroom_current_ml + ml, bedroom_capacity_ml] | min) / 3785.41)) | round(2) }} gal**
+            (**{{ [bedroom_current_ml + ml, bedroom_capacity_ml] | min | round(0) | int }} mL**).
+            {% else %}
+            Remove **{{ amount | round(2) }} {{ unit }}**
+            (**{{ ml | round(0) | int }} mL / {{ gallons | round(2) }} gal**)
+            from **{{ source }}**
+            for **{{ used_for }}**.
+  
+            Estimated {{ source }} remaining:
+            {% if source == 'Salt' %}
+            **{{ ((([salt_current_ml - ml, 0] | max) / 3785.41)) | round(2) }} gal**
+            (**{{ [salt_current_ml - ml, 0] | max | round(0) | int }} mL**).
+            {% else %}
+            **{{ ((([rodi_current_ml - ml, 0] | max) / 3785.41)) | round(2) }} gal**
+            (**{{ [rodi_current_ml - ml, 0] | max | round(0) | int }} mL**).
+            {% endif %}
+            {% endif %}
+            {% elif action == 'Transfer' %}
+            **Preview**
+  
+            Transfer is only used for **Make New Salt**.
+            {% else %}
+            **Preview**
+  
+            Select an action to preview the adjustment.
+            {% endif %}
+          card_mod:
+            style: |
+              ha-card {
+                border-radius: 8px;
+                --ha-card-background: rgba(255, 193, 7, 0.10);
+              }
+  
+        - type: custom:mushroom-template-card
+          primary: Apply
+          secondary: >-
+            {% set used_for = states('input_select.awms_workflow') | trim %}
+            {% if used_for == 'Make New Salt' %}
+              Fill Salt to full
+            {% else %}
+              Remove
+              {{ states('input_number.awms_adjustment_amount') | float(0) | round(2) }}
+              {{ states('input_select.awms_adjustment_unit') }}
+            {% endif %}
+          icon: mdi:check-circle
+          icon_color: cyan
+          layout: horizontal
+          tap_action:
+            action: call-service
+            service: script.awms_apply_adjustment
+          card_mod:
+            style: |
+              ha-card {
+                border-radius: 8px;
+                --ha-card-background: rgba(0, 188, 212, 0.12);
+              }

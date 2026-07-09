@@ -1,0 +1,36 @@
+alias: 200xl - ATO Stop
+description: Deducts estimated 200xl ATO usage from the AWMS 200xl ATO reservoir.
+triggers:
+  - trigger: state
+    entity_id:
+      - binary_sensor.bedroom_aquarium_ato
+    from:
+      - "on"
+    to:
+      - "off"
+conditions: []
+actions:
+  - variables:
+      pump_rate_ml_per_second: 4.67
+      runtime_seconds: >
+        {% set started_at = as_timestamp(states('input_datetime.200xl_ato_started_at'), default=as_timestamp(now())) %}
+        {{ [as_timestamp(now()) - started_at, 0] | max }}
+      volume_ml: >
+        {{ (runtime_seconds * pump_rate_ml_per_second) | round(0) }}
+      current_remaining_ml: >
+        {{ states('input_number.awms_200xl_ato_remaining_ml') | float(94635) }}
+      remaining_ml: >
+        {{ [current_remaining_ml - volume_ml, 0] | max }}
+  - action: input_number.set_value
+    target:
+      entity_id:
+        - input_number.awms_200xl_ato_last_fill_volume_ml
+    data:
+      value: "{{ volume_ml }}"
+  - action: input_number.set_value
+    target:
+      entity_id:
+        - input_number.awms_200xl_ato_remaining_ml
+    data:
+      value: "{{ remaining_ml }}"
+mode: single

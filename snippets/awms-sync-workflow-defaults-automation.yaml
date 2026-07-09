@@ -1,0 +1,93 @@
+alias: AWMS Sync Workflow Defaults
+description: >-
+  Keeps the AWMS action and reservoir helpers aligned with the selected
+  workflow. Inventory is still changed only by the AWMS Apply Adjustment script.
+mode: restart
+triggers:
+  - trigger: state
+    entity_id: input_select.awms_workflow
+  - trigger: state
+    entity_id: input_select.awms_adjustment_action
+actions:
+  # Plants always remove Peninsula RODI.
+  - if:
+      - condition: state
+        entity_id: input_select.awms_workflow
+        state: Plants
+    then:
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.awms_adjustment_action
+        data:
+          option: Remove
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.awms_source_reservoir
+        data:
+          option: RODI
+
+  # 200xl ATO fills remove water from Peninsula RODI and add it to the 200xl ATO reservoir.
+  - if:
+      - condition: state
+        entity_id: input_select.awms_workflow
+        state: 200xl ATO
+    then:
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.awms_adjustment_action
+        data:
+          option: Remove
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.awms_source_reservoir
+        data:
+          option: RODI
+
+  # 200xl water changes remove prepared saltwater.
+  - if:
+      - condition: state
+        entity_id: input_select.awms_workflow
+        state: 200xl Water Change
+    then:
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.awms_adjustment_action
+        data:
+          option: Remove
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.awms_source_reservoir
+        data:
+          option: Salt
+
+  # Make New Salt is the only transfer workflow.
+  - if:
+      - condition: state
+        entity_id: input_select.awms_workflow
+        state: Make New Salt
+    then:
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.awms_adjustment_action
+        data:
+          option: Transfer
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.awms_source_reservoir
+        data:
+          option: RODI
+
+  # Other can remove from either reservoir, but does not support Transfer.
+  - if:
+      - condition: state
+        entity_id: input_select.awms_workflow
+        state: Other
+      - condition: state
+        entity_id: input_select.awms_adjustment_action
+        state: Transfer
+    then:
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.awms_adjustment_action
+        data:
+          option: Remove

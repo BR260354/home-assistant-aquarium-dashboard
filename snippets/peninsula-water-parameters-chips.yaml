@@ -1,0 +1,315 @@
+type: custom:mushroom-chips-card
+alignment: center
+card_mod:
+  style: |
+    ha-card {
+      background: transparent !important;
+      box-shadow: none !important;
+      padding: 0 4px;
+
+      /* global chip sizing */
+      --chip-height: 30px;
+      --chip-icon-size: 20px;
+      --chip-font-size: 0.8rem;
+    }
+
+    ha-card .chip-container {
+      gap: 8px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    ha-card mushroom-chip .chip {
+      border-radius: 999px !important;
+    }
+chips:
+  - type: template
+    entity: sensor.aquarium_hydros_display_temp
+    icon: mdi:thermometer
+    content: Display {{ states('sensor.aquarium_hydros_display_temp') | round(2)  }}
+    tap_action:
+      action: more-info
+    card_mod:
+      style: |
+        :host {
+          {% set n = states('sensor.aquarium_hydros_display_temp')|float %}
+          --chip-background:
+            {% if n < 77 %}
+              rgba(110, 205, 219, 0.4)   /* Low - Blue*/
+            {% elif n < 78 %}
+              rgba(158, 203, 145, 0.4) /* Good - Green */
+            {% elif n < 78.9 %}
+              rgba(246, 243, 169, 0.4) /* Warning - Yellow */
+            {% else %}
+               rgba(194, 89, 100, 0.4) /* HIGH - Red */
+            {% endif %};
+          --color:
+            {% if n > 0 %}
+              var(--primary-text-color)
+            {% else %}
+              var(--disabled-text-color)
+            {% endif %};
+        }
+  - type: template
+    entity: sensor.aquarium_hydros_ph_ii
+    icon: mdi:fish
+    content: pH {{ states('sensor.aquarium_hydros_ph_ii') | round(2) }}
+    tap_action:
+      action: more-info
+    card_mod:
+      style: |
+        :host {
+          {% set n = states('sensor.aquarium_hydros_ph_ii')|float %}
+          --chip-background:
+            {% if n < 7.7 %}
+              rgba(194, 89, 100, 0.4)   /* Too low - Red */
+            {% elif n < 8.5 %}
+              rgba(158, 203, 145, 0.4)  /* Good */
+            {% else %}
+               rgba(255, 179, 71, 0.4)  /* Too high - Orange */
+            {% endif %};
+          --color:
+            {% if n > 0 %}
+              var(--primary-text-color)
+            {% else %}
+              var(--disabled-text-color)
+            {% endif %};
+        }
+  - type: template
+    entity: sensor.aquarium_hydros_orp
+    icon: mdi:water-percent
+    content: ORP {{ states('sensor.aquarium_hydros_orp') | round(2) }}
+    tap_action:
+      action: more-info
+    card_mod:
+      style: |
+        :host {
+          {% set n = states('sensor.aquarium_hydros_orp')|float %}
+          --chip-background:
+            {% if n < 275 %}
+              rgba(246, 243, 169, 0.4)   /* Yellow - Caution */
+            {% elif n < 401 %}
+              rgba(158, 203, 145, 0.4) /* Good - Green */
+            {% else %}
+               rgba(255, 179, 71, 0.4) /* orange - high */
+            {% endif %};
+          --color:
+            {% if n > 0 %}
+              var(--primary-text-color)
+            {% else %}
+              var(--disabled-text-color)
+            {% endif %};
+        }
+  - type: template
+    entity: sensor.aquarium_hydros_salinity
+    icon: mdi:water-circle
+    content: Salinity {{ states('sensor.aquarium_hydros_salinity') | round(2) }}
+    tap_action:
+      action: more-info
+    card_mod:
+      style: |
+        :host {
+          {% set n = states('sensor.aquarium_hydros_salinity')|float %}
+          --chip-background:
+            {% if n < 33 %}
+              rgba(194, 89, 100, 0.4)    /* Too Low - Red */
+            {% elif n < 34.4 %}
+              rgba(246, 243, 169, 0.4)   /* Yellow */
+            {% elif n < 36.2 %}
+              rgba(158, 203, 145, 0.4)  /* Green */
+            {% else %}
+               rgba(255, 179, 71, 0.4)  /* Orange */
+            {% endif %};
+          --color:
+            {% if n > 0 %}
+              var(--primary-text-color)
+            {% else %}
+              var(--disabled-text-color)
+            {% endif %};
+        }
+  - type: template
+    entity: sensor.aquarium_hydros_salt_temperature
+    icon: mdi:thermometer
+    content: >-
+      Salt Mix {{ states('sensor.aquarium_hydros_salt_temperature') | round(2) 
+      }}
+    tap_action:
+      action: more-info
+    card_mod:
+      style: |
+        :host {
+          {% set n = states('sensor.aquarium_hydros_salt_temperature')|float %}
+          --chip-background:
+            {% if n < 75 %}
+              rgba(110, 205, 219, 0.4)   /* Low - Blue*/
+            {% elif n < 82 %}
+              rgba(158, 203, 145, 0.4) /*  Green */
+            {% else %}
+               rgba(246, 243, 169, 0.4)   /*  Yellow */
+            {% endif %};
+          --color:
+            {% if n > 0 %}
+              var(--primary-text-color)
+            {% else %}
+              var(--disabled-text-color)
+            {% endif %};
+        }
+  - type: template
+    entity: sensor.aquarium_hydros_tds
+    icon: mdi:water-opacity
+    content: TDS {{ states('sensor.aquarium_hydros_tds') | round(2)  }}
+    tap_action:
+      action: more-info
+    card_mod:
+      style: |
+        :host {
+          {% set n = states('sensor.aquarium_hydros_tds')|float %}
+          --chip-background:
+            {% if n < 1 %}
+              rgba(110, 205, 219, 0.4)   /* Blue */
+            {% else %}
+               rgba(255, 179, 71, 0.4) /* Orange */
+            {% endif %};
+          --color:
+            {% if n > 0 %}
+              var(--primary-text-color)
+            {% else %}
+              var(--disabled-text-color)
+            {% endif %};
+        }
+  - type: template
+    entity: input_number.peninsula_alkalinity_dkh
+    icon: mdi:water-check
+    content: dKH {{ states('input_number.peninsula_alkalinity_dkh') | round(2)  }}
+    alignment: center
+    tap_action:
+      action: more-info
+    card_mod:
+      style: |
+        :host {
+          {% set n = states('input_number.peninsula_alkalinity_dkh') | float %}
+          --chip-background:
+            {% if n < 7.7 %}
+              rgba(194, 89, 100, 0.4)    /* Too Low - Red */
+            {% elif n < 8 %}
+               rgba(246, 243, 169, 0.4)   /*  Yellow */
+            {% elif n < 11.5 %}
+              rgba(158, 203, 145, 0.4) /*  Green */
+            {% else %}
+               rgba(255, 179, 71, 0.4) /* Orange */
+            {% endif %};
+          --color:
+            {% if n > 0 %}
+              var(--primary-text-color)
+            {% else %}
+              var(--disabled-text-color)
+            {% endif %};
+        }
+  - type: template
+    entity: input_number.peninsula_nitrate_no3_ppm
+    icon: null
+    content: NO3 {{ states('input_number.peninsula_nitrate_no3_ppm') | round(2)  }} ppm
+    tap_action:
+      action: more-info
+    card_mod:
+      style: |
+        :host {
+          {% set n = states('input_number.peninsula_nitrate_no3_ppm') | float %}
+          --chip-background:
+            {% if n < 5 %}
+              rgba(194, 89, 100, 0.4)    /* Too Low - Red */
+            {% elif n < 10 %}
+              rgba(158, 203, 145, 0.4) /*  Green */
+            {% elif n < 20 %}
+               rgba(246, 243, 169, 0.4)   /*  Yellow */
+            {% else %}
+               rgba(255, 179, 71, 0.4) /* Orange */
+            {% endif %};
+          --color:
+            {% if n > 0 %}
+              var(--primary-text-color)
+            {% else %}
+              var(--disabled-text-color)
+            {% endif %};
+        }
+  - type: template
+    entity: input_number.peninsula_phosphate_po4_ppm
+    icon: null
+    content: PO4 {{ states('input_number.peninsula_phosphate_po4_ppm') | round(3)  }} ppm
+    tap_action:
+      action: more-info
+    card_mod:
+      style: |
+        :host {
+          {% set n = states('input_number.peninsula_phosphate_po4_ppm') | float %}
+          --chip-background:
+            {% if n < 0.03 %}
+              rgba(194, 89, 100, 0.4)    /* Too Low - Red */
+            {% elif n < 0.1 %}
+              rgba(158, 203, 145, 0.4) /*  Green */
+            {% elif n < 0.2 %}
+               rgba(246, 243, 169, 0.4)   /*  Yellow */
+            {% else %}
+               rgba(255, 179, 71, 0.4) /* Orange */
+            {% endif %};
+          --color:
+            {% if n > 0 %}
+              var(--primary-text-color)
+            {% else %}
+              var(--disabled-text-color)
+            {% endif %};
+        }
+  - type: template
+    entity: input_number.peninsula_calcium_ca_ppm
+    icon: mdi:bone
+    content: Ca {{ states('input_number.peninsula_calcium_ca_ppm') | round(0)  }} ppm
+    tap_action:
+      action: more-info
+    card_mod:
+      style: |
+        :host {
+          {% set n = states('input_number.peninsula_calcium_ca_ppm') | float %}
+          --chip-background:
+            {% if n < 380 %}
+              rgba(194, 89, 100, 0.4)    /* Too Low - Red */
+            {% elif n < 430 %}
+               rgba(246, 243, 169, 0.4)   /*  Yellow */
+            {% elif n < 460 %}
+              rgba(158, 203, 145, 0.4) /*  Green */
+            {% else %}
+               rgba(255, 179, 71, 0.4) /* Orange */
+            {% endif %};
+          --color:
+            {% if n > 0 %}
+              var(--primary-text-color)
+            {% else %}
+              var(--disabled-text-color)
+            {% endif %};
+        }
+  - type: template
+    entity: input_number.peninsula_magnesium_mg_ppm
+    icon: null
+    content: Mg {{ states('input_number.peninsula_magnesium_mg_ppm') | round(0)  }} ppm
+    tap_action:
+      action: more-info
+    card_mod:
+      style: |
+        :host {
+          {% set n = states('input_number.peninsula_magnesium_mg_ppm') | float %}
+          --chip-background:
+            {% if n < 1200 %}
+              rgba(194, 89, 100, 0.4)    /* Too Low - Red */
+            {% elif n < 1300 %}
+               rgba(246, 243, 169, 0.4)   /*  Yellow */
+            {% elif n < 1420 %}
+              rgba(158, 203, 145, 0.4) /*  Green */
+            {% else %}
+               rgba(255, 179, 71, 0.4) /* Orange */
+            {% endif %};
+          --color:
+            {% if n > 0 %}
+              var(--primary-text-color)
+            {% else %}
+              var(--disabled-text-color)
+            {% endif %};
+        }
