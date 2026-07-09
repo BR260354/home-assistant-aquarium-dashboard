@@ -20,25 +20,25 @@ The primary subsystem is the **Aquarium Water Management Suite (AWMS)**.
 
 ## Peninsula
 
-![Peninsula water parameters and status chips](docs/assets/screenshots/dashboard-01.png)
+<img src="docs/assets/screenshots/dashboard-01.png" alt="Peninsula water parameters and status chips" width="360">
 
 ## 200XL
 
-![200XL water parameters and status chips](docs/assets/screenshots/dashboard-02.png)
+<img src="docs/assets/screenshots/dashboard-02.png" alt="200XL water parameters and status chips" width="360">
 
 ## Water Management
 
-![Maintenance tab with reservoir gauges and AWMS quick actions](docs/assets/screenshots/dashboard-03.png)
+<img src="docs/assets/screenshots/dashboard-03.png" alt="Maintenance tab with reservoir gauges and AWMS quick actions" width="360">
 
-![AWMS Make New Salt preview and apply controls](docs/assets/screenshots/dashboard-04.png)
+<img src="docs/assets/screenshots/dashboard-04.png" alt="AWMS Make New Salt preview and apply controls" width="360">
 
 ## Equipment Sections
 
-![Water flow section with pump and flow gauges](docs/assets/screenshots/dashboard-05.png)
+<img src="docs/assets/screenshots/dashboard-05.png" alt="Water flow section with pump and flow gauges" width="360">
 
-![Dosing section with Red Sea and Hydros dosing gauges](docs/assets/screenshots/dashboard-06.png)
+<img src="docs/assets/screenshots/dashboard-06.png" alt="Dosing section with Red Sea and Hydros dosing gauges" width="360">
 
-![Filtration and general equipment section with usage graph](docs/assets/screenshots/dashboard-07.png)
+<img src="docs/assets/screenshots/dashboard-07.png" alt="Filtration and general equipment section with usage graph" width="360">
 
 ---
 
