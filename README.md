@@ -92,17 +92,21 @@ Independent aquarium.
 - Separate ATO reservoir
 - Red Sea ReefDose 4
 
-Current operating fill:
+Normal maximum fill:
 
-Approximately **25 gallons**
+Approximately **20 gallons**
 
 Maximum reservoir:
 
-Approximately **40 gallons** physical maximum.
+Approximately **30 gallons** / **113,562 mL** physical maximum.
 
 AWMS operating cap:
 
-Approximately **25 gallons** / **94,635 mL**
+Approximately **20 gallons** / **75,708 mL**
+
+Current estimated inventory:
+
+Approximately **17 gallons** / **64,352 mL**
 
 ATO pump:
 
@@ -493,3 +497,10 @@ Avoid duplicated calculations.
 This project has been designed collaboratively with ChatGPT over multiple design and implementation sessions.
 
 This repository is shared as a reference for other aquarium and Home Assistant hobbyists who may want ideas for their own dashboards.
+
+Aquarium device data used by this project is made available through two community-built Home Assistant integrations:
+
+- **Red Sea ReefBeat:** [`Elwinmage/ha-reefbeat-component`](https://github.com/Elwinmage/ha-reefbeat-component), created and maintained by **Elwinmage**.
+- **HYDROS:** [`Bitf1ip/ha-hydros`](https://github.com/Bitf1ip/ha-hydros), created and maintained by **Bitf1ip**.
+
+Their work provides the Red Sea and HYDROS entities that this dashboard and its automations build upon. This repository is not affiliated with or endorsed by Red Sea, CoralVue, the integration authors, or Home Assistant.
