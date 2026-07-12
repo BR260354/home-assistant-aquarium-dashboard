@@ -42,7 +42,7 @@ Tracked reservoir:
 
 | Reservoir | Capacity | Notes |
 | --- | ---: | --- |
-| 200XL ATO | 94,635 mL / about 25 gal normal AWMS target | Manually filled from Peninsula RODI |
+| 200XL ATO | 75,708 mL / about 20 gal normal AWMS maximum | 113,562 mL / about 30 gal physical capacity; currently estimated at 64,352 mL / about 17 gal |
 
 Dosing equipment:
 
@@ -153,6 +153,8 @@ Helpers and scripts are intentionally not defined in YAML files in this reposito
 
 This dashboard relies on Home Assistant, community dashboard cards, and hardware integrations. Please install and credit the original projects.
 
+Special thanks to **Elwinmage**, creator and maintainer of the community [Red Sea ReefBeat integration](https://github.com/Elwinmage/ha-reefbeat-component), and **Bitf1ip**, creator and maintainer of the community [HYDROS integration](https://github.com/Bitf1ip/ha-hydros). Their work supplies the aquarium device entities on which this configuration depends. These are independent community projects and are not integrations authored by this repository.
+
 | Project | Used For | Link |
 | --- | --- | --- |
 | Home Assistant | Automation platform, helpers, scripts, dashboards, logbook | [home-assistant.io](https://www.home-assistant.io/) |
@@ -167,8 +169,8 @@ This dashboard relies on Home Assistant, community dashboard cards, and hardware
 | Simple Tabs | Tabbed aquarium controller dashboard | [agoberg85/home-assistant-simple-tabs](https://github.com/agoberg85/home-assistant-simple-tabs) |
 | Vertical Stack In Card | Grouped graph/chip layouts | [ofekashery/vertical-stack-in-card](https://github.com/ofekashery/vertical-stack-in-card) |
 | Material Design Icons | Dashboard icons through Home Assistant `mdi:` icon names | [pictogrammers.com/library/mdi](https://pictogrammers.com/library/mdi/) |
-| ReefBeat custom integration | Red Sea ReefBeat device data in Home Assistant | [Elwinmage/ha-reefbeat-component](https://github.com/Elwinmage/ha-reefbeat-component) |
-| Hydros custom integration | Hydros controller device data in Home Assistant | [Bitf1ip/ha-hydros](https://github.com/Bitf1ip/ha-hydros) |
+| ReefBeat custom integration by Elwinmage | Red Sea ReefBeat device data in Home Assistant | [Elwinmage/ha-reefbeat-component](https://github.com/Elwinmage/ha-reefbeat-component) |
+| HYDROS custom integration by Bitf1ip | HYDROS controller device data in Home Assistant | [Bitf1ip/ha-hydros](https://github.com/Bitf1ip/ha-hydros) |
 | Hydros / CoralVue | Aquarium controller hardware and water-level sensing | [coralvuehydros.com](https://www.coralvuehydros.com/) |
 
 If your local dashboard uses additional HACS cards, custom themes, or integrations, add them to the table before publishing the full dashboard YAML.
