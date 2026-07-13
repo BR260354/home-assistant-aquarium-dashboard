@@ -52,11 +52,13 @@ Equipment includes:
 
 The 200xl ATO reservoir is manually filled from the Peninsula RODI reservoir.
 
-Current operating fill level is approximately 25 gallons.
+The normal maximum fill is approximately 20 gallons.
 
-Physical maximum capacity is approximately 40 gallons.
+Physical maximum capacity is approximately 30 gallons.
 
-AWMS normal operating fill is approximately 25 gallons / 94635 mL. Physical capacity is approximately 40 gallons.
+AWMS normal operating maximum is approximately 20 gallons / 75708 mL. Physical capacity is approximately 30 gallons / 113562 mL.
+
+Current estimated inventory is approximately 17 gallons / 64352 mL.
 
 Pump rate:
 
@@ -116,11 +118,13 @@ Used for:
 
 ## 200xl ATO Reservoir
 
-Normally filled to approximately 25 gallons.
+Normally filled to no more than approximately 20 gallons.
 
 Water is manually transferred from Peninsula RODI.
 
-AWMS normally targets about 94635 mL, roughly 25 gallons, even though the physical reservoir can hold more.
+AWMS uses an operating maximum of 75708 mL, roughly 20 gallons, even though the physical reservoir can hold about 30 gallons / 113562 mL.
+
+Current estimated inventory is approximately 64352 mL / 17 gallons.
 
 ---
 
