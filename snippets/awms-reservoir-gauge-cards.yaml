@@ -162,7 +162,7 @@ cards:
     gradient_resolution: auto
     entity2: input_number.awms_200xl_ato_last_fill_volume_ml
     min: 0
-    max: 94635
+    max: 75708
     round: full
     inner:
       mode: needle
@@ -191,9 +191,9 @@ cards:
     segments:
       - pos: 0
         color: rgba(194, 89, 100, 1)
-      - pos: 47318
+      - pos: 37854
         color: rgba(246, 243, 169, 1)
-      - pos: 94635
+      - pos: 75708
         color: rgba(158, 203, 145, 1)
     card_mod:
       style: |

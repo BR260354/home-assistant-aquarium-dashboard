@@ -1,0 +1,192 @@
+type: custom:mushroom-chips-card
+alignment: center
+card_mod:
+  style: |
+    ha-card {
+      background: transparent !important;
+      box-shadow: none !important;
+      padding: 0 4px;
+
+      /* global chip sizing */
+      --chip-height: 30px;
+      --chip-icon-size: 20px;
+      --chip-font-size: 0.8rem;
+    }
+
+    ha-card .chip-container {
+      gap: 8px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    ha-card mushroom-chip .chip {
+      border-radius: 999px !important;
+    }
+chips:
+  - type: template
+    entity: sensor.aquarium_hydros_sump_level_ato
+    icon: mdi:water-check
+    content: Triple Sensor - {{ states('sensor.aquarium_hydros_sump_level_ato') }}
+    tap_action:
+      action: more-info
+    card_mod:
+      style: |
+        :host {
+          {% set level = states('sensor.aquarium_hydros_sump_level_ato') %}
+          --chip-background:
+            {% if level == 'Wet' %}
+              rgba(110, 205, 219, 0.4)
+            {% elif level == 'Dry' %}
+              rgba(246, 243, 169, 0.4)
+            {% else %}
+              rgba(194, 89, 100, 0.4)
+            {% endif %};
+          --color: var(--primary-text-color);
+        }
+
+  - type: conditional
+    conditions:
+      - entity: sensor.aquarium_hydros_sump_too_high
+        state: "1"
+    chip:
+      type: template
+      icon: mdi:water-alert
+      content: Sump TOO HIGH!!
+      tap_action:
+        action: more-info
+      card_mod:
+        style: |
+          :host {
+            --chip-background: rgba(194, 89, 100, 0.4);
+            --color: var(--primary-text-color);
+            --chip-height: 50px;
+            --chip-icon-size: 40px;
+            --chip-font-size: 1.2rem;
+          }
+
+  - type: conditional
+    conditions:
+      - entity: sensor.aquarium_hydros_rodi_top_level
+        state: "1"
+    chip:
+      type: template
+      icon: mdi:water-check
+      content: RODI Top Level - Wet
+      tap_action:
+        action: more-info
+      card_mod:
+        style: |
+          :host {
+            --chip-background: rgba(158, 203, 145, 0.4);
+            --color: var(--primary-text-color);
+          }
+
+  - type: conditional
+    conditions:
+      - entity: sensor.aquarium_hydros_rodi_low_level
+        state: "0"
+    chip:
+      type: template
+      icon: mdi:water-alert
+      content: RODI Low Level - Dry
+      tap_action:
+        action: more-info
+      card_mod:
+        style: |
+          :host {
+            --chip-background: rgba(194, 89, 100, 0.4);
+            --color: var(--primary-text-color);
+          }
+
+  - type: conditional
+    conditions:
+      - entity: sensor.aquarium_hydros_make_salt
+        state: "0"
+    chip:
+      type: template
+      icon: mdi:shaker
+      content: Time to Make Salt!
+      tap_action:
+        action: more-info
+      card_mod:
+        style: |
+          :host {
+            --chip-background: rgba(255, 179, 71, 0.4);
+            --color: var(--primary-text-color);
+            --chip-height: 50px;
+            --chip-icon-size: 40px;
+            --chip-font-size: 1.2rem;
+          }
+
+  - type: conditional
+    conditions:
+      - entity: sensor.aquarium_hydros_salt_low_level
+        state: "0"
+    chip:
+      type: template
+      icon: mdi:water-alert
+      content: Salt Low Level - Dry
+      tap_action:
+        action: more-info
+      card_mod:
+        style: |
+          :host {
+            --chip-background: rgba(194, 89, 100, 0.4);
+            --color: var(--primary-text-color);
+          }
+
+  - type: template
+    entity: binary_sensor.aquarium_hydros_awc
+    icon: mdi:water-sync
+    content: >
+      {% set ato = state_attr('binary_sensor.aquarium_hydros_awc', 'payload_current') | float(0) %}
+      {% set drain = state_attr('binary_sensor.aquarium_hydros_awc', 'payload_draincurrent') | float(0) %}
+      {% set fill = state_attr('binary_sensor.aquarium_hydros_awc', 'payload_fillcurrent') | float(0) %}
+
+      {% if fill > 0 %}
+        AWC - Filling
+      {% elif drain > 0 %}
+        AWC - Draining
+      {% elif ato > 0 %}
+        ATO is Running
+      {% else %}
+        AWC / ATO is Idle
+      {% endif %}
+    tap_action:
+      action: more-info
+    card_mod:
+      style: >
+        {% set ato = state_attr('binary_sensor.aquarium_hydros_awc', 'payload_current') | float(0) %}
+        {% set drain = state_attr('binary_sensor.aquarium_hydros_awc', 'payload_draincurrent') | float(0) %}
+        {% set fill = state_attr('binary_sensor.aquarium_hydros_awc', 'payload_fillcurrent') | float(0) %}
+
+        :host {
+          --chip-background:
+            {% if fill > 0 %}
+              rgba(94, 92, 178, 0.4)
+            {% elif drain > 0 %}
+              rgba(246, 243, 169, 0.4)
+            {% elif ato > 0 %}
+              rgba(110, 205, 219, 0.4)
+            {% else %}
+              rgba(255, 255, 255, 0.18)
+            {% endif %};
+          --color: var(--primary-text-color);
+        }
+
+  - type: conditional
+    conditions:
+      - entity: sensor.aquarium_hydros_water
+        state: "on"
+    chip:
+      type: template
+      icon: mdi:water
+      content: Filling RODI
+      tap_action:
+        action: more-info
+      card_mod:
+        style: |
+          :host {
+            --chip-background: rgba(94, 92, 178, 0.4);
+            --color: var(--primary-text-color);
+          }

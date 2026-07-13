@@ -83,7 +83,7 @@ sequence:
           {% else %}
             {% set amount_ml = amount * 3785.41 %}
           {% endif %}
-          {{ amount_ml <= 0 or amount_ml > source_ml or amount_ml > (94635 - destination_ml) }}
+          {{ amount_ml <= 0 or amount_ml > source_ml or amount_ml > (75708 - destination_ml) }}
     then:
       - action: persistent_notification.create
         data:
@@ -113,7 +113,7 @@ sequence:
           {% else %}
             {% set amount_ml = amount * 3785.41 %}
           {% endif %}
-          {{ amount_ml > 0 and amount_ml <= source_ml and amount_ml <= (94635 - destination_ml) }}
+          {{ amount_ml > 0 and amount_ml <= source_ml and amount_ml <= (75708 - destination_ml) }}
     then:
       - action: logbook.log
         data:
@@ -133,7 +133,7 @@ sequence:
               {% set amount_ml = amount * 3785.41 %}
             {% endif %}
             {% set rodi_after_ml = [rodi_before_ml - amount_ml, 0] | max %}
-            {% set bedroom_after_ml = [bedroom_before_ml + amount_ml, 94635] | min %}
+            {% set bedroom_after_ml = [bedroom_before_ml + amount_ml, 75708] | min %}
             Moved {{ (amount_ml / 3785.41) | round(2) }} gal
             ({{ amount_ml | round(0) | int }} mL) from RODI to 200xl ATO.
             RODI: {{ (rodi_before_ml / 3785.41) | round(2) }} gal ->
@@ -173,7 +173,7 @@ sequence:
             {% else %}
               {% set amount_ml = amount * 3785.41 %}
             {% endif %}
-            {{ [current_ml + amount_ml, 94635] | min | round(0) }}
+            {{ [current_ml + amount_ml, 75708] | min | round(0) }}
 
   # 200xl water changes use Salt.
   - if:

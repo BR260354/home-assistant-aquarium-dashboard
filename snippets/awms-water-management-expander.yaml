@@ -450,7 +450,7 @@ cards:
           {% set bedroom_current_ml = states('input_number.awms_200xl_ato_remaining_ml') | float(0) %}
           {% set rodi_capacity_ml = 111700 %}
           {% set salt_capacity_ml = 111700 %}
-          {% set bedroom_capacity_ml = 94635 %}
+          {% set bedroom_capacity_ml = 75708 %}
           {% if unit == 'mL' %}
             {% set ml = amount %}
           {% elif unit == 'L' %}

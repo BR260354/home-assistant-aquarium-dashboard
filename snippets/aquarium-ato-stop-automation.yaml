@@ -1,0 +1,43 @@
+alias: Aquarium - ATO Stop
+triggers:
+  - trigger: state
+    entity_id:
+      - binary_sensor.aquarium_hydros_awc
+    attribute: payload_current
+conditions:
+  - condition: template
+    value_template: |
+      {{ trigger.from_state.attributes.payload_current_float | float(0) > 0
+         and trigger.to_state.attributes.payload_current_float | float(0) == 0 }}
+actions:
+  - action: persistent_notification.create
+    data:
+      title: ATO Debug
+      message: >
+        FROM={{ trigger.from_state.attributes.payload_current_float }} TO={{
+        trigger.to_state.attributes.payload_current_float }}
+    enabled: false
+  - variables:
+      pump_rate: 6.67
+      runtime: |
+        {{ as_timestamp(now()) -
+           as_timestamp(states('input_datetime.awms_rodi_last_filled_at')) }}
+      volume: |
+        {{ (runtime * pump_rate) | round(0) }}
+      current_remaining: |
+        {{ states('input_number.awms_rodi_remaining_ml') | float(111700) }}
+      remaining: |
+        {{ [current_remaining - volume, 0] | max }}
+  - action: input_number.set_value
+    target:
+      entity_id:
+        - input_number.awms_rodi_last_fill_volume_ml
+    data:
+      value: "{{ volume }}"
+  - action: input_number.set_value
+    target:
+      entity_id:
+        - input_number.awms_rodi_remaining_ml
+    data:
+      value: "{{ remaining }}"
+mode: single
