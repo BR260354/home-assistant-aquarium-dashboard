@@ -76,7 +76,7 @@ Rules:
 | `input_select.awms_used_for` | `input_select.awms_workflow` | High | Done | AWMS control helper |
 | `sensor.ato_remaining_percent` | `sensor.awms_rodi_remaining_percent` | High | Done | Template sensor likely depends on RODI helper |
 | `sensor.fill_remaining_percent` | `sensor.awms_salt_remaining_percent` | High | Done | Template sensor likely depends on Salt helper |
-| `sensor.awms_200xl_rodi_percent` | `sensor.awms_200xl_ato_remaining_percent` | High | Done | Template sensor uses the 94635 mL normal operating target |
+| `sensor.awms_200xl_rodi_percent` | `sensor.awms_200xl_ato_remaining_percent` | High | Done | Template sensor uses the 75708 mL normal operating maximum |
 | `sensor.ato_remaining_liters` | `sensor.awms_rodi_remaining_liters` | Medium | Done | Legacy template sensor |
 | `sensor.fill_remaining_liters` | `sensor.awms_salt_remaining_liters` | Medium | Not found | Safe to skip if no dashboard/template references remain |
 | `sensor.awms_rodi_remaining_gallons` | keep | Low | Already good | Already named clearly |
@@ -174,7 +174,7 @@ Issues to fix during cleanup:
 - `states('input_datetime.200xl.ato_start_time')` should be `states('input_datetime.200xl_ato_start_time')` in the current naming scheme.
 - After renaming, use `states('input_datetime.200xl_ato_started_at')`.
 - `pump_rate: 4.67` is mL/second, which matches the documented 280 mL/minute pump rate.
-- The fallback value `float(132490)` should be updated to the AWMS 200XL ATO normal operating target of `94635`.
+- The fallback value `float(132490)` should be updated to the AWMS 200XL ATO normal operating maximum of `75708`.
 
 Suggested cleaned version after helper renames:
 
@@ -197,7 +197,7 @@ actions:
       volume_ml: >
         {{ (runtime_seconds * pump_rate_ml_per_second) | round(0) }}
       current_remaining_ml: >
-        {{ states('input_number.awms_200xl_ato_remaining_ml') | float(94635) }}
+        {{ states('input_number.awms_200xl_ato_remaining_ml') | float(75708) }}
       remaining_ml: >
         {{ [current_remaining_ml - volume_ml, 0] | max }}
   - action: input_number.set_value
@@ -278,9 +278,9 @@ Capacity constants to standardize:
 | --- | ---: |
 | Peninsula RODI | `111700` mL |
 | Peninsula Salt | `111700` mL |
-| 200XL ATO | `94635` mL |
+| 200XL ATO | `75708` mL |
 
-The old 200XL percent template used `132490`; update that to `94635` so the dashboard shows percent of the normal 25 gallon operating fill.
+The old 200XL percent template used `132490`; update that to `75708` so the dashboard shows percent of the normal 20 gallon operating maximum.
 
 If `sensor.awms_preview_amount_ml` is retained, use the selected unit:
 
@@ -341,7 +341,7 @@ After renaming, confirm:
 
 - RODI gauge shows the correct gallons and percent.
 - Salt gauge shows the correct gallons and percent.
-- 200XL ATO gauge uses `94635` mL as its normal operating max.
+- 200XL ATO gauge uses `75708` mL as its normal operating max.
 - Make New Salt preview still calculates the Salt fill amount correctly.
 - 200XL ATO workflow deducts RODI and increases 200XL ATO.
 - Plants workflow deducts RODI only.
