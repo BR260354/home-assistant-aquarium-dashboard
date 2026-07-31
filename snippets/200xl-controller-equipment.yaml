@@ -1,0 +1,751 @@
+# ReefBeat-inspired 200XL Water Flow, Dosing, and Filtration / General expanders.
+# The Hydros Minnow second head remains displayed as not configured until an entity exists.
+type: "vertical-stack"
+cards:
+  -
+    type: "custom:expander-card"
+    title: "Water Flow"
+    cards:
+      -
+        type: "custom:button-card"
+        name: "Flow"
+        icon: "mdi:waves"
+        show_icon: true
+        show_name: true
+        show_state: false
+        tap_action:
+          action: "none"
+        custom_fields:
+          content:
+            card:
+              type: "custom:layout-card"
+              layout_type: "custom:grid-layout"
+              layout:
+                grid-template-columns: "repeat(2, minmax(0, 1fr))"
+                grid-gap: "8px"
+              cards:
+                -
+                  type: "custom:button-card"
+                  entity: "sensor.bedroom_aquarium_octopulse_2"
+                  name: "OctoPulse 2"
+                  show_icon: false
+                  show_name: true
+                  show_state: false
+                  tap_action:
+                    action: "more-info"
+                  hold_action:
+                    action: "more-info"
+                  custom_fields:
+                    ring: |-
+                      [[[
+                          const raw = Number(states['sensor.bedroom_aquarium_octopulse_2']?.state);
+                          const value = Number.isFinite(raw) ? raw : 0;
+                          const pct = Math.max(0, Math.min(100, Math.abs(value)));
+                          const dash = (pct * 2.513).toFixed(1);
+                          const label = Number.isFinite(raw) ? Math.round(value) + '%' : '—';
+                          const text = hass.themes?.darkMode ? '#f7fbff' : '#172033';
+                          const track = hass.themes?.darkMode ? '#31465b' : '#c7d6e5';
+                          return '<svg viewBox="0 0 100 100" style="width:86px;height:86px;display:block;margin:auto">' +
+                            '<circle cx="50" cy="50" r="40" fill="none" stroke="' + track + '" stroke-width="9"></circle>' +
+                            '<circle cx="50" cy="50" r="40" fill="none" stroke="#1fa9ff" stroke-width="9" stroke-linecap="round" transform="rotate(-90 50 50)" stroke-dasharray="' + dash + ' 251.3"></circle>' +
+                            '<text x="50" y="56" text-anchor="middle" fill="' + text + '" font-size="20" font-weight="700">' + label + '</text>' +
+                            '</svg>';
+                        ]]]
+                    detail: "[[[ const n=Number(states['sensor.bedroom_aquarium_octopulse_2']?.state); return Number.isFinite(n) && n < 0 ? 'Reverse direction' : 'Forward direction'; ]]]"
+                  styles:
+                    grid:
+                      -
+                        grid-template-areas: "'n' 'ring' 'detail'"
+                      -
+                        grid-template-columns: "1fr"
+                      -
+                        grid-template-rows: "22px 88px 18px"
+                      -
+                        row-gap: "3px"
+                    card:
+                      -
+                        height: "142px"
+                      -
+                        padding: "8px"
+                      -
+                        border-radius: "14px"
+                      -
+                        background: "[[[ return hass.themes?.darkMode ? 'rgba(53, 64, 80, 0.98)' : 'rgba(255, 255, 255, 0.78)'; ]]]"
+                      -
+                        border: "[[[ return hass.themes?.darkMode ? '1px solid rgba(126, 148, 174, 0.34)' : '1px solid rgba(73, 98, 127, 0.26)'; ]]]"
+                      -
+                        box-shadow: "none"
+                    name:
+                      -
+                        font-size: "12px"
+                      -
+                        font-weight: "600"
+                      -
+                        color: "var(--primary-text-color)"
+                      -
+                        white-space: "normal"
+                      -
+                        line-height: "1.05"
+                    custom_fields:
+                      ring:
+                        -
+                          align-self: "center"
+                      detail:
+                        -
+                          font-size: "10px"
+                        -
+                          color: "var(--secondary-text-color)"
+                        -
+                          white-space: "nowrap"
+                        -
+                          overflow: "hidden"
+                        -
+                          text-overflow: "ellipsis"
+                -
+                  type: "custom:button-card"
+                  entity: "sensor.bedroom_aquarium_return"
+                  name: "Return"
+                  show_icon: false
+                  show_name: true
+                  show_state: false
+                  tap_action:
+                    action: "more-info"
+                  hold_action:
+                    action: "more-info"
+                  custom_fields:
+                    ring: |-
+                      [[[
+                          const raw = Number(states['sensor.bedroom_aquarium_return']?.state);
+                          const value = Number.isFinite(raw) ? raw : 0;
+                          const pct = Math.max(0, Math.min(100, Math.abs(value)));
+                          const dash = (pct * 2.513).toFixed(1);
+                          const label = Number.isFinite(raw) ? Math.round(value) + '%' : '—';
+                          const text = hass.themes?.darkMode ? '#f7fbff' : '#172033';
+                          const track = hass.themes?.darkMode ? '#31465b' : '#c7d6e5';
+                          return '<svg viewBox="0 0 100 100" style="width:86px;height:86px;display:block;margin:auto">' +
+                            '<circle cx="50" cy="50" r="40" fill="none" stroke="' + track + '" stroke-width="9"></circle>' +
+                            '<circle cx="50" cy="50" r="40" fill="none" stroke="#1fa9ff" stroke-width="9" stroke-linecap="round" transform="rotate(-90 50 50)" stroke-dasharray="' + dash + ' 251.3"></circle>' +
+                            '<text x="50" y="56" text-anchor="middle" fill="' + text + '" font-size="20" font-weight="700">' + label + '</text>' +
+                            '</svg>';
+                        ]]]
+                    detail: ""
+                  styles:
+                    grid:
+                      -
+                        grid-template-areas: "'n' 'ring' 'detail'"
+                      -
+                        grid-template-columns: "1fr"
+                      -
+                        grid-template-rows: "22px 88px 18px"
+                      -
+                        row-gap: "3px"
+                    card:
+                      -
+                        height: "142px"
+                      -
+                        padding: "8px"
+                      -
+                        border-radius: "14px"
+                      -
+                        background: "[[[ return hass.themes?.darkMode ? 'rgba(53, 64, 80, 0.98)' : 'rgba(255, 255, 255, 0.78)'; ]]]"
+                      -
+                        border: "[[[ return hass.themes?.darkMode ? '1px solid rgba(126, 148, 174, 0.34)' : '1px solid rgba(73, 98, 127, 0.26)'; ]]]"
+                      -
+                        box-shadow: "none"
+                    name:
+                      -
+                        font-size: "12px"
+                      -
+                        font-weight: "600"
+                      -
+                        color: "var(--primary-text-color)"
+                      -
+                        white-space: "normal"
+                      -
+                        line-height: "1.05"
+                    custom_fields:
+                      ring:
+                        -
+                          align-self: "center"
+                      detail:
+                        -
+                          font-size: "10px"
+                        -
+                          color: "var(--secondary-text-color)"
+                        -
+                          white-space: "nowrap"
+                        -
+                          overflow: "hidden"
+                        -
+                          text-overflow: "ellipsis"
+        styles:
+          grid:
+            -
+              grid-template-areas: "'i n' 'content content'"
+            -
+              grid-template-columns: "26px 1fr"
+            -
+              grid-template-rows: "30px auto"
+            -
+              column-gap: "7px"
+            -
+              row-gap: "8px"
+            -
+              align-items: "center"
+          card:
+            -
+              padding: "12px"
+            -
+              border-radius: "18px"
+            -
+              background: "[[[ return hass.themes?.darkMode ? 'rgba(42, 52, 65, 0.96)' : 'rgba(236, 242, 248, 0.96)'; ]]]"
+            -
+              border: "[[[ return hass.themes?.darkMode ? '1px solid rgba(126, 148, 174, 0.34)' : '1px solid rgba(73, 98, 127, 0.26)'; ]]]"
+            -
+              box-shadow: "0 8px 18px rgba(0,0,0,0.14)"
+          icon:
+            -
+              width: "21px"
+            -
+              color: "#45e5a4"
+          img_cell:
+            -
+              width: "26px"
+            -
+              height: "26px"
+            -
+              justify-self: "start"
+          name:
+            -
+              justify-self: "start"
+            -
+              font-size: "16px"
+            -
+              font-weight: "700"
+            -
+              color: "var(--primary-text-color)"
+          custom_fields:
+            content:
+              -
+                width: "100%"
+              -
+                min-width: "0"
+  -
+    type: "custom:expander-card"
+    title: "Dosing"
+    cards:
+      -
+        type: "custom:button-card"
+        name: "Hydros Minnow"
+        icon: "mdi:test-tube"
+        show_icon: true
+        show_name: true
+        show_state: false
+        tap_action:
+          action: "none"
+        custom_fields:
+          content:
+            card:
+              type: "custom:layout-card"
+              layout_type: "custom:grid-layout"
+              layout:
+                grid-template-columns: "repeat(2, minmax(0, 1fr))"
+                grid-gap: "8px"
+              cards:
+                -
+                  type: "custom:button-card"
+                  entity: "binary_sensor.bedroom_aquarium_minnow_head_1"
+                  name: "Minnow Head 1"
+                  icon: "mdi:pump"
+                  show_icon: true
+                  show_name: true
+                  show_state: false
+                  tap_action:
+                    action: "more-info"
+                  custom_fields:
+                    status: "[[[ const d=Number(states['sensor.bedroom_aquarium_minnow_head_1_dosed_today']?.state); const r=Number(states['sensor.bedroom_aquarium_minnow_head_1_reservoir_remaining']?.state); return (Number.isFinite(d)?d.toFixed(2):'—') + ' mL today · ' + (Number.isFinite(r)?Math.round(r):'—') + ' mL remaining'; ]]]"
+                  styles:
+                    grid:
+                      -
+                        grid-template-areas: "'i n' 'i status'"
+                      -
+                        grid-template-columns: "46px 1fr"
+                      -
+                        grid-template-rows: "24px 34px"
+                      -
+                        column-gap: "9px"
+                    card:
+                      -
+                        height: "78px"
+                      -
+                        padding: "10px"
+                      -
+                        border-radius: "14px"
+                      -
+                        background: "[[[ return hass.themes?.darkMode ? 'rgba(53, 64, 80, 0.98)' : 'rgba(255, 255, 255, 0.78)'; ]]]"
+                      -
+                        border: "[[[ return hass.themes?.darkMode ? '1px solid rgba(126, 148, 174, 0.34)' : '1px solid rgba(73, 98, 127, 0.26)'; ]]]"
+                      -
+                        box-shadow: "none"
+                      -
+                        opacity: "1"
+                    icon:
+                      -
+                        width: "28px"
+                      -
+                        color: "[[[ return states['binary_sensor.bedroom_aquarium_minnow_head_1']?.state === 'on' ? '#45e5a4' : '#1fa9ff'; ]]]"
+                    img_cell:
+                      -
+                        width: "42px"
+                      -
+                        height: "42px"
+                      -
+                        border-radius: "50%"
+                      -
+                        background: "[[[ return hass.themes?.darkMode ? 'rgba(31,169,255,0.13)' : 'rgba(31,169,255,0.10)'; ]]]"
+                    name:
+                      -
+                        justify-self: "start"
+                      -
+                        font-size: "13px"
+                      -
+                        font-weight: "650"
+                      -
+                        color: "var(--primary-text-color)"
+                    custom_fields:
+                      status:
+                        -
+                          justify-self: "start"
+                        -
+                          font-size: "10px"
+                        -
+                          line-height: "1.2"
+                        -
+                          color: "var(--secondary-text-color)"
+                        -
+                          white-space: "normal"
+                        -
+                          text-align: "left"
+                -
+                  type: "custom:button-card"
+                  name: "Minnow Head 2"
+                  icon: "mdi:pump"
+                  show_icon: true
+                  show_name: true
+                  show_state: false
+                  tap_action:
+                    action: "none"
+                  custom_fields:
+                    status: "Not configured"
+                  styles:
+                    grid:
+                      -
+                        grid-template-areas: "'i n' 'i status'"
+                      -
+                        grid-template-columns: "46px 1fr"
+                      -
+                        grid-template-rows: "24px 34px"
+                      -
+                        column-gap: "9px"
+                    card:
+                      -
+                        height: "78px"
+                      -
+                        padding: "10px"
+                      -
+                        border-radius: "14px"
+                      -
+                        background: "[[[ return hass.themes?.darkMode ? 'rgba(53, 64, 80, 0.98)' : 'rgba(255, 255, 255, 0.78)'; ]]]"
+                      -
+                        border: "[[[ return hass.themes?.darkMode ? '1px solid rgba(126, 148, 174, 0.34)' : '1px solid rgba(73, 98, 127, 0.26)'; ]]]"
+                      -
+                        box-shadow: "none"
+                      -
+                        opacity: "0.58"
+                    icon:
+                      -
+                        width: "28px"
+                      -
+                        color: "#718096"
+                    img_cell:
+                      -
+                        width: "42px"
+                      -
+                        height: "42px"
+                      -
+                        border-radius: "50%"
+                      -
+                        background: "[[[ return hass.themes?.darkMode ? 'rgba(31,169,255,0.13)' : 'rgba(31,169,255,0.10)'; ]]]"
+                    name:
+                      -
+                        justify-self: "start"
+                      -
+                        font-size: "13px"
+                      -
+                        font-weight: "650"
+                      -
+                        color: "var(--primary-text-color)"
+                    custom_fields:
+                      status:
+                        -
+                          justify-self: "start"
+                        -
+                          font-size: "10px"
+                        -
+                          line-height: "1.2"
+                        -
+                          color: "var(--secondary-text-color)"
+                        -
+                          white-space: "normal"
+                        -
+                          text-align: "left"
+        styles:
+          grid:
+            -
+              grid-template-areas: "'i n' 'content content'"
+            -
+              grid-template-columns: "26px 1fr"
+            -
+              grid-template-rows: "30px auto"
+            -
+              column-gap: "7px"
+            -
+              row-gap: "8px"
+            -
+              align-items: "center"
+          card:
+            -
+              padding: "12px"
+            -
+              border-radius: "18px"
+            -
+              background: "[[[ return hass.themes?.darkMode ? 'rgba(42, 52, 65, 0.96)' : 'rgba(236, 242, 248, 0.96)'; ]]]"
+            -
+              border: "[[[ return hass.themes?.darkMode ? '1px solid rgba(126, 148, 174, 0.34)' : '1px solid rgba(73, 98, 127, 0.26)'; ]]]"
+            -
+              box-shadow: "0 8px 18px rgba(0,0,0,0.14)"
+          icon:
+            -
+              width: "21px"
+            -
+              color: "#45e5a4"
+          img_cell:
+            -
+              width: "26px"
+            -
+              height: "26px"
+            -
+              justify-self: "start"
+          name:
+            -
+              justify-self: "start"
+            -
+              font-size: "16px"
+            -
+              font-weight: "700"
+            -
+              color: "var(--primary-text-color)"
+          custom_fields:
+            content:
+              -
+                width: "100%"
+              -
+                min-width: "0"
+    animation: true
+  -
+    type: "custom:expander-card"
+    title: "Filtration / General"
+    cards:
+      -
+        type: "custom:button-card"
+        name: "ReefMat 250"
+        icon: "mdi:filter-variant"
+        show_icon: true
+        show_name: true
+        show_state: false
+        tap_action:
+          action: "more-info"
+        entity: "sensor.bedroom_rsmat_250_total_usage"
+        custom_fields:
+          summary: |-
+            [[[
+                const t = Number(states['sensor.bedroom_rsmat_250_total_usage']?.state);
+                const r = Number(states['sensor.bedroom_rsmat_250_remaining_length']?.state);
+                const unit = states['sensor.bedroom_rsmat_250_total_usage']?.attributes?.unit_of_measurement || '';
+                if (!Number.isFinite(t)) return 'Usage unavailable';
+                const totalRoll = Number.isFinite(r) ? t + r : NaN;
+                return '<span style="font-size:12px;color:var(--secondary-text-color)">Total use</span><br>' +
+                  '<span style="font-size:22px;font-weight:750;color:var(--primary-text-color)">' + t.toFixed(1) + '</span>' +
+                  '<span style="font-size:11px;color:var(--secondary-text-color)"> ' + unit +
+                  (Number.isFinite(totalRoll) ? ' / ' + totalRoll.toFixed(1) + ' ' + unit : '') + '</span>';
+              ]]]
+          progress: |-
+            [[[
+                const t = Number(states['sensor.bedroom_rsmat_250_total_usage']?.state);
+                const r = Number(states['sensor.bedroom_rsmat_250_remaining_length']?.state);
+                const pct = Number.isFinite(t) && Number.isFinite(r) && t + r > 0 ? Math.max(0, Math.min(100, t / (t + r) * 100)) : 0;
+                return '<div style="height:10px;border-radius:999px;background:' +
+                  (hass.themes?.darkMode ? '#344258' : '#cad6e3') + ';overflow:hidden">' +
+                  '<div style="height:100%;width:' + pct.toFixed(1) + '%;background:linear-gradient(90deg,#d95bea,#b94fe5);"></div></div>';
+              ]]]
+          stats: |-
+            [[[
+                const today = Number(states['sensor.bedroom_rsmat_250_today_usage']?.state);
+                const avg = Number(states['sensor.bedroom_rsmat_250_daily_average_usage']?.state);
+                const days = Number(states['sensor.bedroom_rsmat_250_days_till_end_of_roll']?.state);
+                const unit = states['sensor.bedroom_rsmat_250_today_usage']?.attributes?.unit_of_measurement || '';
+                const chip = (v) => '<span style="display:inline-block;padding:5px 9px;margin:2px 3px 0 0;border:1px solid var(--divider-color);border-radius:10px;font-size:10px;color:var(--primary-text-color)">' + v + '</span>';
+                return chip((Number.isFinite(today) ? today.toFixed(1) : '—') + ' ' + unit + ' today') +
+                  chip((Number.isFinite(avg) ? avg.toFixed(1) : '—') + ' daily avg') +
+                  chip((Number.isFinite(days) ? Math.round(days) : '—') + ' days left');
+              ]]]
+        styles:
+          grid:
+            -
+              grid-template-areas: "'n i' 'summary summary' 'progress progress' 'stats stats'"
+            -
+              grid-template-columns: "1fr 34px"
+            -
+              grid-template-rows: "30px 48px 12px 38px"
+            -
+              row-gap: "5px"
+          card:
+            -
+              padding: "13px"
+            -
+              border-radius: "18px"
+            -
+              background: "[[[ return hass.themes?.darkMode ? 'rgba(42, 52, 65, 0.96)' : 'rgba(236, 242, 248, 0.96)'; ]]]"
+            -
+              border: "[[[ return hass.themes?.darkMode ? '1px solid rgba(126, 148, 174, 0.34)' : '1px solid rgba(73, 98, 127, 0.26)'; ]]]"
+            -
+              box-shadow: "0 8px 18px rgba(0,0,0,0.14)"
+          name:
+            -
+              justify-self: "start"
+            -
+              font-size: "16px"
+            -
+              font-weight: "700"
+            -
+              color: "var(--primary-text-color)"
+          icon:
+            -
+              width: "25px"
+            -
+              color: "#45e5a4"
+          img_cell:
+            -
+              justify-self: "end"
+            -
+              width: "34px"
+            -
+              height: "34px"
+            -
+              border-radius: "50%"
+            -
+              background: "[[[ return hass.themes?.darkMode ? 'rgba(255,255,255,0.08)' : 'rgba(31,169,255,0.09)'; ]]]"
+          custom_fields:
+            summary:
+              -
+                justify-self: "stretch"
+              -
+                text-align: "left"
+            progress:
+              -
+                width: "100%"
+            stats:
+              -
+                text-align: "left"
+              -
+                white-space: "normal"
+      -
+        type: "custom:button-card"
+        name: "Systems"
+        icon: "mdi:server-network"
+        show_icon: true
+        show_name: true
+        show_state: false
+        tap_action:
+          action: "none"
+        custom_fields:
+          content:
+            card:
+              type: "custom:layout-card"
+              layout_type: "custom:grid-layout"
+              layout:
+                grid-template-columns: "repeat(1, minmax(0, 1fr))"
+                grid-gap: "8px"
+              cards:
+                -
+                  type: "custom:mushroom-chips-card"
+                  alignment: "center"
+                  chips:
+                    -
+                      type: "conditional"
+                      conditions:
+                        -
+                          condition: null
+                          entity: "binary_sensor.bedroom_aquarium_helios_heater"
+                          state: 1
+                      chip:
+                        type: "template"
+                        content: "Helios - {{ states('binary_sensor.bedroom_aquarium_helios_heater')}}"
+                        card_mod:
+                          style: |
+                            :host {
+                              --chip-background: rgba(255, 164, 169, 0.25);
+                              --color: var(--primary-text-color);
+                            }
+                    -
+                      type: "conditional"
+                      conditions:
+                        -
+                          condition: "numeric_state"
+                          above: 0
+                          entity: "sensor.bedroom_aquarium_fans_power"
+                      chip:
+                        type: "template"
+                        icon: "mdi:fan"
+                        content: "Display Fan {{states('sensor.bedroom_aquarium_fans_power')}}w"
+                        card_mod:
+                          style: |
+                            :host {
+                              --chip-background: rgba(138, 205, 215, 0.25);
+                              --color: var(--primary-text-color);
+                            }
+                    -
+                      type: "conditional"
+                      conditions:
+                        -
+                          condition: "state"
+                          entity: "sensor.bedroom_aquarium_sterilizer"
+                          state: "on"
+                      chip:
+                        type: "template"
+                        content: "Sterilizer On"
+                        icon: "m3o:filter-center-focus"
+                        card_mod:
+                          style: |
+                            :host {
+                              --chip-background: rgba(138, 205, 215, 0.25);
+                              --color: var(--primary-text-color);
+                            }
+                  card_mod:
+                    style: |
+                      ha-card {
+                        background: transparent !important;
+                        box-shadow: none !important;
+                        padding: 0 4px;
+
+                        /* global chip sizing */
+                        --chip-height: 30px;
+                        --chip-icon-size: 20px;
+                        --chip-font-size: 0.8rem;
+                      }
+
+                      ha-card .chip-container {
+                        gap: 8px;
+                        justify-content: center;
+                        align-items: center;
+                      }
+
+                      ha-card mushroom-chip .chip {
+                        border-radius: 999px !important;
+                      }
+                -
+                  type: "custom:mushroom-chips-card"
+                  alignment: "center"
+                  chips:
+                    -
+                      type: "conditional"
+                      conditions:
+                        -
+                          condition: null
+                          state: 1
+                          entity: "binary_sensor.bedroom_aquarium_cabinet_light"
+                      chip:
+                        type: "template"
+                        content: "Cabinet Lights {{ states('binary_sensor.bedroom_aquarium_cabinet_light')}}"
+                        card_mod:
+                          style: |
+                            :host {
+                              --chip-background: rgba(255, 164, 169, 0.25);
+                              --color: var(--primary-text-color);
+                            }
+                        icon: "mdi:led-strip"
+                  card_mod:
+                    style: |
+                      ha-card {
+                        background: transparent !important;
+                        box-shadow: none !important;
+                        padding: 0 4px;
+
+                        /* global chip sizing */
+                        --chip-height: 30px;
+                        --chip-icon-size: 20px;
+                        --chip-font-size: 0.8rem;
+                      }
+
+                      ha-card .chip-container {
+                        gap: 8px;
+                        justify-content: center;
+                        align-items: center;
+                      }
+
+                      ha-card mushroom-chip .chip {
+                        border-radius: 999px !important;
+                      }
+        styles:
+          grid:
+            -
+              grid-template-areas: "'i n' 'content content'"
+            -
+              grid-template-columns: "26px 1fr"
+            -
+              grid-template-rows: "30px auto"
+            -
+              column-gap: "7px"
+            -
+              row-gap: "8px"
+            -
+              align-items: "center"
+          card:
+            -
+              padding: "12px"
+            -
+              border-radius: "18px"
+            -
+              background: "[[[ return hass.themes?.darkMode ? 'rgba(42, 52, 65, 0.96)' : 'rgba(236, 242, 248, 0.96)'; ]]]"
+            -
+              border: "[[[ return hass.themes?.darkMode ? '1px solid rgba(126, 148, 174, 0.34)' : '1px solid rgba(73, 98, 127, 0.26)'; ]]]"
+            -
+              box-shadow: "0 8px 18px rgba(0,0,0,0.14)"
+          icon:
+            -
+              width: "21px"
+            -
+              color: "#45e5a4"
+          img_cell:
+            -
+              width: "26px"
+            -
+              height: "26px"
+            -
+              justify-self: "start"
+          name:
+            -
+              justify-self: "start"
+            -
+              font-size: "16px"
+            -
+              font-weight: "700"
+            -
+              color: "var(--primary-text-color)"
+          custom_fields:
+            content:
+              -
+                width: "100%"
+              -
+                min-width: "0"
+    animation: true

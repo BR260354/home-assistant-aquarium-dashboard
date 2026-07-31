@@ -1,0 +1,44 @@
+alias: Aquarium - Fill Stop Automation
+description: Calculate AWC Fill volume pumped and update remaining volume.
+triggers:
+  - trigger: state
+    entity_id:
+      - binary_sensor.aquarium_hydros_awc
+    attribute: payload_fillpowerI
+conditions:
+  - condition: template
+    value_template: |
+      {{ trigger.from_state.attributes.payload_fillpowerI | float(0) > 0
+         and trigger.to_state.attributes.payload_fillpowerI | float(0) == 0 }}
+actions:
+  - action: persistent_notification.create
+    data:
+      title: Fill Debug
+      message: >
+        FROM={{ trigger.from_state.attributes.payload_fillpowerI }} TO={{
+        trigger.to_state.attributes.payload_fillpowerI }}
+    enabled: false
+  - variables:
+      pump_rate: 6.67
+      runtime: |
+        {{ as_timestamp(now()) -
+           as_timestamp(states('input_datetime.awms_salt_last_filled_at')) }}
+      volume: |
+        {{ (runtime * pump_rate) | round(0) }}
+      current_remaining: >
+        {{ states('input_number.awms_salt_remaining_ml') | float(111700) }}
+      remaining: |
+        {{ [current_remaining - volume, 0] | max }}
+  - action: input_number.set_value
+    target:
+      entity_id:
+        - input_number.awms_salt_last_fill_volume_ml
+    data:
+      value: "{{ volume }}"
+  - action: input_number.set_value
+    target:
+      entity_id:
+        - input_number.awms_salt_remaining_ml
+    data:
+      value: "{{ remaining }}"
+mode: single

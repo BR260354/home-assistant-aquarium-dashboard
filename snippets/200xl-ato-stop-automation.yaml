@@ -18,7 +18,7 @@ actions:
       volume_ml: >
         {{ (runtime_seconds * pump_rate_ml_per_second) | round(0) }}
       current_remaining_ml: >
-        {{ states('input_number.awms_200xl_ato_remaining_ml') | float(94635) }}
+        {{ states('input_number.awms_200xl_ato_remaining_ml') | float(75708) }}
       remaining_ml: >
         {{ [current_remaining_ml - volume_ml, 0] | max }}
   - action: input_number.set_value

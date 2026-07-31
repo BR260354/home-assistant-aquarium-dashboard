@@ -1,204 +1,274 @@
 ---
-title: Home Assistant Aquarium Dashboard
-description: A Home Assistant aquarium management dashboard for multi-tank water inventory, transfers, and maintenance workflows.
+title: Aquarium Automation Suite
+description: One Home Assistant dashboard for two Red Sea aquariums, a Hydros-controlled mixing station, and shared water inventory.
 ---
 
-# Home Assistant Aquarium Dashboard
+# Aquarium Automation Suite
 
-Home Assistant Aquarium Dashboard is a dashboard-centered Home Assistant configuration for monitoring and managing a multi-aquarium reef system from one place.
+Aquarium Automation Suite (AAS) is my Home Assistant dashboard and automation project for two Red Sea aquariums and their shared water-mixing station.
 
-Maintained by [BR260354](https://github.com/BR260354).
+I have run Home Assistant since 2019. Hydros and Red Sea each provide their own view of the equipment they manage, but I wanted one place where I could see both aquariums and the systems that support them. AAS brings those separate ecosystems together and presents them around the jobs I actually perform.
 
-The first major subsystem is the **Aquarium Water Management Suite**, a dashboard-first water inventory workflow for tracking RODI, saltwater, and Red Sea 200XL ATO water movement.
+The dashboard is the product. The automation underneath exists to make the system easier to understand and operate.
 
-This project is built around a simple idea: aquarium management is easier when the dashboard is organized around real aquarium workflows instead of raw entities.
+## My aquariums
 
-## What It Manages
+### Red Sea Peninsula 500 G2
 
-The current system supports two independent aquariums.
+The Peninsula is a mixed reef and our primary display aquarium, located in the main living area of our townhouse.
 
-### Peninsula Reef
+| Platform | Equipment |
+| --- | --- |
+| Hydros | Kraken, X4, Launch, WaveEngine v2, X2, and XS |
+| Red Sea | ReefRun return pump, RSK-300 skimmer, ReefMat 500, ReefDose4 - 4-Part, and ReefDose4-Extra |
+| Other | UV sterilizer, Avast Marine feeder, and ozone |
 
-The Peninsula is the primary display aquarium. It uses Hydros control hardware, automatic top off, automatic water change, dosing pumps, a RODI reservoir, and a saltwater reservoir.
+The aquarium uses automatic top off and automatic water changes. The Hydros equipment at the nearby mixing station is part of the same collective.
 
-Tracked reservoirs:
+The Hydros Simple Doser and Peninsula OctoPulse 2 have been removed. Current
+Peninsula circulation is provided by **Mid OctoPulse4**, **Upper OctoPulse4**,
+and **Left XF350**.
 
-| Reservoir | Capacity | Notes |
+Both ReefDose controllers are organized in Home Assistant under the
+**Aquarium** area:
+
+- **ReefDose4 - 4-Part** doses Red Sea Complete 4-Part.
+- **ReefDose4-Extra** is reserved for supplemental and occasional dosing.
+
+Their entity families are `aquarium_reefdose4_4_part_*` and
+`aquarium_reefdose4_extra_*`.
+
+### Red Sea 200XL G2
+
+The 200XL is a soft coral and anemone aquarium with a couple of clownfish and chromis.
+
+| Platform | Equipment |
+| --- | --- |
+| Hydros | Launch, WaveEngine LE, WiFi Quad, WiFi Feeder, and Minnow |
+| Red Sea | None currently connected |
+
+The 200XL is an independent aquarium with its own ATO reservoir and manual water changes. Its ATO reservoir is filled manually from the Peninsula RODI supply.
+
+Its former ReefDose 4 now runs on the Peninsula as `ReefDose4-Extra`.
+
+The Hydros Minnow is now installed on the 200XL. Its first head is represented
+by the `bedroom_aquarium_minnow_head_1*` entities and appears in the 200XL
+Dosing expander. The second physical head is unused and does not currently
+have a Hydros entity, so it is shown as not configured. Home Assistant assigns
+the exposed entities to the **Bedroom** area, although Hydros currently still
+publishes them under the integration-owned **Aquarium Hydros** parent device.
+The parent association will change only after the output belongs to the Bedroom
+Aquarium collective in Hydros and the integration is reloaded.
+
+### Mixing station
+
+The mixing station uses two nominal 30-gallon Brute reservoirs for RODI and saltwater. Hydros X2, XS, and XD controllers manage the station, and the XD drives three Kamoer dosing pumps used for ATO and AWC. These controllers share the Peninsula Hydros collective.
+
+The station is useful beyond the aquariums—RODI water also goes to plants and other household jobs. That makes a separate inventory model valuable: the controller knows when a pump ran, but Home Assistant can describe where the water went and estimate what remains.
+
+Two TP-Link smart power strips add more controllable outlets to the overall system.
+
+## One dashboard
+
+The Home Assistant interface provides:
+
+- A combined view of both aquariums
+- Water parameters and equipment status
+- RODI, saltwater, and 200XL ATO reservoir estimates
+- Guided water-removal and transfer workflows
+- Maintenance controls organized around real tasks
+- A path toward activity history, usage statistics, and forecasting
+
+![Peninsula water parameters and status](assets/screenshots/dashboard-01.png)
+
+![200XL water parameters and status](assets/screenshots/dashboard-02.png)
+
+### Water parameter presentation
+
+The Peninsula and 200XL tabs use the same compact, theme-aware parameter-card
+design. Each card combines an icon, current value, status dot, operating-range
+bands, and a history line. Layout Card presents the group in two columns above
+767 pixels and falls back to one column on phones and other narrow displays.
+
+| Aquarium | Always visible | Additional Water Parameters |
+| --- | --- | --- |
+| Peninsula | Display Temperature, pH, ORP, and salinity; 12-hour graphs with one point per hour | Salt Mix with a 12-hour graph; alkalinity, nitrate, phosphate, calcium, and magnesium with five samples across 30 days; compact TDS value |
+| 200XL | Display Temperature and pH; 12-hour graphs with one point per hour | Alkalinity, nitrate, and phosphate with five samples across 30 days |
+
+The collapsed **Additional Water Parameters** expander sits below Water Levels
+on both tabs. Its contents use the same responsive two-column layout as the
+primary cards. The 200XL does not currently expose ORP or salinity entities, so
+those parameters are not represented there. The nested Mini Graph Card surface
+is explicitly transparent, preserving the colored operating bands in the Home
+Assistant mobile app.
+
+The five weekly-test samples represent the current result and the previous four
+test periods. Smoothing is disabled so each recorded interval stays visually
+distinct. The cards use the labels **Alkalinity dKH**, **Nitrate NO₃**,
+**Phosphate PO₄**, **Calcium Ca**, and **Magnesium Mg**.
+
+### Controller and equipment presentation
+
+The production Controllers view uses a ReefBeat-inspired visual language for
+equipment while preserving the actual Hydros and Red Sea control boundaries.
+
+- Peninsula flow is ordered **Left XF350**, **Upper OctoPulse4**, then
+  **Mid OctoPulse4**, with the ReefRun return pump alongside the
+  Hydros-controlled wave equipment. Mobile flow cards use tighter padding,
+  four-pixel gaps, constrained grid cells, and 76px dial rings to avoid
+  horizontal clipping.
+- Each dosing head has a compact daily progress bar, completed-dose count,
+  current/target volume, remaining-days indicator, and a four-head marker row.
+- **ReefDose4 - 4-Part** and **ReefDose4-Extra** are stacked rather than placed
+  side by side. The Extra controller uses blue progress bars; the 4-Part
+  controller keeps distinct head colors.
+- Remaining days are green at 15 days or more, yellow from 6–14 days, and red
+  at 5 days or less.
+- The 200XL Minnow shows unused outputs as not configured until Hydros exposes
+  an entity for them.
+
+The Peninsula, 200XL, and Maintenance buttons use theme-aware Simple Tabs
+colors. Active text, inactive text, hover accents, borders, and the selected
+background follow Home Assistant theme variables for light and dark modes. A
+**Controllers · Classic** view remains available as the pre-redesign backup.
+
+## Aquarium Water Management Suite
+
+The first major AAS subsystem is the **Aquarium Water Management Suite (AWMS)**. It tracks the water shared by the aquariums, mixing station, and other uses.
+
+The Water Management **Used For** control is a Mushroom Select card bound directly to `input_select.awms_workflow`, keeping its displayed selection synchronized with the preview and workflow-specific controls.
+
+After **Apply**, a frontend-local Browser Mod sequence runs the adjustment and
+then displays a four-second acknowledgement directly on the browser that
+submitted it. This approach does not require that browser to be registered with
+Browser Mod.
+
+All inventory is stored internally in milliliters. Gallons are a display unit only.
+
+```text
+1 US gallon = 3,785.41 mL
+```
+
+| Reservoir | Working capacity | Notes |
 | --- | ---: | --- |
-| Peninsula RODI | 111,700 mL / 29.5 gal | Automatically refilled by Hydros |
-| Peninsula Salt | 111,700 mL / 29.5 gal | Manually filled from RODI |
+| Peninsula RODI | 111,700 mL / 29.5 gal | Automatically filled under Hydros control |
+| Peninsula saltwater | 111,700 mL / 29.5 gal | Mixed from Peninsula RODI |
+| 200XL ATO | 75,708 mL / about 20 gal | Filled from Peninsula RODI; physical capacity is about 30 gal |
 
-Dosing equipment:
+When the 200XL ATO reservoir is filled through AWMS, the same volume is deducted from Peninsula RODI and added to the 200XL ATO estimate. The normal AWMS maximum is about 20 gallons even though the container can physically hold about 30 gallons.
 
-- Red Sea ReefDose 4
-- Hydros Minnow
-- Hydros Simple Doser
-
-### Red Sea 200XL
-
-The Red Sea 200XL is a separate aquarium with an independent ATO reservoir and manual water changes.
-
-Tracked reservoir:
-
-| Reservoir | Capacity | Notes |
-| --- | ---: | --- |
-| 200XL ATO | 94,635 mL / about 25 gal normal AWMS target | Manually filled from Peninsula RODI |
-
-Dosing equipment:
-
-- Red Sea ReefDose 4
-
-The 200XL ATO reservoir is filled from the Peninsula RODI reservoir. AWMS deducts the transferred amount from Peninsula RODI and increases the 200XL ATO estimate.
-
-## Dashboard
-
-The dashboard is the main interface for the system. Scripts, helpers, automations, and templates support the visible workflows.
-
-Current dashboard work includes:
-
-- Reservoir status cards for Peninsula RODI, Peninsula Salt, and 200XL ATO
-- A Water Management panel under Maintenance
-- Workflow-aware quick actions
-- Unit chips for mL, L, oz, and gal
-- Preview text before applying a change
-- Apply workflow for removals and transfers
-- Optional recent activity card using the Home Assistant Logbook
-
-## Water Management Workflows
-
-AWMS currently supports four primary workflows plus a manual fallback.
+### Supported workflows
 
 | Workflow | Source | Result |
 | --- | --- | --- |
 | Plants | RODI | Deducts Peninsula RODI |
-| Make New Salt | RODI to Salt | Fills Salt to capacity and deducts RODI |
-| 200XL ATO | RODI to 200XL ATO | Deducts RODI and increases 200XL ATO estimate |
-| 200XL Water Change | Salt | Deducts Peninsula Salt |
-| Other | User-selected RODI or Salt | Deducts the selected reservoir |
+| Make New Salt | RODI to saltwater | Deducts RODI and fills saltwater to capacity |
+| 200XL ATO | RODI to 200XL ATO | Deducts RODI and increases the 200XL ATO estimate |
+| 200XL Water Change | Saltwater | Deducts Peninsula saltwater |
+| Other | User-selected RODI or saltwater | Deducts the selected reservoir |
 
-All inventory is stored internally in milliliters. The dashboard displays gallons for readability.
+![Reservoir gauges and AWMS quick actions](assets/screenshots/dashboard-03.png)
 
-```text
-1 gallon = 3785.41 mL
-```
+![Make New Salt preview and apply controls](assets/screenshots/dashboard-04.png)
 
-## Architecture
+## Equipment views
 
-The system uses Home Assistant helpers, Lovelace dashboard YAML, Script UI scripts, and a small workflow-default automation.
+The same visual language is used for flow, dosing, filtration, and general equipment so that a large system remains easy to scan on a phone.
 
-Important entities:
+Water Parameter and Additional Water Parameter grids use a compact 4px gap.
+On the Peninsula, **Return 1200** and **Skimmer RSK300** are grouped in a
+two-column **ReefRun** card; ReefMat and the remaining systems stay under
+Filtration / General. The return uses a blue ring and the skimmer uses a purple
+ring. The skimmer box displays sensor-control status and conditionally shows a
+red **Over-skimming** warning from
+`sensor.aquarium_rsrun_peninsula_pump_2_state`. Hydros and ReefRun headings use
+reduced spacing above their equipment boxes. The ReefRun pump temperature is
+shown on the same compact line as the Skimmer sensor indicator.
+
+![Water flow equipment](assets/screenshots/dashboard-05.png)
+
+![Dosing equipment](assets/screenshots/dashboard-06.png)
+
+![Filtration and general equipment](assets/screenshots/dashboard-07.png)
+
+## How it is built
+
+AAS uses Home Assistant helpers, templates, automations, Script UI scripts, and a Lovelace dashboard. Helpers and the main AWMS script are intentionally created through the Home Assistant UI rather than declared as repository YAML.
+
+Important inventory entities:
 
 | Purpose | Entity |
 | --- | --- |
 | Peninsula RODI inventory | `input_number.awms_rodi_remaining_ml` |
-| Peninsula Salt inventory | `input_number.awms_salt_remaining_ml` |
+| Peninsula saltwater inventory | `input_number.awms_salt_remaining_ml` |
 | 200XL ATO inventory | `input_number.awms_200xl_ato_remaining_ml` |
-| AWMS amount | `input_number.awms_adjustment_amount` |
-| AWMS unit | `input_select.awms_adjustment_unit` |
-| AWMS action | `input_select.awms_adjustment_action` |
-| AWMS reservoir | `input_select.awms_source_reservoir` |
-| AWMS workflow | `input_select.awms_workflow` |
-| Apply adjustment script | `script.awms_apply_adjustment` |
+| Adjustment amount | `input_number.awms_adjustment_amount` |
+| Selected unit | `input_select.awms_adjustment_unit` |
+| Selected action | `input_select.awms_adjustment_action` |
+| Source reservoir | `input_select.awms_source_reservoir` |
+| Workflow | `input_select.awms_workflow` |
+| Apply adjustment | `script.awms_apply_adjustment` |
 
-Repository snippets:
+Repository examples:
 
 | File | Purpose |
 | --- | --- |
-| [`snippets/awms-water-management-stack.yaml`]({{ site.github.repository_url }}/blob/main/snippets/awms-water-management-stack.yaml) | Main Water Management dashboard panel |
-| [`snippets/awms-water-management-expander.yaml`]({{ site.github.repository_url }}/blob/main/snippets/awms-water-management-expander.yaml) | Alternate collapsible Water Management panel |
-| [`snippets/awms-apply-adjustment-full-script.yaml`]({{ site.github.repository_url }}/blob/main/snippets/awms-apply-adjustment-full-script.yaml) | Script UI logic for applying water inventory changes |
-| [`snippets/awms-sync-workflow-defaults-automation.yaml`]({{ site.github.repository_url }}/blob/main/snippets/awms-sync-workflow-defaults-automation.yaml) | Keeps workflow defaults aligned with the selected use case |
-| [`snippets/awms-recent-activity-card.yaml`]({{ site.github.repository_url }}/blob/main/snippets/awms-recent-activity-card.yaml) | Optional recent activity dashboard card |
+| [`awms-water-management-stack.yaml`]({{ site.github.repository_url }}/blob/main/snippets/awms-water-management-stack.yaml) | Main Water Management panel |
+| [`awms-water-management-expander.yaml`]({{ site.github.repository_url }}/blob/main/snippets/awms-water-management-expander.yaml) | Collapsible Water Management panel |
+| [`awms-reservoir-gauge-cards.yaml`]({{ site.github.repository_url }}/blob/main/snippets/awms-reservoir-gauge-cards.yaml) | Reservoir status gauges |
+| [`awms-template-sensors.yaml`]({{ site.github.repository_url }}/blob/main/snippets/awms-template-sensors.yaml) | AWMS display and calculation sensors |
+| [`awms-apply-adjustment-full-script.yaml`]({{ site.github.repository_url }}/blob/main/snippets/awms-apply-adjustment-full-script.yaml) | Script UI inventory logic |
+| [`awms-sync-workflow-defaults-automation.yaml`]({{ site.github.repository_url }}/blob/main/snippets/awms-sync-workflow-defaults-automation.yaml) | Workflow-aware defaults |
+| [`awms-recent-activity-card.yaml`]({{ site.github.repository_url }}/blob/main/snippets/awms-recent-activity-card.yaml) | Optional activity history |
+| [`peninsula-water-parameters-chips.yaml`]({{ site.github.repository_url }}/blob/main/snippets/peninsula-water-parameters-chips.yaml) | Current Peninsula parameter and water-level stack |
+| [`200xl-water-parameters-chips.yaml`]({{ site.github.repository_url }}/blob/main/snippets/200xl-water-parameters-chips.yaml) | Current 200XL parameter and water-level stack |
+| [`peninsula-controller-equipment.yaml`]({{ site.github.repository_url }}/blob/main/snippets/peninsula-controller-equipment.yaml) | Peninsula equipment expanders |
+| [`200xl-controller-equipment.yaml`]({{ site.github.repository_url }}/blob/main/snippets/200xl-controller-equipment.yaml) | 200XL equipment expanders |
+| [`aquarium-controller-tabs-style.yaml`]({{ site.github.repository_url }}/blob/main/snippets/aquarium-controller-tabs-style.yaml) | Theme-aware Simple Tabs styling |
 
-## Dashboard Preview
+These are excerpts from a personal configuration, not a turnkey installation. Anyone adapting them should review entity names, capacities, limits, and safeguards for their own hardware.
 
-These screenshots show the dashboard in mobile portrait layout.
+## Interface components
 
-### Peninsula
+The dashboard uses community frontend projects installed with [HACS](https://www.hacs.xyz/).
 
-![Peninsula water parameters and status chips](assets/screenshots/dashboard-01.png)
-
-### 200XL
-
-![200XL water parameters and status chips](assets/screenshots/dashboard-02.png)
-
-### Water Management
-
-![Maintenance tab with reservoir gauges and AWMS quick actions](assets/screenshots/dashboard-03.png)
-
-![AWMS Make New Salt preview and apply controls](assets/screenshots/dashboard-04.png)
-
-### Equipment Sections
-
-![Water flow section with pump and flow gauges](assets/screenshots/dashboard-05.png)
-
-![Dosing section with Red Sea and Hydros dosing gauges](assets/screenshots/dashboard-06.png)
-
-![Filtration and general equipment section with usage graph](assets/screenshots/dashboard-07.png)
-
-## Required Home Assistant Pieces
-
-This project assumes:
-
-- Home Assistant 2026.7.1 or newer-compatible script syntax
-- Helpers created through the Home Assistant UI
-- AWMS apply logic created through the Home Assistant Script UI
-- Dashboard YAML added through Lovelace
-- Inventory values stored in milliliters
-- Gauge display values shown in gallons
-
-Helpers and scripts are intentionally not defined in YAML files in this repository because they are created through the Home Assistant UI in the running system.
-
-## HACS, Plugins, Integrations, And Credit
-
-This dashboard relies on Home Assistant, community dashboard cards, and hardware integrations. Please install and credit the original projects.
-
-| Project | Used For | Link |
-| --- | --- | --- |
-| Home Assistant | Automation platform, helpers, scripts, dashboards, logbook | [home-assistant.io](https://www.home-assistant.io/) |
-| HACS | Installing and updating community frontend cards | [hacs.xyz](https://www.hacs.xyz/) |
-| Mushroom | Template cards, select cards, chips, and the primary dashboard interaction style | [piitaya/lovelace-mushroom](https://github.com/piitaya/lovelace-mushroom) |
-| card-mod | Lovelace card styling and visual polish | [thomasloven/lovelace-card-mod](https://github.com/thomasloven/lovelace-card-mod) |
-| mod-card | Wrapper card used for the mobile-safe AWMS panel border | Included with/commonly used through [thomasloven/lovelace-card-mod](https://github.com/thomasloven/lovelace-card-mod) |
-| Expander Card | Collapsible Water Management section | [MelleD/lovelace-expander-card](https://github.com/MelleD/lovelace-expander-card) |
-| Gauge Card Pro | Reservoir gauge cards for RODI, Salt, and 200XL ATO display | [benjamin-dcs/gauge-card-pro](https://github.com/benjamin-dcs/gauge-card-pro) |
-| Bubble Card | Section separators and dashboard structure | [Clooos/Bubble-Card](https://github.com/Clooos/Bubble-Card) |
-| Mini Graph Card | Usage/history graph cards | [kalkih/mini-graph-card](https://github.com/kalkih/mini-graph-card) |
-| Simple Tabs | Tabbed aquarium controller dashboard | [agoberg85/home-assistant-simple-tabs](https://github.com/agoberg85/home-assistant-simple-tabs) |
-| Vertical Stack In Card | Grouped graph/chip layouts | [ofekashery/vertical-stack-in-card](https://github.com/ofekashery/vertical-stack-in-card) |
-| Material Design Icons | Dashboard icons through Home Assistant `mdi:` icon names | [pictogrammers.com/library/mdi](https://pictogrammers.com/library/mdi/) |
-| ReefBeat custom integration | Red Sea ReefBeat device data in Home Assistant | [Elwinmage/ha-reefbeat-component](https://github.com/Elwinmage/ha-reefbeat-component) |
-| Hydros custom integration | Hydros controller device data in Home Assistant | [Bitf1ip/ha-hydros](https://github.com/Bitf1ip/ha-hydros) |
-| Hydros / CoralVue | Aquarium controller hardware and water-level sensing | [coralvuehydros.com](https://www.coralvuehydros.com/) |
-
-If your local dashboard uses additional HACS cards, custom themes, or integrations, add them to the table before publishing the full dashboard YAML.
-
-## Design Notes
-
-Color conventions:
-
-| Item | Color |
+| Project | Role in AAS |
 | --- | --- |
-| RODI | Blue |
-| Salt | Purple |
-| 200XL | Green |
-| Remove | Red |
-| Transfer | Blue |
-| Preview | Yellow |
-| Apply | Cyan |
+| [Mushroom](https://github.com/piitaya/lovelace-mushroom) | Cards, chips, and primary interaction patterns |
+| [Button Card](https://github.com/custom-cards/button-card) | Theme-aware parameter-card shells, values, icons, and status indicators |
+| [card-mod](https://github.com/thomasloven/lovelace-card-mod) | Styling and visual polish |
+| [Expander Card](https://github.com/MelleD/lovelace-expander-card) | Collapsible maintenance and additional-parameter sections |
+| [Gauge Card Pro](https://github.com/benjamin-dcs/gauge-card-pro) | Reservoir gauges |
+| [Bubble Card](https://github.com/Clooos/Bubble-Card) | Section structure |
+| [Mini Graph Card](https://github.com/kalkih/mini-graph-card) | Compact 12-hour and 30-day parameter history graphs |
+| [Layout Card](https://github.com/thomasloven/lovelace-layout-card) | Responsive two-column parameter layouts inside nested tabs and expanders |
+| [Simple Tabs](https://github.com/agoberg85/home-assistant-simple-tabs) | Aquarium dashboard tabs |
+| [Vertical Stack In Card](https://github.com/ofekashery/vertical-stack-in-card) | Grouped layouts |
 
-Operational rules:
+RODI is consistently blue, saltwater is purple, and 200XL ATO is green. Existing Gauge Card Pro reservoir cards are treated as production components and enhanced rather than redesigned.
 
-- Store inventory internally in milliliters only
-- Display gallons only in the dashboard
-- Keep workflow logic small and readable
-- Prefer `if / then` blocks in Script UI logic
-- Prefer `is_state()` comparisons in templates
-- Avoid duplicated calculations where practical
-- Keep dashboard sections visually consistent and easy to scan
+## Integration credits
 
-## License And Attribution
+Special thanks to the developers whose community integrations make the unified dashboard possible:
 
-This repository documents a personal Home Assistant aquarium automation setup maintained by [BR260354](https://github.com/BR260354). It is shared as a reference for other hobbyists who may want ideas for their own dashboards. The configuration here depends on the open-source and community projects credited above.
+- **Elwinmage** created and maintains the [Red Sea ReefBeat integration](https://github.com/Elwinmage/ha-reefbeat-component), which brings supported Red Sea equipment into Home Assistant.
+- **Bitf1ip** created and maintains the [HYDROS integration](https://github.com/Bitf1ip/ha-hydros), which brings CoralVue HYDROS controller data into Home Assistant.
 
-Before publishing a full dashboard export, review it for local entity names, secrets, private URLs, tokens, device IDs, and any personal data.
+Their work supplies the aquarium entities on which AAS depends. Thank you also to the teams and contributors behind [Home Assistant](https://www.home-assistant.io/), [HACS](https://www.hacs.xyz/), and the dashboard projects listed above.
+
+This project has been designed collaboratively with ChatGPT over multiple design and implementation sessions.
+
+## Roadmap
+
+- **Version 1:** inventory, dashboard, manual adjustments, and transfers
+- **Version 1.1:** activity log, statistics, and automatic Hydros refill handling
+- **Version 1.2:** 200XL ATO runtime tracking and usage analytics
+- **Version 2:** forecasting, maintenance planning, consumables, and predictive reservoir depletion
+
+Reliability, readability, maintainability, and a consistent interface take priority over adding features quickly.
+
+## Disclaimer
+
+AAS is an independent personal project and is not affiliated with or endorsed by Red Sea, CoralVue, TP-Link, the integration authors, or Home Assistant. Aquarium automation can move water and control life-support equipment. Validate every entity, limit, fail-safe, and physical safeguard before adapting an example to another system.
+
+[View the repository]({{ site.github.repository_url }})

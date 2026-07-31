@@ -47,7 +47,7 @@
   unique_id: awms_200xl_ato_remaining_percent
   unit_of_measurement: "%"
   state: >
-    {{ ((states('input_number.awms_200xl_ato_remaining_ml') | float(0) / 94635) * 100) | round(0) }}
+    {{ ((states('input_number.awms_200xl_ato_remaining_ml') | float(0) / 75708) * 100) | round(0) }}
 
 - name: "AWMS Adjustment Amount ML"
   unique_id: awms_adjustment_amount_ml
