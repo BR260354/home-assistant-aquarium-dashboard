@@ -9,3 +9,4 @@ v1.0.2  Browser-local Water Management Apply acknowledgements for successful inv
 v1.0.3  Compact water-parameter spacing and combined Peninsula ReefRun return/skimmer card
 v1.0.4  Five-sample weekly water-test histories and concise chemistry labels
 v1.0.5  ReefRun skimmer sensor status, over-skimming warning, matched pump colors, and tighter controller heading spacing
+v1.1.0  Separate Aquarium Mobile and Aquarium Tablet dashboards with shared native views, unified alerts and active-device status, HYDROS schedule visibility, ReefBeat app handoff, full-width tablet layouts, and updated screenshot documentation
