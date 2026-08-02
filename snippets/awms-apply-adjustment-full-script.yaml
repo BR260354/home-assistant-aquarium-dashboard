@@ -63,7 +63,6 @@ sequence:
               {% set amount_ml = amount * 3785.41 %}
             {% endif %}
             {{ [current_ml - amount_ml, 0] | max | round(0) }}
-
   # Notify before a 200xl ATO fill if the full amount cannot fit safely.
   - if:
       - condition: state
@@ -174,7 +173,6 @@ sequence:
               {% set amount_ml = amount * 3785.41 %}
             {% endif %}
             {{ [current_ml + amount_ml, 75708] | min | round(0) }}
-
   # 200xl water changes use Salt.
   - if:
       - condition: state
@@ -232,7 +230,6 @@ sequence:
               {% set amount_ml = amount * 3785.41 %}
             {% endif %}
             {{ [current_ml - amount_ml, 0] | max | round(0) }}
-
   # Other removals use the selected reservoir.
   - if:
       - condition: state
@@ -293,7 +290,6 @@ sequence:
               {% set amount_ml = amount * 3785.41 %}
             {% endif %}
             {{ [current_ml - amount_ml, 0] | max | round(0) }}
-
   - if:
       - condition: state
         entity_id: input_select.awms_workflow
@@ -353,7 +349,6 @@ sequence:
               {% set amount_ml = amount * 3785.41 %}
             {% endif %}
             {{ [current_ml - amount_ml, 0] | max | round(0) }}
-
   # Notify before Make New Salt when RODI cannot fill Salt to full.
   - if:
       - condition: state

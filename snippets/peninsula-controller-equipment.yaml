@@ -1,0 +1,2604 @@
+# ReefBeat-inspired Peninsula Water Flow, Dosing, and Filtration / General expanders.
+# ReefDose4 - 4-Part and ReefDose4-Extra are intentionally stacked vertically.
+type: "vertical-stack"
+cards:
+  -
+    type: "custom:expander-card"
+    title: "Water Flow"
+    cards:
+      -
+        type: "custom:button-card"
+        name: "Hydros WEv2"
+        icon: "mdi:waves"
+        show_icon: true
+        show_name: true
+        show_state: false
+        tap_action:
+          action: "none"
+        custom_fields:
+          content:
+            card:
+              type: "custom:layout-card"
+              layout_type: "custom:grid-layout"
+              layout:
+                grid-template-columns: "repeat(3, minmax(0, 1fr))"
+                grid-gap: "4px"
+              cards:
+                -
+                  type: "custom:button-card"
+                  entity: "sensor.aquarium_aquarium_hydros_left_xf350"
+                  name: "Left XF350"
+                  show_icon: false
+                  show_name: true
+                  show_state: false
+                  tap_action:
+                    action: "more-info"
+                  hold_action:
+                    action: "more-info"
+                  custom_fields:
+                    ring: |-
+                      [[[
+                          const raw = Number(states['sensor.aquarium_aquarium_hydros_left_xf350']?.state);
+                          const value = Number.isFinite(raw) ? raw : 0;
+                          const pct = Math.max(0, Math.min(100, Math.abs(value)));
+                          const dash = (pct * 2.513).toFixed(1);
+                          const label = Number.isFinite(raw) ? Math.round(value) + '%' : '—';
+                          const text = hass.themes?.darkMode ? '#f7fbff' : '#172033';
+                          const track = hass.themes?.darkMode ? '#31465b' : '#c7d6e5';
+                          return '<svg viewBox="0 0 100 100" style="width:76px;height:76px;display:block;margin:auto">' +
+                            '<circle cx="50" cy="50" r="40" fill="none" stroke="' + track + '" stroke-width="9"></circle>' +
+                            '<circle cx="50" cy="50" r="40" fill="none" stroke="#1fa9ff" stroke-width="9" stroke-linecap="round" transform="rotate(-90 50 50)" stroke-dasharray="' + dash + ' 251.3"></circle>' +
+                            '<text x="50" y="56" text-anchor="middle" fill="' + text + '" font-size="20" font-weight="700">' + label + '</text>' +
+                            '</svg>';
+                        ]]]
+                    detail: "[[[ const n=Number(states['sensor.aquarium_aquarium_hydros_left_xf350']?.state); return Number.isFinite(n) && n < 0 ? 'Reverse direction' : 'Forward direction'; ]]]"
+                  styles:
+                    grid:
+                      -
+                        grid-template-areas: "'n' 'ring' 'detail'"
+                      -
+                        grid-template-columns: "1fr"
+                        grid-template-rows: "22px 80px 18px"
+                      -
+                        grid-template-rows: "22px 88px 18px"
+                      -
+                        row-gap: "3px"
+                    card:
+                      -
+                        height: "134px"
+                      -
+                        padding: "4px"
+                      -
+                        border-radius: "14px"
+                      -
+                        background: "[[[ return hass.themes?.darkMode ? 'rgba(53, 64, 80, 0.98)' : 'rgba(255, 255, 255, 0.78)'; ]]]"
+                      -
+                        border: "[[[ return hass.themes?.darkMode ? '1px solid rgba(126, 148, 174, 0.34)' : '1px solid rgba(73, 98, 127, 0.26)'; ]]]"
+                      -
+                        box-shadow: "none"
+                      -
+                        width: "100%"
+                      -
+                        min-width: "0"
+                      -
+                        box-sizing: "border-box"
+                    name:
+                      -
+                        font-size: "12px"
+                      -
+                        font-weight: "600"
+                      -
+                        color: "var(--primary-text-color)"
+                      -
+                        white-space: "normal"
+                      -
+                        line-height: "1.05"
+                    custom_fields:
+                      ring:
+                        -
+                          align-self: "center"
+                        -
+                          width: "100%"
+                        -
+                          min-width: "0"
+                        -
+                          overflow: "hidden"
+                      detail:
+                        -
+                          font-size: "10px"
+                        -
+                          color: "var(--secondary-text-color)"
+                        -
+                          white-space: "nowrap"
+                        -
+                          overflow: "hidden"
+                        -
+                          text-overflow: "ellipsis"
+                        -
+                          transform: "translateY(-4px)"
+                        -
+                          line-height: "1"
+                -
+                  type: "custom:button-card"
+                  entity: "sensor.aquarium_aquarium_hydros_upper_octopulse4"
+                  name: "Upper OctoPulse4"
+                  show_icon: false
+                  show_name: true
+                  show_state: false
+                  tap_action:
+                    action: "more-info"
+                  hold_action:
+                    action: "more-info"
+                  custom_fields:
+                    ring: |-
+                      [[[
+                          const raw = Number(states['sensor.aquarium_aquarium_hydros_upper_octopulse4']?.state);
+                          const value = Number.isFinite(raw) ? raw : 0;
+                          const pct = Math.max(0, Math.min(100, Math.abs(value)));
+                          const dash = (pct * 2.513).toFixed(1);
+                          const label = Number.isFinite(raw) ? Math.round(value) + '%' : '—';
+                          const text = hass.themes?.darkMode ? '#f7fbff' : '#172033';
+                          const track = hass.themes?.darkMode ? '#31465b' : '#c7d6e5';
+                          return '<svg viewBox="0 0 100 100" style="width:76px;height:76px;display:block;margin:auto">' +
+                            '<circle cx="50" cy="50" r="40" fill="none" stroke="' + track + '" stroke-width="9"></circle>' +
+                            '<circle cx="50" cy="50" r="40" fill="none" stroke="#1fa9ff" stroke-width="9" stroke-linecap="round" transform="rotate(-90 50 50)" stroke-dasharray="' + dash + ' 251.3"></circle>' +
+                            '<text x="50" y="56" text-anchor="middle" fill="' + text + '" font-size="20" font-weight="700">' + label + '</text>' +
+                            '</svg>';
+                        ]]]
+                    detail: "[[[ const n=Number(states['sensor.aquarium_aquarium_hydros_upper_octopulse4']?.state); return Number.isFinite(n) && n < 0 ? 'Reverse direction' : 'Forward direction'; ]]]"
+                  styles:
+                    grid:
+                      -
+                        grid-template-areas: "'n' 'ring' 'detail'"
+                      -
+                        grid-template-columns: "1fr"
+                        grid-template-rows: "22px 80px 18px"
+                      -
+                        grid-template-rows: "22px 88px 18px"
+                      -
+                        row-gap: "3px"
+                    card:
+                      -
+                        height: "134px"
+                      -
+                        padding: "4px"
+                      -
+                        border-radius: "14px"
+                      -
+                        background: "[[[ return hass.themes?.darkMode ? 'rgba(53, 64, 80, 0.98)' : 'rgba(255, 255, 255, 0.78)'; ]]]"
+                      -
+                        border: "[[[ return hass.themes?.darkMode ? '1px solid rgba(126, 148, 174, 0.34)' : '1px solid rgba(73, 98, 127, 0.26)'; ]]]"
+                      -
+                        box-shadow: "none"
+                      -
+                        width: "100%"
+                      -
+                        min-width: "0"
+                      -
+                        box-sizing: "border-box"
+                    name:
+                      -
+                        font-size: "12px"
+                      -
+                        font-weight: "600"
+                      -
+                        color: "var(--primary-text-color)"
+                      -
+                        white-space: "normal"
+                      -
+                        line-height: "1.05"
+                    custom_fields:
+                      ring:
+                        -
+                          align-self: "center"
+                        -
+                          width: "100%"
+                        -
+                          min-width: "0"
+                        -
+                          overflow: "hidden"
+                      detail:
+                        -
+                          font-size: "10px"
+                        -
+                          color: "var(--secondary-text-color)"
+                        -
+                          white-space: "nowrap"
+                        -
+                          overflow: "hidden"
+                        -
+                          text-overflow: "ellipsis"
+                        -
+                          transform: "translateY(-4px)"
+                        -
+                          line-height: "1"
+                -
+                  type: "custom:button-card"
+                  entity: "sensor.aquarium_aquarium_hydros_mid_octopulse4"
+                  name: "Mid OctoPulse4"
+                  show_icon: false
+                  show_name: true
+                  show_state: false
+                  tap_action:
+                    action: "more-info"
+                  hold_action:
+                    action: "more-info"
+                  custom_fields:
+                    ring: |-
+                      [[[
+                          const raw = Number(states['sensor.aquarium_aquarium_hydros_mid_octopulse4']?.state);
+                          const value = Number.isFinite(raw) ? raw : 0;
+                          const pct = Math.max(0, Math.min(100, Math.abs(value)));
+                          const dash = (pct * 2.513).toFixed(1);
+                          const label = Number.isFinite(raw) ? Math.round(value) + '%' : '—';
+                          const text = hass.themes?.darkMode ? '#f7fbff' : '#172033';
+                          const track = hass.themes?.darkMode ? '#31465b' : '#c7d6e5';
+                          return '<svg viewBox="0 0 100 100" style="width:76px;height:76px;display:block;margin:auto">' +
+                            '<circle cx="50" cy="50" r="40" fill="none" stroke="' + track + '" stroke-width="9"></circle>' +
+                            '<circle cx="50" cy="50" r="40" fill="none" stroke="#1fa9ff" stroke-width="9" stroke-linecap="round" transform="rotate(-90 50 50)" stroke-dasharray="' + dash + ' 251.3"></circle>' +
+                            '<text x="50" y="56" text-anchor="middle" fill="' + text + '" font-size="20" font-weight="700">' + label + '</text>' +
+                            '</svg>';
+                        ]]]
+                    detail: "[[[ const n=Number(states['sensor.aquarium_aquarium_hydros_mid_octopulse4']?.state); return Number.isFinite(n) && n < 0 ? 'Reverse direction' : 'Forward direction'; ]]]"
+                  styles:
+                    grid:
+                      -
+                        grid-template-areas: "'n' 'ring' 'detail'"
+                      -
+                        grid-template-columns: "1fr"
+                        grid-template-rows: "22px 80px 18px"
+                      -
+                        grid-template-rows: "22px 88px 18px"
+                      -
+                        row-gap: "3px"
+                    card:
+                      -
+                        height: "134px"
+                      -
+                        padding: "4px"
+                      -
+                        border-radius: "14px"
+                      -
+                        background: "[[[ return hass.themes?.darkMode ? 'rgba(53, 64, 80, 0.98)' : 'rgba(255, 255, 255, 0.78)'; ]]]"
+                      -
+                        border: "[[[ return hass.themes?.darkMode ? '1px solid rgba(126, 148, 174, 0.34)' : '1px solid rgba(73, 98, 127, 0.26)'; ]]]"
+                      -
+                        box-shadow: "none"
+                      -
+                        width: "100%"
+                      -
+                        min-width: "0"
+                      -
+                        box-sizing: "border-box"
+                    name:
+                      -
+                        font-size: "12px"
+                      -
+                        font-weight: "600"
+                      -
+                        color: "var(--primary-text-color)"
+                      -
+                        white-space: "normal"
+                      -
+                        line-height: "1.05"
+                    custom_fields:
+                      ring:
+                        -
+                          align-self: "center"
+                        -
+                          width: "100%"
+                        -
+                          min-width: "0"
+                        -
+                          overflow: "hidden"
+                      detail:
+                        -
+                          font-size: "10px"
+                        -
+                          color: "var(--secondary-text-color)"
+                        -
+                          white-space: "nowrap"
+                        -
+                          overflow: "hidden"
+                        -
+                          text-overflow: "ellipsis"
+                        -
+                          transform: "translateY(-4px)"
+                        -
+                          line-height: "1"
+        styles:
+          grid:
+            -
+              grid-template-areas: "'i n' 'content content'"
+            -
+              grid-template-columns: "26px 1fr"
+            -
+              grid-template-rows: "30px auto"
+            -
+              column-gap: "7px"
+            -
+              row-gap: "3px"
+            -
+              align-items: "center"
+          card:
+            -
+              padding: "8px"
+            -
+              border-radius: "18px"
+            -
+              background: "[[[ return hass.themes?.darkMode ? 'rgba(42, 52, 65, 0.96)' : 'rgba(236, 242, 248, 0.96)'; ]]]"
+            -
+              border: "[[[ return hass.themes?.darkMode ? '1px solid rgba(126, 148, 174, 0.34)' : '1px solid rgba(73, 98, 127, 0.26)'; ]]]"
+            -
+              box-shadow: "0 8px 18px rgba(0,0,0,0.14)"
+          icon:
+            -
+              width: "21px"
+            -
+              color: "#45e5a4"
+          img_cell:
+            -
+              width: "26px"
+            -
+              height: "26px"
+            -
+              justify-self: "start"
+          name:
+            -
+              justify-self: "start"
+            -
+              font-size: "16px"
+            -
+              font-weight: "700"
+            -
+              color: "var(--primary-text-color)"
+          custom_fields:
+            content:
+              -
+                width: "100%"
+              -
+                min-width: "0"
+      -
+        type: "custom:button-card"
+        name: "ReefRun"
+        icon: "mdi:pump"
+        show_icon: true
+        show_name: true
+        show_state: false
+        tap_action:
+          action: "none"
+        custom_fields:
+          content:
+            card:
+              type: "custom:layout-card"
+              layout_type: "custom:grid-layout"
+              layout:
+                grid-template-columns: "repeat(2, minmax(0, 1fr))"
+                grid-gap: "8px"
+              cards:
+                -
+                  type: "custom:button-card"
+                  entity: "number.aquarium_rsrun_peninsula_pump_1_speed"
+                  name: "Return 1200"
+                  show_icon: false
+                  show_name: true
+                  show_state: false
+                  tap_action:
+                    action: "more-info"
+                  hold_action:
+                    action: "more-info"
+                  custom_fields:
+                    ring: |-
+                      [[[
+                          const raw = Number(states['number.aquarium_rsrun_peninsula_pump_1_speed']?.state);
+                          const value = Number.isFinite(raw) ? raw : 0;
+                          const pct = Math.max(0, Math.min(100, Math.abs(value)));
+                          const dash = (pct * 2.513).toFixed(1);
+                          const label = Number.isFinite(raw) ? Math.round(value) + '%' : '—';
+                          const text = hass.themes?.darkMode ? '#f7fbff' : '#172033';
+                          const track = hass.themes?.darkMode ? '#31465b' : '#c7d6e5';
+                          return '<svg viewBox="0 0 100 100" style="width:86px;height:86px;display:block;margin:auto">' +
+                            '<circle cx="50" cy="50" r="40" fill="none" stroke="' + track + '" stroke-width="9"></circle>' +
+                            '<circle cx="50" cy="50" r="40" fill="none" stroke="#1fa9ff" stroke-width="9" stroke-linecap="round" transform="rotate(-90 50 50)" stroke-dasharray="' + dash + ' 251.3"></circle>' +
+                            '<text x="50" y="56" text-anchor="middle" fill="' + text + '" font-size="20" font-weight="700">' + label + '</text>' +
+                            '</svg>';
+                        ]]]
+                    detail: |-
+                      [[[
+                          const s = states['sensor.aquarium_rsrun_peninsula_pump_1_temperature'];
+                          const n = Number(s?.state);
+                          const unit = s?.attributes?.unit_of_measurement || '';
+                          return Number.isFinite(n) ? Math.round(n) + (unit ? ' ' + unit : '') : '';
+                        ]]]
+                  styles:
+                    grid:
+                      -
+                        grid-template-areas: "'n' 'ring' 'detail'"
+                      -
+                        grid-template-columns: "1fr"
+                      -
+                        grid-template-rows: "20px 92px 18px"
+                      -
+                        row-gap: "2px"
+                    card:
+                      -
+                        height: "154px"
+                      -
+                        padding: "6px"
+                      -
+                        border-radius: "14px"
+                      -
+                        background: "[[[ return hass.themes?.darkMode ? 'rgba(53, 64, 80, 0.98)' : 'rgba(255, 255, 255, 0.78)'; ]]]"
+                      -
+                        border: "[[[ return hass.themes?.darkMode ? '1px solid rgba(126, 148, 174, 0.34)' : '1px solid rgba(73, 98, 127, 0.26)'; ]]]"
+                      -
+                        box-shadow: "none"
+                    name:
+                      -
+                        font-size: "12px"
+                      -
+                        font-weight: "600"
+                      -
+                        color: "var(--primary-text-color)"
+                      -
+                        white-space: "normal"
+                      -
+                        line-height: "1.05"
+                    custom_fields:
+                      ring:
+                        -
+                          align-self: "center"
+                      detail:
+                        -
+                          font-size: "10px"
+                        -
+                          color: "var(--secondary-text-color)"
+                        -
+                          white-space: "nowrap"
+                        -
+                          overflow: "hidden"
+                        -
+                          text-overflow: "ellipsis"
+                -
+                  type: "custom:button-card"
+                  entity: "number.aquarium_rsrun_peninsula_pump_2_speed"
+                  name: "Skimmer RSK300"
+                  show_icon: false
+                  show_name: true
+                  show_state: false
+                  tap_action:
+                    action: "more-info"
+                  hold_action:
+                    action: "more-info"
+                  custom_fields:
+                    ring: |-
+                      [[[
+                          const raw = Number(states['number.aquarium_rsrun_peninsula_pump_2_speed']?.state);
+                          const value = Number.isFinite(raw) ? raw : 0;
+                          const pct = Math.max(0, Math.min(100, Math.abs(value)));
+                          const dash = (pct * 2.513).toFixed(1);
+                          const label = Number.isFinite(raw) ? Math.round(value) + '%' : '—';
+                          const text = hass.themes?.darkMode ? '#f7fbff' : '#172033';
+                          const track = hass.themes?.darkMode ? '#31465b' : '#c7d6e5';
+                          return '<svg viewBox="0 0 100 100" style="width:78px;height:78px;display:block;margin:auto">' +
+                            '<circle cx="50" cy="50" r="40" fill="none" stroke="' + track + '" stroke-width="9"></circle>' +
+                            '<circle cx="50" cy="50" r="40" fill="none" stroke="#d653e8" stroke-width="9" stroke-linecap="round" transform="rotate(-90 50 50)" stroke-dasharray="' + dash + ' 251.3"></circle>' +
+                            '<text x="50" y="56" text-anchor="middle" fill="' + text + '" font-size="20" font-weight="700">' + label + '</text>' +
+                            '</svg>';
+                        ]]]
+                    detail: |-
+                      [[[
+                          const sensor = states['binary_sensor.aquarium_rsrun_peninsula_pump_2_controlled_by_sensor'];
+                          const unavailable = !sensor || ['unknown', 'unavailable'].includes(sensor.state);
+                          const active = sensor?.state === 'on';
+                          const label = unavailable ? 'Sensor unavailable' : (active ? 'Sensor' : 'Sensor off');
+                          const color = unavailable ? '#8a94a3' : (active ? '#45e5a4' : '#ffb547');
+                          const temp = states['sensor.aquarium_rsrun_peninsula_pump_2_temperature'];
+                          const value = Number(temp?.state);
+                          const unit = temp?.attributes?.unit_of_measurement || '';
+                          const temperature = Number.isFinite(value) ? Math.round(value) + (unit ? ' ' + unit : '') : 'Temp unavailable';
+                          return '<span>' + label + '</span><span style="width:8px;height:8px;border-radius:50%;background:' + color + ';display:inline-block;margin-left:4px"></span><span style="margin:0 6px">—</span><span>' + temperature + '</span>';
+                        ]]]
+                    warning: |-
+                      [[[
+                          const state = states['sensor.aquarium_rsrun_peninsula_pump_2_state']?.state;
+                          if (state !== 'over-skimming') return '';
+                          return '<span style="display:inline-flex;align-items:center"><ha-icon icon="mdi:alert" style="--mdc-icon-size:14px;width:14px;height:14px;flex:0 0 14px"></ha-icon><span style="margin-left:1px">Over-skimming</span></span>';
+                        ]]]
+                  styles:
+                    grid:
+                      -
+                        grid-template-areas: "'n' 'ring' 'detail' 'warning'"
+                      -
+                        grid-template-columns: "1fr"
+                      -
+                        grid-template-rows: "20px 78px 18px 18px"
+                      -
+                        row-gap: "2px"
+                    card:
+                      -
+                        height: "154px"
+                      -
+                        padding: "6px"
+                      -
+                        border-radius: "14px"
+                      -
+                        background: "[[[ return hass.themes?.darkMode ? 'rgba(53, 64, 80, 0.98)' : 'rgba(255, 255, 255, 0.78)'; ]]]"
+                      -
+                        border: "[[[ return hass.themes?.darkMode ? '1px solid rgba(126, 148, 174, 0.34)' : '1px solid rgba(73, 98, 127, 0.26)'; ]]]"
+                      -
+                        box-shadow: "none"
+                    name:
+                      -
+                        font-size: "12px"
+                      -
+                        font-weight: "600"
+                      -
+                        color: "var(--primary-text-color)"
+                      -
+                        white-space: "normal"
+                      -
+                        line-height: "1.05"
+                    custom_fields:
+                      ring:
+                        -
+                          align-self: "center"
+                      detail:
+                        -
+                          font-size: "10px"
+                        -
+                          color: "var(--secondary-text-color)"
+                        -
+                          white-space: "nowrap"
+                        -
+                          overflow: "hidden"
+                        -
+                          text-overflow: "ellipsis"
+                        -
+                          display: "flex"
+                        -
+                          align-items: "center"
+                        -
+                          justify-content: "center"
+                      warning:
+                        -
+                          color: "#ff4d4f"
+                        -
+                          font-size: "10px"
+                        -
+                          font-weight: "700"
+                        -
+                          display: "flex"
+                        -
+                          align-items: "center"
+                        -
+                          justify-content: "center"
+                        -
+                          gap: "0"
+        styles:
+          grid:
+            -
+              grid-template-areas: "'i n' 'content content'"
+            -
+              grid-template-columns: "26px 1fr"
+            -
+              grid-template-rows: "30px auto"
+            -
+              column-gap: "7px"
+            -
+              row-gap: "3px"
+            -
+              align-items: "center"
+          card:
+            -
+              padding: "8px"
+            -
+              border-radius: "18px"
+            -
+              background: "[[[ return hass.themes?.darkMode ? 'rgba(42, 52, 65, 0.96)' : 'rgba(236, 242, 248, 0.96)'; ]]]"
+            -
+              border: "[[[ return hass.themes?.darkMode ? '1px solid rgba(126, 148, 174, 0.34)' : '1px solid rgba(73, 98, 127, 0.26)'; ]]]"
+            -
+              box-shadow: "0 8px 18px rgba(0,0,0,0.14)"
+          icon:
+            -
+              width: "21px"
+            -
+              color: "#45e5a4"
+          img_cell:
+            -
+              width: "26px"
+            -
+              height: "26px"
+            -
+              justify-self: "start"
+          name:
+            -
+              justify-self: "start"
+            -
+              font-size: "16px"
+            -
+              font-weight: "700"
+            -
+              color: "var(--primary-text-color)"
+          custom_fields:
+            content:
+              -
+                width: "100%"
+              -
+                min-width: "0"
+      -
+        type: "custom:button-card"
+        name: "Other Active Flow"
+        icon: "mdi:swap-horizontal-bold"
+        show_icon: true
+        show_name: true
+        show_state: false
+        tap_action:
+          action: "none"
+        custom_fields:
+          content:
+            card:
+              type: "custom:layout-card"
+              layout_type: "custom:grid-layout"
+              layout:
+                grid-template-columns: "repeat(1, minmax(0, 1fr))"
+                grid-gap: "8px"
+              cards:
+                -
+                  type: "custom:mushroom-chips-card"
+                  alignment: "center"
+                  chips:
+                    -
+                      type: "conditional"
+                      conditions:
+                        -
+                          entity: "sensor.aquarium_hydros_sump_stir"
+                          state: "on"
+                      chip:
+                        type: "template"
+                        icon: "mdi:pot-mix-outline"
+                        content: "Sump Stir"
+                        card_mod:
+                          style: |
+                            :host {
+                              --chip-background: rgba(138, 205, 215, 0.25);
+                              --color: var(--primary-text-color);
+                            }
+                    -
+                      type: "conditional"
+                      conditions:
+                        -
+                          entity: "sensor.aquarium_hydros_feed_stir"
+                          state: "on"
+                      chip:
+                        type: "template"
+                        icon: "mdi:water-alert-outline"
+                        content: "Fresh Stir"
+                        icon_color: "blue"
+                        card_mod:
+                          style: |
+                            :host {
+                              --chip-background: rgba(138, 205, 215, 0.25);
+                              --color: var(--primary-text-color);
+                            }
+                    -
+                      type: "conditional"
+                      conditions:
+                        -
+                          condition: "state"
+                          entity: "switch.tplink_mix_plug4"
+                          state: "on"
+                      chip:
+                        type: "template"
+                        icon: "mdi:pot-mix-outline"
+                        content: "Salt Mix"
+                        card_mod:
+                          style: |
+                            :host {
+                              --chip-background: rgba(255, 164, 169, 0.25);
+                              --color: var(--primary-text-color);
+                            }
+                  card_mod:
+                    style: |
+                      ha-card {
+                        background: transparent !important;
+                        box-shadow: none !important;
+                        padding: 0 4px;
+
+                        /* global chip sizing */
+                        --chip-height: 30px;
+                        --chip-icon-size: 20px;
+                        --chip-font-size: 0.8rem;
+                      }
+
+                      ha-card .chip-container {
+                        gap: 8px;
+                        justify-content: center;
+                        align-items: center;
+                      }
+
+                      ha-card mushroom-chip .chip {
+                        border-radius: 999px !important;
+                      }
+        styles:
+          grid:
+            -
+              grid-template-areas: "'i n' 'content content'"
+            -
+              grid-template-columns: "26px 1fr"
+            -
+              grid-template-rows: "30px auto"
+            -
+              column-gap: "7px"
+            -
+              row-gap: "8px"
+            -
+              align-items: "center"
+          card:
+            -
+              padding: "12px"
+            -
+              border-radius: "18px"
+            -
+              background: "[[[ return hass.themes?.darkMode ? 'rgba(42, 52, 65, 0.96)' : 'rgba(236, 242, 248, 0.96)'; ]]]"
+            -
+              border: "[[[ return hass.themes?.darkMode ? '1px solid rgba(126, 148, 174, 0.34)' : '1px solid rgba(73, 98, 127, 0.26)'; ]]]"
+            -
+              box-shadow: "0 8px 18px rgba(0,0,0,0.14)"
+          icon:
+            -
+              width: "21px"
+            -
+              color: "#45e5a4"
+          img_cell:
+            -
+              width: "26px"
+            -
+              height: "26px"
+            -
+              justify-self: "start"
+          name:
+            -
+              justify-self: "start"
+            -
+              font-size: "16px"
+            -
+              font-weight: "700"
+            -
+              color: "var(--primary-text-color)"
+          custom_fields:
+            content:
+              -
+                width: "100%"
+              -
+                min-width: "0"
+    animation: true
+  -
+    type: "custom:expander-card"
+    title: "Dosing"
+    cards:
+      -
+        type: "custom:layout-card"
+        layout_type: "custom:grid-layout"
+        layout:
+          grid-template-columns: "1fr"
+          grid-gap: "8px"
+        cards:
+          -
+            type: "custom:button-card"
+            name: "ReefDose4 · 4-Part"
+            icon: "mdi:test-tube"
+            show_icon: true
+            show_name: true
+            show_state: false
+            tap_action:
+              action: "none"
+            custom_fields:
+              content:
+                card:
+                  type: "vertical-stack"
+                  cards:
+                    -
+                      type: "custom:button-card"
+                      entity: "sensor.aquarium_reefdose4_4_part_head_1_remaining_days"
+                      triggers_update:
+                        - "sensor.aquarium_reefdose4_4_part_head_1_supplement"
+                        - "sensor.aquarium_reefdose4_4_part_head_1_auto_dosed_today"
+                        - "sensor.aquarium_reefdose4_4_part_head_1_daily_dose"
+                        - "sensor.aquarium_reefdose4_4_part_head_1_doses_today"
+                        - "sensor.aquarium_reefdose4_4_part_head_1_daily_doses"
+                        - "sensor.aquarium_reefdose4_4_part_head_1_status"
+                      name: |-
+                        [[[
+                              const s=states['sensor.aquarium_reefdose4_4_part_head_1_supplement']?.state;
+                              return s && !['unknown','unavailable','none'].includes(String(s).toLowerCase()) ? s : 'Head 1';
+                            ]]]
+                      show_icon: false
+                      show_name: true
+                      show_state: false
+                      tap_action:
+                        action: "more-info"
+                      hold_action:
+                        action: "more-info"
+                      custom_fields:
+                        dose: |-
+                          [[[
+                                  const a=Number(states['sensor.aquarium_reefdose4_4_part_head_1_auto_dosed_today']?.state);
+                                  const d=Number(states['sensor.aquarium_reefdose4_4_part_head_1_daily_dose']?.state);
+                                  const mlA=Number.isFinite(a)?a*29.5735:NaN;
+                                  const mlD=Number.isFinite(d)?d*29.5735:NaN;
+                                  return (Number.isFinite(mlA)?mlA.toFixed(1):'—')+' / '+(Number.isFinite(mlD)?mlD.toFixed(1):'—')+' mL';
+                                ]]]
+                        bar: |-
+                          [[[
+                                  const a=Number(states['sensor.aquarium_reefdose4_4_part_head_1_auto_dosed_today']?.state);
+                                  const d=Number(states['sensor.aquarium_reefdose4_4_part_head_1_daily_dose']?.state);
+                                  const pct=Number.isFinite(a)&&Number.isFinite(d)&&d>0?Math.max(0,Math.min(100,a/d*100)):0;
+                                  const track=hass.themes?.darkMode?'rgba(199,214,229,0.20)':'rgba(199,214,229,0.48)';
+                                  return '<div style="height:7px;border-radius:999px;background:'+track+';overflow:hidden"><div style="height:100%;width:'+pct.toFixed(1)+'%;border-radius:999px;background:#1fa9ff"></div></div>';
+                                ]]]
+                        pills: |-
+                          [[[
+                                  const done=Number(states['sensor.aquarium_reefdose4_4_part_head_1_doses_today']?.state);
+                                  const total=Number(states['sensor.aquarium_reefdose4_4_part_head_1_daily_doses']?.state);
+                                  const days=Number(states['sensor.aquarium_reefdose4_4_part_head_1_remaining_days']?.state);
+                                  const st=String(states['sensor.aquarium_reefdose4_4_part_head_1_status']?.state||'').toLowerCase();
+                                  const chip=(icon,text,iconColor,bg,border)=>'<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 7px;border:1px solid '+border+';border-radius:9px;background:'+bg+';white-space:nowrap"><ha-icon icon="'+icon+'" style="width:14px;height:14px;color:'+iconColor+'"></ha-icon>'+text+'</span>';
+                                  const neutral=hass.themes?.darkMode?'rgba(255,255,255,0.035)':'rgba(255,255,255,0.42)';
+                                  const neutralBorder='var(--divider-color)';
+                                  if(st==='not-setup') return chip('mdi:flask-empty-outline','Not configured','#718096','transparent',neutralBorder);
+                                  const count=(Number.isFinite(done)?Math.round(done):'—')+' / '+(Number.isFinite(total)?Math.round(total):'—')+' dosed';
+                                  const left=(Number.isFinite(days)?Math.round(days):'—')+' days';
+                                  const dayColor=!Number.isFinite(days)?'#8a8a8a':days<=5?'#ef6471':days<=14?'#f6b84a':'#45d77a';
+                                  const dayBg=!Number.isFinite(days)?neutral:days<=5?(hass.themes?.darkMode?'rgba(239,100,113,0.18)':'rgba(239,100,113,0.13)'):days<=14?(hass.themes?.darkMode?'rgba(246,184,74,0.18)':'rgba(246,184,74,0.14)'):(hass.themes?.darkMode?'rgba(69,215,122,0.16)':'rgba(69,215,122,0.12)');
+                                  const dayBorder=!Number.isFinite(days)?neutralBorder:days<=5?'rgba(239,100,113,0.48)':days<=14?'rgba(246,184,74,0.48)':'rgba(69,215,122,0.44)';
+                                  return chip('mdi:water',count,'#1fa9ff',neutral,neutralBorder)+chip('mdi:battery-medium',left,dayColor,dayBg,dayBorder);
+                                ]]]
+                        heads: "<span style=\"display:inline-flex;align-items:center;gap:1px\"><ha-icon icon=\"mdi:medal\" style=\"width:15px;height:15px;color:#1fa9ff;opacity:1\"></ha-icon><ha-icon icon=\"mdi:medal-outline\" style=\"width:15px;height:15px;color:var(--disabled-text-color);opacity:0.56\"></ha-icon><ha-icon icon=\"mdi:medal-outline\" style=\"width:15px;height:15px;color:var(--disabled-text-color);opacity:0.56\"></ha-icon><ha-icon icon=\"mdi:medal-outline\" style=\"width:15px;height:15px;color:var(--disabled-text-color);opacity:0.56\"></ha-icon></span>"
+                      styles:
+                        grid:
+                          -
+                            grid-template-areas: "'n dose heads' 'bar bar bar' 'pills pills pills'"
+                          -
+                            grid-template-columns: "minmax(0,1fr) max-content max-content"
+                          -
+                            grid-template-rows: "19px 8px 24px"
+                          -
+                            column-gap: "6px"
+                          -
+                            row-gap: "5px"
+                          -
+                            align-items: "center"
+                        card:
+                          -
+                            height: "72px"
+                          -
+                            padding: "7px 9px"
+                          -
+                            border-radius: "11px"
+                          -
+                            background: "[[[ return hass.themes?.darkMode ? 'rgba(53,64,80,0.84)' : 'rgba(255,255,255,0.70)'; ]]]"
+                          -
+                            border: "1px solid var(--divider-color)"
+                          -
+                            box-shadow: "none"
+                          -
+                            overflow: "hidden"
+                          -
+                            opacity: "[[[ return String(states['sensor.aquarium_reefdose4_4_part_head_1_status']?.state||'').toLowerCase()==='not-setup' ? '0.58' : '1'; ]]]"
+                        name:
+                          -
+                            justify-self: "start"
+                          -
+                            font-size: "12px"
+                          -
+                            font-weight: "700"
+                          -
+                            line-height: "1.05"
+                          -
+                            color: "var(--primary-text-color)"
+                          -
+                            white-space: "nowrap"
+                          -
+                            overflow: "hidden"
+                          -
+                            text-overflow: "ellipsis"
+                          -
+                            max-width: "100%"
+                        custom_fields:
+                          dose:
+                            -
+                              justify-self: "end"
+                            -
+                              font-size: "12px"
+                            -
+                              font-weight: "700"
+                            -
+                              color: "var(--primary-text-color)"
+                            -
+                              white-space: "nowrap"
+                            -
+                              align-self: "center"
+                            -
+                              min-width: "0"
+                          bar:
+                            -
+                              width: "100%"
+                          pills:
+                            -
+                              justify-self: "start"
+                            -
+                              font-size: "10px"
+                            -
+                              color: "var(--primary-text-color)"
+                            -
+                              display: "flex"
+                            -
+                              gap: "5px"
+                            -
+                              overflow: "hidden"
+                            -
+                              width: "100%"
+                            -
+                              min-width: "0"
+                          heads:
+                            -
+                              justify-self: "end"
+                            -
+                              align-self: "center"
+                            -
+                              height: "16px"
+                            -
+                              line-height: "1"
+                    -
+                      type: "custom:button-card"
+                      entity: "sensor.aquarium_reefdose4_4_part_head_2_remaining_days"
+                      triggers_update:
+                        - "sensor.aquarium_reefdose4_4_part_head_2_supplement"
+                        - "sensor.aquarium_reefdose4_4_part_head_2_auto_dosed_today"
+                        - "sensor.aquarium_reefdose4_4_part_head_2_daily_dose"
+                        - "sensor.aquarium_reefdose4_4_part_head_2_doses_today"
+                        - "sensor.aquarium_reefdose4_4_part_head_2_daily_doses"
+                        - "sensor.aquarium_reefdose4_4_part_head_2_status"
+                      name: |-
+                        [[[
+                              const s=states['sensor.aquarium_reefdose4_4_part_head_2_supplement']?.state;
+                              return s && !['unknown','unavailable','none'].includes(String(s).toLowerCase()) ? s : 'Head 2';
+                            ]]]
+                      show_icon: false
+                      show_name: true
+                      show_state: false
+                      tap_action:
+                        action: "more-info"
+                      hold_action:
+                        action: "more-info"
+                      custom_fields:
+                        dose: |-
+                          [[[
+                                  const a=Number(states['sensor.aquarium_reefdose4_4_part_head_2_auto_dosed_today']?.state);
+                                  const d=Number(states['sensor.aquarium_reefdose4_4_part_head_2_daily_dose']?.state);
+                                  const mlA=Number.isFinite(a)?a*29.5735:NaN;
+                                  const mlD=Number.isFinite(d)?d*29.5735:NaN;
+                                  return (Number.isFinite(mlA)?mlA.toFixed(1):'—')+' / '+(Number.isFinite(mlD)?mlD.toFixed(1):'—')+' mL';
+                                ]]]
+                        bar: |-
+                          [[[
+                                  const a=Number(states['sensor.aquarium_reefdose4_4_part_head_2_auto_dosed_today']?.state);
+                                  const d=Number(states['sensor.aquarium_reefdose4_4_part_head_2_daily_dose']?.state);
+                                  const pct=Number.isFinite(a)&&Number.isFinite(d)&&d>0?Math.max(0,Math.min(100,a/d*100)):0;
+                                  const track=hass.themes?.darkMode?'rgba(199,214,229,0.20)':'rgba(199,214,229,0.48)';
+                                  return '<div style="height:7px;border-radius:999px;background:'+track+';overflow:hidden"><div style="height:100%;width:'+pct.toFixed(1)+'%;border-radius:999px;background:#45d77a"></div></div>';
+                                ]]]
+                        pills: |-
+                          [[[
+                                  const done=Number(states['sensor.aquarium_reefdose4_4_part_head_2_doses_today']?.state);
+                                  const total=Number(states['sensor.aquarium_reefdose4_4_part_head_2_daily_doses']?.state);
+                                  const days=Number(states['sensor.aquarium_reefdose4_4_part_head_2_remaining_days']?.state);
+                                  const st=String(states['sensor.aquarium_reefdose4_4_part_head_2_status']?.state||'').toLowerCase();
+                                  const chip=(icon,text,iconColor,bg,border)=>'<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 7px;border:1px solid '+border+';border-radius:9px;background:'+bg+';white-space:nowrap"><ha-icon icon="'+icon+'" style="width:14px;height:14px;color:'+iconColor+'"></ha-icon>'+text+'</span>';
+                                  const neutral=hass.themes?.darkMode?'rgba(255,255,255,0.035)':'rgba(255,255,255,0.42)';
+                                  const neutralBorder='var(--divider-color)';
+                                  if(st==='not-setup') return chip('mdi:flask-empty-outline','Not configured','#718096','transparent',neutralBorder);
+                                  const count=(Number.isFinite(done)?Math.round(done):'—')+' / '+(Number.isFinite(total)?Math.round(total):'—')+' dosed';
+                                  const left=(Number.isFinite(days)?Math.round(days):'—')+' days';
+                                  const dayColor=!Number.isFinite(days)?'#8a8a8a':days<=5?'#ef6471':days<=14?'#f6b84a':'#45d77a';
+                                  const dayBg=!Number.isFinite(days)?neutral:days<=5?(hass.themes?.darkMode?'rgba(239,100,113,0.18)':'rgba(239,100,113,0.13)'):days<=14?(hass.themes?.darkMode?'rgba(246,184,74,0.18)':'rgba(246,184,74,0.14)'):(hass.themes?.darkMode?'rgba(69,215,122,0.16)':'rgba(69,215,122,0.12)');
+                                  const dayBorder=!Number.isFinite(days)?neutralBorder:days<=5?'rgba(239,100,113,0.48)':days<=14?'rgba(246,184,74,0.48)':'rgba(69,215,122,0.44)';
+                                  return chip('mdi:water',count,'#45d77a',neutral,neutralBorder)+chip('mdi:battery-medium',left,dayColor,dayBg,dayBorder);
+                                ]]]
+                        heads: "<span style=\"display:inline-flex;align-items:center;gap:1px\"><ha-icon icon=\"mdi:medal-outline\" style=\"width:15px;height:15px;color:var(--disabled-text-color);opacity:0.56\"></ha-icon><ha-icon icon=\"mdi:medal\" style=\"width:15px;height:15px;color:#45d77a;opacity:1\"></ha-icon><ha-icon icon=\"mdi:medal-outline\" style=\"width:15px;height:15px;color:var(--disabled-text-color);opacity:0.56\"></ha-icon><ha-icon icon=\"mdi:medal-outline\" style=\"width:15px;height:15px;color:var(--disabled-text-color);opacity:0.56\"></ha-icon></span>"
+                      styles:
+                        grid:
+                          -
+                            grid-template-areas: "'n dose heads' 'bar bar bar' 'pills pills pills'"
+                          -
+                            grid-template-columns: "minmax(0,1fr) max-content max-content"
+                          -
+                            grid-template-rows: "19px 8px 24px"
+                          -
+                            column-gap: "6px"
+                          -
+                            row-gap: "5px"
+                          -
+                            align-items: "center"
+                        card:
+                          -
+                            height: "72px"
+                          -
+                            padding: "7px 9px"
+                          -
+                            border-radius: "11px"
+                          -
+                            background: "[[[ return hass.themes?.darkMode ? 'rgba(53,64,80,0.84)' : 'rgba(255,255,255,0.70)'; ]]]"
+                          -
+                            border: "1px solid var(--divider-color)"
+                          -
+                            box-shadow: "none"
+                          -
+                            overflow: "hidden"
+                          -
+                            opacity: "[[[ return String(states['sensor.aquarium_reefdose4_4_part_head_2_status']?.state||'').toLowerCase()==='not-setup' ? '0.58' : '1'; ]]]"
+                        name:
+                          -
+                            justify-self: "start"
+                          -
+                            font-size: "12px"
+                          -
+                            font-weight: "700"
+                          -
+                            line-height: "1.05"
+                          -
+                            color: "var(--primary-text-color)"
+                          -
+                            white-space: "nowrap"
+                          -
+                            overflow: "hidden"
+                          -
+                            text-overflow: "ellipsis"
+                          -
+                            max-width: "100%"
+                        custom_fields:
+                          dose:
+                            -
+                              justify-self: "end"
+                            -
+                              font-size: "12px"
+                            -
+                              font-weight: "700"
+                            -
+                              color: "var(--primary-text-color)"
+                            -
+                              white-space: "nowrap"
+                            -
+                              align-self: "center"
+                            -
+                              min-width: "0"
+                          bar:
+                            -
+                              width: "100%"
+                          pills:
+                            -
+                              justify-self: "start"
+                            -
+                              font-size: "10px"
+                            -
+                              color: "var(--primary-text-color)"
+                            -
+                              display: "flex"
+                            -
+                              gap: "5px"
+                            -
+                              overflow: "hidden"
+                            -
+                              width: "100%"
+                            -
+                              min-width: "0"
+                          heads:
+                            -
+                              justify-self: "end"
+                            -
+                              align-self: "center"
+                            -
+                              height: "16px"
+                            -
+                              line-height: "1"
+                    -
+                      type: "custom:button-card"
+                      entity: "sensor.aquarium_reefdose4_4_part_head_3_remaining_days"
+                      triggers_update:
+                        - "sensor.aquarium_reefdose4_4_part_head_3_supplement"
+                        - "sensor.aquarium_reefdose4_4_part_head_3_auto_dosed_today"
+                        - "sensor.aquarium_reefdose4_4_part_head_3_daily_dose"
+                        - "sensor.aquarium_reefdose4_4_part_head_3_doses_today"
+                        - "sensor.aquarium_reefdose4_4_part_head_3_daily_doses"
+                        - "sensor.aquarium_reefdose4_4_part_head_3_status"
+                      name: |-
+                        [[[
+                              const s=states['sensor.aquarium_reefdose4_4_part_head_3_supplement']?.state;
+                              return s && !['unknown','unavailable','none'].includes(String(s).toLowerCase()) ? s : 'Head 3';
+                            ]]]
+                      show_icon: false
+                      show_name: true
+                      show_state: false
+                      tap_action:
+                        action: "more-info"
+                      hold_action:
+                        action: "more-info"
+                      custom_fields:
+                        dose: |-
+                          [[[
+                                  const a=Number(states['sensor.aquarium_reefdose4_4_part_head_3_auto_dosed_today']?.state);
+                                  const d=Number(states['sensor.aquarium_reefdose4_4_part_head_3_daily_dose']?.state);
+                                  const mlA=Number.isFinite(a)?a*29.5735:NaN;
+                                  const mlD=Number.isFinite(d)?d*29.5735:NaN;
+                                  return (Number.isFinite(mlA)?mlA.toFixed(1):'—')+' / '+(Number.isFinite(mlD)?mlD.toFixed(1):'—')+' mL';
+                                ]]]
+                        bar: |-
+                          [[[
+                                  const a=Number(states['sensor.aquarium_reefdose4_4_part_head_3_auto_dosed_today']?.state);
+                                  const d=Number(states['sensor.aquarium_reefdose4_4_part_head_3_daily_dose']?.state);
+                                  const pct=Number.isFinite(a)&&Number.isFinite(d)&&d>0?Math.max(0,Math.min(100,a/d*100)):0;
+                                  const track=hass.themes?.darkMode?'rgba(199,214,229,0.20)':'rgba(199,214,229,0.48)';
+                                  return '<div style="height:7px;border-radius:999px;background:'+track+';overflow:hidden"><div style="height:100%;width:'+pct.toFixed(1)+'%;border-radius:999px;background:#d94be5"></div></div>';
+                                ]]]
+                        pills: |-
+                          [[[
+                                  const done=Number(states['sensor.aquarium_reefdose4_4_part_head_3_doses_today']?.state);
+                                  const total=Number(states['sensor.aquarium_reefdose4_4_part_head_3_daily_doses']?.state);
+                                  const days=Number(states['sensor.aquarium_reefdose4_4_part_head_3_remaining_days']?.state);
+                                  const st=String(states['sensor.aquarium_reefdose4_4_part_head_3_status']?.state||'').toLowerCase();
+                                  const chip=(icon,text,iconColor,bg,border)=>'<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 7px;border:1px solid '+border+';border-radius:9px;background:'+bg+';white-space:nowrap"><ha-icon icon="'+icon+'" style="width:14px;height:14px;color:'+iconColor+'"></ha-icon>'+text+'</span>';
+                                  const neutral=hass.themes?.darkMode?'rgba(255,255,255,0.035)':'rgba(255,255,255,0.42)';
+                                  const neutralBorder='var(--divider-color)';
+                                  if(st==='not-setup') return chip('mdi:flask-empty-outline','Not configured','#718096','transparent',neutralBorder);
+                                  const count=(Number.isFinite(done)?Math.round(done):'—')+' / '+(Number.isFinite(total)?Math.round(total):'—')+' dosed';
+                                  const left=(Number.isFinite(days)?Math.round(days):'—')+' days';
+                                  const dayColor=!Number.isFinite(days)?'#8a8a8a':days<=5?'#ef6471':days<=14?'#f6b84a':'#45d77a';
+                                  const dayBg=!Number.isFinite(days)?neutral:days<=5?(hass.themes?.darkMode?'rgba(239,100,113,0.18)':'rgba(239,100,113,0.13)'):days<=14?(hass.themes?.darkMode?'rgba(246,184,74,0.18)':'rgba(246,184,74,0.14)'):(hass.themes?.darkMode?'rgba(69,215,122,0.16)':'rgba(69,215,122,0.12)');
+                                  const dayBorder=!Number.isFinite(days)?neutralBorder:days<=5?'rgba(239,100,113,0.48)':days<=14?'rgba(246,184,74,0.48)':'rgba(69,215,122,0.44)';
+                                  return chip('mdi:water',count,'#d94be5',neutral,neutralBorder)+chip('mdi:battery-medium',left,dayColor,dayBg,dayBorder);
+                                ]]]
+                        heads: "<span style=\"display:inline-flex;align-items:center;gap:1px\"><ha-icon icon=\"mdi:medal-outline\" style=\"width:15px;height:15px;color:var(--disabled-text-color);opacity:0.56\"></ha-icon><ha-icon icon=\"mdi:medal-outline\" style=\"width:15px;height:15px;color:var(--disabled-text-color);opacity:0.56\"></ha-icon><ha-icon icon=\"mdi:medal\" style=\"width:15px;height:15px;color:#d94be5;opacity:1\"></ha-icon><ha-icon icon=\"mdi:medal-outline\" style=\"width:15px;height:15px;color:var(--disabled-text-color);opacity:0.56\"></ha-icon></span>"
+                      styles:
+                        grid:
+                          -
+                            grid-template-areas: "'n dose heads' 'bar bar bar' 'pills pills pills'"
+                          -
+                            grid-template-columns: "minmax(0,1fr) max-content max-content"
+                          -
+                            grid-template-rows: "19px 8px 24px"
+                          -
+                            column-gap: "6px"
+                          -
+                            row-gap: "5px"
+                          -
+                            align-items: "center"
+                        card:
+                          -
+                            height: "72px"
+                          -
+                            padding: "7px 9px"
+                          -
+                            border-radius: "11px"
+                          -
+                            background: "[[[ return hass.themes?.darkMode ? 'rgba(53,64,80,0.84)' : 'rgba(255,255,255,0.70)'; ]]]"
+                          -
+                            border: "1px solid var(--divider-color)"
+                          -
+                            box-shadow: "none"
+                          -
+                            overflow: "hidden"
+                          -
+                            opacity: "[[[ return String(states['sensor.aquarium_reefdose4_4_part_head_3_status']?.state||'').toLowerCase()==='not-setup' ? '0.58' : '1'; ]]]"
+                        name:
+                          -
+                            justify-self: "start"
+                          -
+                            font-size: "12px"
+                          -
+                            font-weight: "700"
+                          -
+                            line-height: "1.05"
+                          -
+                            color: "var(--primary-text-color)"
+                          -
+                            white-space: "nowrap"
+                          -
+                            overflow: "hidden"
+                          -
+                            text-overflow: "ellipsis"
+                          -
+                            max-width: "100%"
+                        custom_fields:
+                          dose:
+                            -
+                              justify-self: "end"
+                            -
+                              font-size: "12px"
+                            -
+                              font-weight: "700"
+                            -
+                              color: "var(--primary-text-color)"
+                            -
+                              white-space: "nowrap"
+                            -
+                              align-self: "center"
+                            -
+                              min-width: "0"
+                          bar:
+                            -
+                              width: "100%"
+                          pills:
+                            -
+                              justify-self: "start"
+                            -
+                              font-size: "10px"
+                            -
+                              color: "var(--primary-text-color)"
+                            -
+                              display: "flex"
+                            -
+                              gap: "5px"
+                            -
+                              overflow: "hidden"
+                            -
+                              width: "100%"
+                            -
+                              min-width: "0"
+                          heads:
+                            -
+                              justify-self: "end"
+                            -
+                              align-self: "center"
+                            -
+                              height: "16px"
+                            -
+                              line-height: "1"
+                    -
+                      type: "custom:button-card"
+                      entity: "sensor.aquarium_reefdose4_4_part_head_4_remaining_days"
+                      triggers_update:
+                        - "sensor.aquarium_reefdose4_4_part_head_4_supplement"
+                        - "sensor.aquarium_reefdose4_4_part_head_4_auto_dosed_today"
+                        - "sensor.aquarium_reefdose4_4_part_head_4_daily_dose"
+                        - "sensor.aquarium_reefdose4_4_part_head_4_doses_today"
+                        - "sensor.aquarium_reefdose4_4_part_head_4_daily_doses"
+                        - "sensor.aquarium_reefdose4_4_part_head_4_status"
+                      name: |-
+                        [[[
+                              const s=states['sensor.aquarium_reefdose4_4_part_head_4_supplement']?.state;
+                              return s && !['unknown','unavailable','none'].includes(String(s).toLowerCase()) ? s : 'Head 4';
+                            ]]]
+                      show_icon: false
+                      show_name: true
+                      show_state: false
+                      tap_action:
+                        action: "more-info"
+                      hold_action:
+                        action: "more-info"
+                      custom_fields:
+                        dose: |-
+                          [[[
+                                  const a=Number(states['sensor.aquarium_reefdose4_4_part_head_4_auto_dosed_today']?.state);
+                                  const d=Number(states['sensor.aquarium_reefdose4_4_part_head_4_daily_dose']?.state);
+                                  const mlA=Number.isFinite(a)?a*29.5735:NaN;
+                                  const mlD=Number.isFinite(d)?d*29.5735:NaN;
+                                  return (Number.isFinite(mlA)?mlA.toFixed(1):'—')+' / '+(Number.isFinite(mlD)?mlD.toFixed(1):'—')+' mL';
+                                ]]]
+                        bar: |-
+                          [[[
+                                  const a=Number(states['sensor.aquarium_reefdose4_4_part_head_4_auto_dosed_today']?.state);
+                                  const d=Number(states['sensor.aquarium_reefdose4_4_part_head_4_daily_dose']?.state);
+                                  const pct=Number.isFinite(a)&&Number.isFinite(d)&&d>0?Math.max(0,Math.min(100,a/d*100)):0;
+                                  const track=hass.themes?.darkMode?'rgba(199,214,229,0.20)':'rgba(199,214,229,0.48)';
+                                  return '<div style="height:7px;border-radius:999px;background:'+track+';overflow:hidden"><div style="height:100%;width:'+pct.toFixed(1)+'%;border-radius:999px;background:#ff365f"></div></div>';
+                                ]]]
+                        pills: |-
+                          [[[
+                                  const done=Number(states['sensor.aquarium_reefdose4_4_part_head_4_doses_today']?.state);
+                                  const total=Number(states['sensor.aquarium_reefdose4_4_part_head_4_daily_doses']?.state);
+                                  const days=Number(states['sensor.aquarium_reefdose4_4_part_head_4_remaining_days']?.state);
+                                  const st=String(states['sensor.aquarium_reefdose4_4_part_head_4_status']?.state||'').toLowerCase();
+                                  const chip=(icon,text,iconColor,bg,border)=>'<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 7px;border:1px solid '+border+';border-radius:9px;background:'+bg+';white-space:nowrap"><ha-icon icon="'+icon+'" style="width:14px;height:14px;color:'+iconColor+'"></ha-icon>'+text+'</span>';
+                                  const neutral=hass.themes?.darkMode?'rgba(255,255,255,0.035)':'rgba(255,255,255,0.42)';
+                                  const neutralBorder='var(--divider-color)';
+                                  if(st==='not-setup') return chip('mdi:flask-empty-outline','Not configured','#718096','transparent',neutralBorder);
+                                  const count=(Number.isFinite(done)?Math.round(done):'—')+' / '+(Number.isFinite(total)?Math.round(total):'—')+' dosed';
+                                  const left=(Number.isFinite(days)?Math.round(days):'—')+' days';
+                                  const dayColor=!Number.isFinite(days)?'#8a8a8a':days<=5?'#ef6471':days<=14?'#f6b84a':'#45d77a';
+                                  const dayBg=!Number.isFinite(days)?neutral:days<=5?(hass.themes?.darkMode?'rgba(239,100,113,0.18)':'rgba(239,100,113,0.13)'):days<=14?(hass.themes?.darkMode?'rgba(246,184,74,0.18)':'rgba(246,184,74,0.14)'):(hass.themes?.darkMode?'rgba(69,215,122,0.16)':'rgba(69,215,122,0.12)');
+                                  const dayBorder=!Number.isFinite(days)?neutralBorder:days<=5?'rgba(239,100,113,0.48)':days<=14?'rgba(246,184,74,0.48)':'rgba(69,215,122,0.44)';
+                                  return chip('mdi:water',count,'#ff365f',neutral,neutralBorder)+chip('mdi:battery-medium',left,dayColor,dayBg,dayBorder);
+                                ]]]
+                        heads: "<span style=\"display:inline-flex;align-items:center;gap:1px\"><ha-icon icon=\"mdi:medal-outline\" style=\"width:15px;height:15px;color:var(--disabled-text-color);opacity:0.56\"></ha-icon><ha-icon icon=\"mdi:medal-outline\" style=\"width:15px;height:15px;color:var(--disabled-text-color);opacity:0.56\"></ha-icon><ha-icon icon=\"mdi:medal-outline\" style=\"width:15px;height:15px;color:var(--disabled-text-color);opacity:0.56\"></ha-icon><ha-icon icon=\"mdi:medal\" style=\"width:15px;height:15px;color:#ff365f;opacity:1\"></ha-icon></span>"
+                      styles:
+                        grid:
+                          -
+                            grid-template-areas: "'n dose heads' 'bar bar bar' 'pills pills pills'"
+                          -
+                            grid-template-columns: "minmax(0,1fr) max-content max-content"
+                          -
+                            grid-template-rows: "19px 8px 24px"
+                          -
+                            column-gap: "6px"
+                          -
+                            row-gap: "5px"
+                          -
+                            align-items: "center"
+                        card:
+                          -
+                            height: "72px"
+                          -
+                            padding: "7px 9px"
+                          -
+                            border-radius: "11px"
+                          -
+                            background: "[[[ return hass.themes?.darkMode ? 'rgba(53,64,80,0.84)' : 'rgba(255,255,255,0.70)'; ]]]"
+                          -
+                            border: "1px solid var(--divider-color)"
+                          -
+                            box-shadow: "none"
+                          -
+                            overflow: "hidden"
+                          -
+                            opacity: "[[[ return String(states['sensor.aquarium_reefdose4_4_part_head_4_status']?.state||'').toLowerCase()==='not-setup' ? '0.58' : '1'; ]]]"
+                        name:
+                          -
+                            justify-self: "start"
+                          -
+                            font-size: "12px"
+                          -
+                            font-weight: "700"
+                          -
+                            line-height: "1.05"
+                          -
+                            color: "var(--primary-text-color)"
+                          -
+                            white-space: "nowrap"
+                          -
+                            overflow: "hidden"
+                          -
+                            text-overflow: "ellipsis"
+                          -
+                            max-width: "100%"
+                        custom_fields:
+                          dose:
+                            -
+                              justify-self: "end"
+                            -
+                              font-size: "12px"
+                            -
+                              font-weight: "700"
+                            -
+                              color: "var(--primary-text-color)"
+                            -
+                              white-space: "nowrap"
+                            -
+                              align-self: "center"
+                            -
+                              min-width: "0"
+                          bar:
+                            -
+                              width: "100%"
+                          pills:
+                            -
+                              justify-self: "start"
+                            -
+                              font-size: "10px"
+                            -
+                              color: "var(--primary-text-color)"
+                            -
+                              display: "flex"
+                            -
+                              gap: "5px"
+                            -
+                              overflow: "hidden"
+                            -
+                              width: "100%"
+                            -
+                              min-width: "0"
+                          heads:
+                            -
+                              justify-self: "end"
+                            -
+                              align-self: "center"
+                            -
+                              height: "16px"
+                            -
+                              line-height: "1"
+            styles:
+              grid:
+                -
+                  grid-template-areas: "'i n' 'content content'"
+                -
+                  grid-template-columns: "24px 1fr"
+                -
+                  grid-template-rows: "25px auto"
+                -
+                  column-gap: "7px"
+                -
+                  row-gap: "7px"
+                -
+                  align-items: "center"
+              card:
+                -
+                  padding: "10px"
+                -
+                  border-radius: "16px"
+                -
+                  background: "[[[ return hass.themes?.darkMode ? 'rgba(42,52,65,0.96)' : 'rgba(236,242,248,0.96)'; ]]]"
+                -
+                  border: "[[[ return hass.themes?.darkMode ? '1px solid rgba(126,148,174,0.34)' : '1px solid rgba(73,98,127,0.26)'; ]]]"
+                -
+                  box-shadow: "0 7px 16px rgba(0,0,0,0.12)"
+              icon:
+                -
+                  width: "20px"
+                -
+                  color: "#45e5a4"
+              img_cell:
+                -
+                  width: "24px"
+                -
+                  height: "24px"
+                -
+                  justify-self: "start"
+              name:
+                -
+                  justify-self: "start"
+                -
+                  font-size: "15px"
+                -
+                  font-weight: "750"
+                -
+                  color: "var(--primary-text-color)"
+              custom_fields:
+                content:
+                  -
+                    width: "100%"
+                  -
+                    min-width: "0"
+          -
+            type: "custom:button-card"
+            name: "ReefDose4 · Extra"
+            icon: "mdi:test-tube"
+            show_icon: true
+            show_name: true
+            show_state: false
+            tap_action:
+              action: "none"
+            custom_fields:
+              content:
+                card:
+                  type: "vertical-stack"
+                  cards:
+                    -
+                      type: "custom:button-card"
+                      entity: "sensor.aquarium_reefdose4_extra_head_1_remaining_days"
+                      triggers_update:
+                        - "sensor.aquarium_reefdose4_extra_head_1_supplement"
+                        - "sensor.aquarium_reefdose4_extra_head_1_auto_dosed_today"
+                        - "sensor.aquarium_reefdose4_extra_head_1_daily_dose"
+                        - "sensor.aquarium_reefdose4_extra_head_1_doses_today"
+                        - "sensor.aquarium_reefdose4_extra_head_1_daily_doses"
+                        - "sensor.aquarium_reefdose4_extra_head_1_status"
+                      name: |-
+                        [[[
+                              const s=states['sensor.aquarium_reefdose4_extra_head_1_supplement']?.state;
+                              return s && !['unknown','unavailable','none'].includes(String(s).toLowerCase()) ? s : 'Head 1';
+                            ]]]
+                      show_icon: false
+                      show_name: true
+                      show_state: false
+                      tap_action:
+                        action: "more-info"
+                      hold_action:
+                        action: "more-info"
+                      custom_fields:
+                        dose: |-
+                          [[[
+                                  const a=Number(states['sensor.aquarium_reefdose4_extra_head_1_auto_dosed_today']?.state);
+                                  const d=Number(states['sensor.aquarium_reefdose4_extra_head_1_daily_dose']?.state);
+                                  const mlA=Number.isFinite(a)?a*29.5735:NaN;
+                                  const mlD=Number.isFinite(d)?d*29.5735:NaN;
+                                  return (Number.isFinite(mlA)?mlA.toFixed(1):'—')+' / '+(Number.isFinite(mlD)?mlD.toFixed(1):'—')+' mL';
+                                ]]]
+                        bar: |-
+                          [[[
+                                  const a=Number(states['sensor.aquarium_reefdose4_extra_head_1_auto_dosed_today']?.state);
+                                  const d=Number(states['sensor.aquarium_reefdose4_extra_head_1_daily_dose']?.state);
+                                  const pct=Number.isFinite(a)&&Number.isFinite(d)&&d>0?Math.max(0,Math.min(100,a/d*100)):0;
+                                  const track=hass.themes?.darkMode?'rgba(199,214,229,0.20)':'rgba(199,214,229,0.48)';
+                                  return '<div style="height:7px;border-radius:999px;background:'+track+';overflow:hidden"><div style="height:100%;width:'+pct.toFixed(1)+'%;border-radius:999px;background:#1fa9ff"></div></div>';
+                                ]]]
+                        pills: |-
+                          [[[
+                                  const done=Number(states['sensor.aquarium_reefdose4_extra_head_1_doses_today']?.state);
+                                  const total=Number(states['sensor.aquarium_reefdose4_extra_head_1_daily_doses']?.state);
+                                  const days=Number(states['sensor.aquarium_reefdose4_extra_head_1_remaining_days']?.state);
+                                  const st=String(states['sensor.aquarium_reefdose4_extra_head_1_status']?.state||'').toLowerCase();
+                                  const chip=(icon,text,iconColor,bg,border)=>'<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 7px;border:1px solid '+border+';border-radius:9px;background:'+bg+';white-space:nowrap"><ha-icon icon="'+icon+'" style="width:14px;height:14px;color:'+iconColor+'"></ha-icon>'+text+'</span>';
+                                  const neutral=hass.themes?.darkMode?'rgba(255,255,255,0.035)':'rgba(255,255,255,0.42)';
+                                  const neutralBorder='var(--divider-color)';
+                                  if(st==='not-setup') return chip('mdi:flask-empty-outline','Not configured','#718096','transparent',neutralBorder);
+                                  const count=(Number.isFinite(done)?Math.round(done):'—')+' / '+(Number.isFinite(total)?Math.round(total):'—')+' dosed';
+                                  const left=(Number.isFinite(days)?Math.round(days):'—')+' days';
+                                  const dayColor=!Number.isFinite(days)?'#8a8a8a':days<=5?'#ef6471':days<=14?'#f6b84a':'#45d77a';
+                                  const dayBg=!Number.isFinite(days)?neutral:days<=5?(hass.themes?.darkMode?'rgba(239,100,113,0.18)':'rgba(239,100,113,0.13)'):days<=14?(hass.themes?.darkMode?'rgba(246,184,74,0.18)':'rgba(246,184,74,0.14)'):(hass.themes?.darkMode?'rgba(69,215,122,0.16)':'rgba(69,215,122,0.12)');
+                                  const dayBorder=!Number.isFinite(days)?neutralBorder:days<=5?'rgba(239,100,113,0.48)':days<=14?'rgba(246,184,74,0.48)':'rgba(69,215,122,0.44)';
+                                  return chip('mdi:water',count,'#1fa9ff',neutral,neutralBorder)+chip('mdi:battery-medium',left,dayColor,dayBg,dayBorder);
+                                ]]]
+                        heads: "<span style=\"display:inline-flex;align-items:center;gap:1px\"><ha-icon icon=\"mdi:medal\" style=\"width:15px;height:15px;color:#1fa9ff;opacity:1\"></ha-icon><ha-icon icon=\"mdi:medal-outline\" style=\"width:15px;height:15px;color:var(--disabled-text-color);opacity:0.56\"></ha-icon><ha-icon icon=\"mdi:medal-outline\" style=\"width:15px;height:15px;color:var(--disabled-text-color);opacity:0.56\"></ha-icon><ha-icon icon=\"mdi:medal-outline\" style=\"width:15px;height:15px;color:var(--disabled-text-color);opacity:0.56\"></ha-icon></span>"
+                      styles:
+                        grid:
+                          -
+                            grid-template-areas: "'n dose heads' 'bar bar bar' 'pills pills pills'"
+                          -
+                            grid-template-columns: "minmax(0,1fr) max-content max-content"
+                          -
+                            grid-template-rows: "19px 8px 24px"
+                          -
+                            column-gap: "6px"
+                          -
+                            row-gap: "5px"
+                          -
+                            align-items: "center"
+                        card:
+                          -
+                            height: "72px"
+                          -
+                            padding: "7px 9px"
+                          -
+                            border-radius: "11px"
+                          -
+                            background: "[[[ return hass.themes?.darkMode ? 'rgba(53,64,80,0.84)' : 'rgba(255,255,255,0.70)'; ]]]"
+                          -
+                            border: "1px solid var(--divider-color)"
+                          -
+                            box-shadow: "none"
+                          -
+                            overflow: "hidden"
+                          -
+                            opacity: "[[[ return String(states['sensor.aquarium_reefdose4_extra_head_1_status']?.state||'').toLowerCase()==='not-setup' ? '0.58' : '1'; ]]]"
+                        name:
+                          -
+                            justify-self: "start"
+                          -
+                            font-size: "12px"
+                          -
+                            font-weight: "700"
+                          -
+                            line-height: "1.05"
+                          -
+                            color: "var(--primary-text-color)"
+                          -
+                            white-space: "nowrap"
+                          -
+                            overflow: "hidden"
+                          -
+                            text-overflow: "ellipsis"
+                          -
+                            max-width: "100%"
+                        custom_fields:
+                          dose:
+                            -
+                              justify-self: "end"
+                            -
+                              font-size: "12px"
+                            -
+                              font-weight: "700"
+                            -
+                              color: "var(--primary-text-color)"
+                            -
+                              white-space: "nowrap"
+                            -
+                              align-self: "center"
+                            -
+                              min-width: "0"
+                          bar:
+                            -
+                              width: "100%"
+                          pills:
+                            -
+                              justify-self: "start"
+                            -
+                              font-size: "10px"
+                            -
+                              color: "var(--primary-text-color)"
+                            -
+                              display: "flex"
+                            -
+                              gap: "5px"
+                            -
+                              overflow: "hidden"
+                            -
+                              width: "100%"
+                            -
+                              min-width: "0"
+                          heads:
+                            -
+                              justify-self: "end"
+                            -
+                              align-self: "center"
+                            -
+                              height: "16px"
+                            -
+                              line-height: "1"
+                    -
+                      type: "custom:button-card"
+                      entity: "sensor.aquarium_reefdose4_extra_head_2_remaining_days"
+                      triggers_update:
+                        - "sensor.aquarium_reefdose4_extra_head_2_supplement"
+                        - "sensor.aquarium_reefdose4_extra_head_2_auto_dosed_today"
+                        - "sensor.aquarium_reefdose4_extra_head_2_daily_dose"
+                        - "sensor.aquarium_reefdose4_extra_head_2_doses_today"
+                        - "sensor.aquarium_reefdose4_extra_head_2_daily_doses"
+                        - "sensor.aquarium_reefdose4_extra_head_2_status"
+                      name: |-
+                        [[[
+                              const s=states['sensor.aquarium_reefdose4_extra_head_2_supplement']?.state;
+                              return s && !['unknown','unavailable','none'].includes(String(s).toLowerCase()) ? s : 'Head 2';
+                            ]]]
+                      show_icon: false
+                      show_name: true
+                      show_state: false
+                      tap_action:
+                        action: "more-info"
+                      hold_action:
+                        action: "more-info"
+                      custom_fields:
+                        dose: |-
+                          [[[
+                                  const a=Number(states['sensor.aquarium_reefdose4_extra_head_2_auto_dosed_today']?.state);
+                                  const d=Number(states['sensor.aquarium_reefdose4_extra_head_2_daily_dose']?.state);
+                                  const mlA=Number.isFinite(a)?a*29.5735:NaN;
+                                  const mlD=Number.isFinite(d)?d*29.5735:NaN;
+                                  return (Number.isFinite(mlA)?mlA.toFixed(1):'—')+' / '+(Number.isFinite(mlD)?mlD.toFixed(1):'—')+' mL';
+                                ]]]
+                        bar: |-
+                          [[[
+                                  const a=Number(states['sensor.aquarium_reefdose4_extra_head_2_auto_dosed_today']?.state);
+                                  const d=Number(states['sensor.aquarium_reefdose4_extra_head_2_daily_dose']?.state);
+                                  const pct=Number.isFinite(a)&&Number.isFinite(d)&&d>0?Math.max(0,Math.min(100,a/d*100)):0;
+                                  const track=hass.themes?.darkMode?'rgba(199,214,229,0.20)':'rgba(199,214,229,0.48)';
+                                  return '<div style="height:7px;border-radius:999px;background:'+track+';overflow:hidden"><div style="height:100%;width:'+pct.toFixed(1)+'%;border-radius:999px;background:#1fa9ff"></div></div>';
+                                ]]]
+                        pills: |-
+                          [[[
+                                  const done=Number(states['sensor.aquarium_reefdose4_extra_head_2_doses_today']?.state);
+                                  const total=Number(states['sensor.aquarium_reefdose4_extra_head_2_daily_doses']?.state);
+                                  const days=Number(states['sensor.aquarium_reefdose4_extra_head_2_remaining_days']?.state);
+                                  const st=String(states['sensor.aquarium_reefdose4_extra_head_2_status']?.state||'').toLowerCase();
+                                  const chip=(icon,text,iconColor,bg,border)=>'<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 7px;border:1px solid '+border+';border-radius:9px;background:'+bg+';white-space:nowrap"><ha-icon icon="'+icon+'" style="width:14px;height:14px;color:'+iconColor+'"></ha-icon>'+text+'</span>';
+                                  const neutral=hass.themes?.darkMode?'rgba(255,255,255,0.035)':'rgba(255,255,255,0.42)';
+                                  const neutralBorder='var(--divider-color)';
+                                  if(st==='not-setup') return chip('mdi:flask-empty-outline','Not configured','#718096','transparent',neutralBorder);
+                                  const count=(Number.isFinite(done)?Math.round(done):'—')+' / '+(Number.isFinite(total)?Math.round(total):'—')+' dosed';
+                                  const left=(Number.isFinite(days)?Math.round(days):'—')+' days';
+                                  const dayColor=!Number.isFinite(days)?'#8a8a8a':days<=5?'#ef6471':days<=14?'#f6b84a':'#45d77a';
+                                  const dayBg=!Number.isFinite(days)?neutral:days<=5?(hass.themes?.darkMode?'rgba(239,100,113,0.18)':'rgba(239,100,113,0.13)'):days<=14?(hass.themes?.darkMode?'rgba(246,184,74,0.18)':'rgba(246,184,74,0.14)'):(hass.themes?.darkMode?'rgba(69,215,122,0.16)':'rgba(69,215,122,0.12)');
+                                  const dayBorder=!Number.isFinite(days)?neutralBorder:days<=5?'rgba(239,100,113,0.48)':days<=14?'rgba(246,184,74,0.48)':'rgba(69,215,122,0.44)';
+                                  return chip('mdi:water',count,'#1fa9ff',neutral,neutralBorder)+chip('mdi:battery-medium',left,dayColor,dayBg,dayBorder);
+                                ]]]
+                        heads: "<span style=\"display:inline-flex;align-items:center;gap:1px\"><ha-icon icon=\"mdi:medal-outline\" style=\"width:15px;height:15px;color:var(--disabled-text-color);opacity:0.56\"></ha-icon><ha-icon icon=\"mdi:medal\" style=\"width:15px;height:15px;color:#1fa9ff;opacity:1\"></ha-icon><ha-icon icon=\"mdi:medal-outline\" style=\"width:15px;height:15px;color:var(--disabled-text-color);opacity:0.56\"></ha-icon><ha-icon icon=\"mdi:medal-outline\" style=\"width:15px;height:15px;color:var(--disabled-text-color);opacity:0.56\"></ha-icon></span>"
+                      styles:
+                        grid:
+                          -
+                            grid-template-areas: "'n dose heads' 'bar bar bar' 'pills pills pills'"
+                          -
+                            grid-template-columns: "minmax(0,1fr) max-content max-content"
+                          -
+                            grid-template-rows: "19px 8px 24px"
+                          -
+                            column-gap: "6px"
+                          -
+                            row-gap: "5px"
+                          -
+                            align-items: "center"
+                        card:
+                          -
+                            height: "72px"
+                          -
+                            padding: "7px 9px"
+                          -
+                            border-radius: "11px"
+                          -
+                            background: "[[[ return hass.themes?.darkMode ? 'rgba(53,64,80,0.84)' : 'rgba(255,255,255,0.70)'; ]]]"
+                          -
+                            border: "1px solid var(--divider-color)"
+                          -
+                            box-shadow: "none"
+                          -
+                            overflow: "hidden"
+                          -
+                            opacity: "[[[ return String(states['sensor.aquarium_reefdose4_extra_head_2_status']?.state||'').toLowerCase()==='not-setup' ? '0.58' : '1'; ]]]"
+                        name:
+                          -
+                            justify-self: "start"
+                          -
+                            font-size: "12px"
+                          -
+                            font-weight: "700"
+                          -
+                            line-height: "1.05"
+                          -
+                            color: "var(--primary-text-color)"
+                          -
+                            white-space: "nowrap"
+                          -
+                            overflow: "hidden"
+                          -
+                            text-overflow: "ellipsis"
+                          -
+                            max-width: "100%"
+                        custom_fields:
+                          dose:
+                            -
+                              justify-self: "end"
+                            -
+                              font-size: "12px"
+                            -
+                              font-weight: "700"
+                            -
+                              color: "var(--primary-text-color)"
+                            -
+                              white-space: "nowrap"
+                            -
+                              align-self: "center"
+                            -
+                              min-width: "0"
+                          bar:
+                            -
+                              width: "100%"
+                          pills:
+                            -
+                              justify-self: "start"
+                            -
+                              font-size: "10px"
+                            -
+                              color: "var(--primary-text-color)"
+                            -
+                              display: "flex"
+                            -
+                              gap: "5px"
+                            -
+                              overflow: "hidden"
+                            -
+                              width: "100%"
+                            -
+                              min-width: "0"
+                          heads:
+                            -
+                              justify-self: "end"
+                            -
+                              align-self: "center"
+                            -
+                              height: "16px"
+                            -
+                              line-height: "1"
+                    -
+                      type: "custom:button-card"
+                      entity: "sensor.aquarium_reefdose4_extra_head_3_remaining_days"
+                      triggers_update:
+                        - "sensor.aquarium_reefdose4_extra_head_3_supplement"
+                        - "sensor.aquarium_reefdose4_extra_head_3_auto_dosed_today"
+                        - "sensor.aquarium_reefdose4_extra_head_3_daily_dose"
+                        - "sensor.aquarium_reefdose4_extra_head_3_doses_today"
+                        - "sensor.aquarium_reefdose4_extra_head_3_daily_doses"
+                        - "sensor.aquarium_reefdose4_extra_head_3_status"
+                      name: |-
+                        [[[
+                              const s=states['sensor.aquarium_reefdose4_extra_head_3_supplement']?.state;
+                              return s && !['unknown','unavailable','none'].includes(String(s).toLowerCase()) ? s : 'Head 3';
+                            ]]]
+                      show_icon: false
+                      show_name: true
+                      show_state: false
+                      tap_action:
+                        action: "more-info"
+                      hold_action:
+                        action: "more-info"
+                      custom_fields:
+                        dose: |-
+                          [[[
+                                  const a=Number(states['sensor.aquarium_reefdose4_extra_head_3_auto_dosed_today']?.state);
+                                  const d=Number(states['sensor.aquarium_reefdose4_extra_head_3_daily_dose']?.state);
+                                  const mlA=Number.isFinite(a)?a*29.5735:NaN;
+                                  const mlD=Number.isFinite(d)?d*29.5735:NaN;
+                                  return (Number.isFinite(mlA)?mlA.toFixed(1):'—')+' / '+(Number.isFinite(mlD)?mlD.toFixed(1):'—')+' mL';
+                                ]]]
+                        bar: |-
+                          [[[
+                                  const a=Number(states['sensor.aquarium_reefdose4_extra_head_3_auto_dosed_today']?.state);
+                                  const d=Number(states['sensor.aquarium_reefdose4_extra_head_3_daily_dose']?.state);
+                                  const pct=Number.isFinite(a)&&Number.isFinite(d)&&d>0?Math.max(0,Math.min(100,a/d*100)):0;
+                                  const track=hass.themes?.darkMode?'rgba(199,214,229,0.20)':'rgba(199,214,229,0.48)';
+                                  return '<div style="height:7px;border-radius:999px;background:'+track+';overflow:hidden"><div style="height:100%;width:'+pct.toFixed(1)+'%;border-radius:999px;background:#1fa9ff"></div></div>';
+                                ]]]
+                        pills: |-
+                          [[[
+                                  const done=Number(states['sensor.aquarium_reefdose4_extra_head_3_doses_today']?.state);
+                                  const total=Number(states['sensor.aquarium_reefdose4_extra_head_3_daily_doses']?.state);
+                                  const days=Number(states['sensor.aquarium_reefdose4_extra_head_3_remaining_days']?.state);
+                                  const st=String(states['sensor.aquarium_reefdose4_extra_head_3_status']?.state||'').toLowerCase();
+                                  const chip=(icon,text,iconColor,bg,border)=>'<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 7px;border:1px solid '+border+';border-radius:9px;background:'+bg+';white-space:nowrap"><ha-icon icon="'+icon+'" style="width:14px;height:14px;color:'+iconColor+'"></ha-icon>'+text+'</span>';
+                                  const neutral=hass.themes?.darkMode?'rgba(255,255,255,0.035)':'rgba(255,255,255,0.42)';
+                                  const neutralBorder='var(--divider-color)';
+                                  if(st==='not-setup') return chip('mdi:flask-empty-outline','Not configured','#718096','transparent',neutralBorder);
+                                  const count=(Number.isFinite(done)?Math.round(done):'—')+' / '+(Number.isFinite(total)?Math.round(total):'—')+' dosed';
+                                  const left=(Number.isFinite(days)?Math.round(days):'—')+' days';
+                                  const dayColor=!Number.isFinite(days)?'#8a8a8a':days<=5?'#ef6471':days<=14?'#f6b84a':'#45d77a';
+                                  const dayBg=!Number.isFinite(days)?neutral:days<=5?(hass.themes?.darkMode?'rgba(239,100,113,0.18)':'rgba(239,100,113,0.13)'):days<=14?(hass.themes?.darkMode?'rgba(246,184,74,0.18)':'rgba(246,184,74,0.14)'):(hass.themes?.darkMode?'rgba(69,215,122,0.16)':'rgba(69,215,122,0.12)');
+                                  const dayBorder=!Number.isFinite(days)?neutralBorder:days<=5?'rgba(239,100,113,0.48)':days<=14?'rgba(246,184,74,0.48)':'rgba(69,215,122,0.44)';
+                                  return chip('mdi:water',count,'#1fa9ff',neutral,neutralBorder)+chip('mdi:battery-medium',left,dayColor,dayBg,dayBorder);
+                                ]]]
+                        heads: "<span style=\"display:inline-flex;align-items:center;gap:1px\"><ha-icon icon=\"mdi:medal-outline\" style=\"width:15px;height:15px;color:var(--disabled-text-color);opacity:0.56\"></ha-icon><ha-icon icon=\"mdi:medal-outline\" style=\"width:15px;height:15px;color:var(--disabled-text-color);opacity:0.56\"></ha-icon><ha-icon icon=\"mdi:medal\" style=\"width:15px;height:15px;color:#1fa9ff;opacity:1\"></ha-icon><ha-icon icon=\"mdi:medal-outline\" style=\"width:15px;height:15px;color:var(--disabled-text-color);opacity:0.56\"></ha-icon></span>"
+                      styles:
+                        grid:
+                          -
+                            grid-template-areas: "'n dose heads' 'bar bar bar' 'pills pills pills'"
+                          -
+                            grid-template-columns: "minmax(0,1fr) max-content max-content"
+                          -
+                            grid-template-rows: "19px 8px 24px"
+                          -
+                            column-gap: "6px"
+                          -
+                            row-gap: "5px"
+                          -
+                            align-items: "center"
+                        card:
+                          -
+                            height: "72px"
+                          -
+                            padding: "7px 9px"
+                          -
+                            border-radius: "11px"
+                          -
+                            background: "[[[ return hass.themes?.darkMode ? 'rgba(53,64,80,0.84)' : 'rgba(255,255,255,0.70)'; ]]]"
+                          -
+                            border: "1px solid var(--divider-color)"
+                          -
+                            box-shadow: "none"
+                          -
+                            overflow: "hidden"
+                          -
+                            opacity: "[[[ return String(states['sensor.aquarium_reefdose4_extra_head_3_status']?.state||'').toLowerCase()==='not-setup' ? '0.58' : '1'; ]]]"
+                        name:
+                          -
+                            justify-self: "start"
+                          -
+                            font-size: "12px"
+                          -
+                            font-weight: "700"
+                          -
+                            line-height: "1.05"
+                          -
+                            color: "var(--primary-text-color)"
+                          -
+                            white-space: "nowrap"
+                          -
+                            overflow: "hidden"
+                          -
+                            text-overflow: "ellipsis"
+                          -
+                            max-width: "100%"
+                        custom_fields:
+                          dose:
+                            -
+                              justify-self: "end"
+                            -
+                              font-size: "12px"
+                            -
+                              font-weight: "700"
+                            -
+                              color: "var(--primary-text-color)"
+                            -
+                              white-space: "nowrap"
+                            -
+                              align-self: "center"
+                            -
+                              min-width: "0"
+                          bar:
+                            -
+                              width: "100%"
+                          pills:
+                            -
+                              justify-self: "start"
+                            -
+                              font-size: "10px"
+                            -
+                              color: "var(--primary-text-color)"
+                            -
+                              display: "flex"
+                            -
+                              gap: "5px"
+                            -
+                              overflow: "hidden"
+                            -
+                              width: "100%"
+                            -
+                              min-width: "0"
+                          heads:
+                            -
+                              justify-self: "end"
+                            -
+                              align-self: "center"
+                            -
+                              height: "16px"
+                            -
+                              line-height: "1"
+                    -
+                      type: "custom:button-card"
+                      entity: "sensor.aquarium_reefdose4_extra_head_4_remaining_days"
+                      triggers_update:
+                        - "sensor.aquarium_reefdose4_extra_head_4_supplement"
+                        - "sensor.aquarium_reefdose4_extra_head_4_auto_dosed_today"
+                        - "sensor.aquarium_reefdose4_extra_head_4_daily_dose"
+                        - "sensor.aquarium_reefdose4_extra_head_4_doses_today"
+                        - "sensor.aquarium_reefdose4_extra_head_4_daily_doses"
+                        - "sensor.aquarium_reefdose4_extra_head_4_status"
+                      name: |-
+                        [[[
+                              const s=states['sensor.aquarium_reefdose4_extra_head_4_supplement']?.state;
+                              return s && !['unknown','unavailable','none'].includes(String(s).toLowerCase()) ? s : 'Head 4';
+                            ]]]
+                      show_icon: false
+                      show_name: true
+                      show_state: false
+                      tap_action:
+                        action: "more-info"
+                      hold_action:
+                        action: "more-info"
+                      custom_fields:
+                        dose: |-
+                          [[[
+                                  const a=Number(states['sensor.aquarium_reefdose4_extra_head_4_auto_dosed_today']?.state);
+                                  const d=Number(states['sensor.aquarium_reefdose4_extra_head_4_daily_dose']?.state);
+                                  const mlA=Number.isFinite(a)?a*29.5735:NaN;
+                                  const mlD=Number.isFinite(d)?d*29.5735:NaN;
+                                  return (Number.isFinite(mlA)?mlA.toFixed(1):'—')+' / '+(Number.isFinite(mlD)?mlD.toFixed(1):'—')+' mL';
+                                ]]]
+                        bar: |-
+                          [[[
+                                  const a=Number(states['sensor.aquarium_reefdose4_extra_head_4_auto_dosed_today']?.state);
+                                  const d=Number(states['sensor.aquarium_reefdose4_extra_head_4_daily_dose']?.state);
+                                  const pct=Number.isFinite(a)&&Number.isFinite(d)&&d>0?Math.max(0,Math.min(100,a/d*100)):0;
+                                  const track=hass.themes?.darkMode?'rgba(199,214,229,0.20)':'rgba(199,214,229,0.48)';
+                                  return '<div style="height:7px;border-radius:999px;background:'+track+';overflow:hidden"><div style="height:100%;width:'+pct.toFixed(1)+'%;border-radius:999px;background:#1fa9ff"></div></div>';
+                                ]]]
+                        pills: |-
+                          [[[
+                                  const done=Number(states['sensor.aquarium_reefdose4_extra_head_4_doses_today']?.state);
+                                  const total=Number(states['sensor.aquarium_reefdose4_extra_head_4_daily_doses']?.state);
+                                  const days=Number(states['sensor.aquarium_reefdose4_extra_head_4_remaining_days']?.state);
+                                  const st=String(states['sensor.aquarium_reefdose4_extra_head_4_status']?.state||'').toLowerCase();
+                                  const chip=(icon,text,iconColor,bg,border)=>'<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 7px;border:1px solid '+border+';border-radius:9px;background:'+bg+';white-space:nowrap"><ha-icon icon="'+icon+'" style="width:14px;height:14px;color:'+iconColor+'"></ha-icon>'+text+'</span>';
+                                  const neutral=hass.themes?.darkMode?'rgba(255,255,255,0.035)':'rgba(255,255,255,0.42)';
+                                  const neutralBorder='var(--divider-color)';
+                                  if(st==='not-setup') return chip('mdi:flask-empty-outline','Not configured','#718096','transparent',neutralBorder);
+                                  const count=(Number.isFinite(done)?Math.round(done):'—')+' / '+(Number.isFinite(total)?Math.round(total):'—')+' dosed';
+                                  const left=(Number.isFinite(days)?Math.round(days):'—')+' days';
+                                  const dayColor=!Number.isFinite(days)?'#8a8a8a':days<=5?'#ef6471':days<=14?'#f6b84a':'#45d77a';
+                                  const dayBg=!Number.isFinite(days)?neutral:days<=5?(hass.themes?.darkMode?'rgba(239,100,113,0.18)':'rgba(239,100,113,0.13)'):days<=14?(hass.themes?.darkMode?'rgba(246,184,74,0.18)':'rgba(246,184,74,0.14)'):(hass.themes?.darkMode?'rgba(69,215,122,0.16)':'rgba(69,215,122,0.12)');
+                                  const dayBorder=!Number.isFinite(days)?neutralBorder:days<=5?'rgba(239,100,113,0.48)':days<=14?'rgba(246,184,74,0.48)':'rgba(69,215,122,0.44)';
+                                  return chip('mdi:water',count,'#1fa9ff',neutral,neutralBorder)+chip('mdi:battery-medium',left,dayColor,dayBg,dayBorder);
+                                ]]]
+                        heads: "<span style=\"display:inline-flex;align-items:center;gap:1px\"><ha-icon icon=\"mdi:medal-outline\" style=\"width:15px;height:15px;color:var(--disabled-text-color);opacity:0.56\"></ha-icon><ha-icon icon=\"mdi:medal-outline\" style=\"width:15px;height:15px;color:var(--disabled-text-color);opacity:0.56\"></ha-icon><ha-icon icon=\"mdi:medal-outline\" style=\"width:15px;height:15px;color:var(--disabled-text-color);opacity:0.56\"></ha-icon><ha-icon icon=\"mdi:medal\" style=\"width:15px;height:15px;color:#1fa9ff;opacity:1\"></ha-icon></span>"
+                      styles:
+                        grid:
+                          -
+                            grid-template-areas: "'n dose heads' 'bar bar bar' 'pills pills pills'"
+                          -
+                            grid-template-columns: "minmax(0,1fr) max-content max-content"
+                          -
+                            grid-template-rows: "19px 8px 24px"
+                          -
+                            column-gap: "6px"
+                          -
+                            row-gap: "5px"
+                          -
+                            align-items: "center"
+                        card:
+                          -
+                            height: "72px"
+                          -
+                            padding: "7px 9px"
+                          -
+                            border-radius: "11px"
+                          -
+                            background: "[[[ return hass.themes?.darkMode ? 'rgba(53,64,80,0.84)' : 'rgba(255,255,255,0.70)'; ]]]"
+                          -
+                            border: "1px solid var(--divider-color)"
+                          -
+                            box-shadow: "none"
+                          -
+                            overflow: "hidden"
+                          -
+                            opacity: "[[[ return String(states['sensor.aquarium_reefdose4_extra_head_4_status']?.state||'').toLowerCase()==='not-setup' ? '0.58' : '1'; ]]]"
+                        name:
+                          -
+                            justify-self: "start"
+                          -
+                            font-size: "12px"
+                          -
+                            font-weight: "700"
+                          -
+                            line-height: "1.05"
+                          -
+                            color: "var(--primary-text-color)"
+                          -
+                            white-space: "nowrap"
+                          -
+                            overflow: "hidden"
+                          -
+                            text-overflow: "ellipsis"
+                          -
+                            max-width: "100%"
+                        custom_fields:
+                          dose:
+                            -
+                              justify-self: "end"
+                            -
+                              font-size: "12px"
+                            -
+                              font-weight: "700"
+                            -
+                              color: "var(--primary-text-color)"
+                            -
+                              white-space: "nowrap"
+                            -
+                              align-self: "center"
+                            -
+                              min-width: "0"
+                          bar:
+                            -
+                              width: "100%"
+                          pills:
+                            -
+                              justify-self: "start"
+                            -
+                              font-size: "10px"
+                            -
+                              color: "var(--primary-text-color)"
+                            -
+                              display: "flex"
+                            -
+                              gap: "5px"
+                            -
+                              overflow: "hidden"
+                            -
+                              width: "100%"
+                            -
+                              min-width: "0"
+                          heads:
+                            -
+                              justify-self: "end"
+                            -
+                              align-self: "center"
+                            -
+                              height: "16px"
+                            -
+                              line-height: "1"
+            styles:
+              grid:
+                -
+                  grid-template-areas: "'i n' 'content content'"
+                -
+                  grid-template-columns: "24px 1fr"
+                -
+                  grid-template-rows: "25px auto"
+                -
+                  column-gap: "7px"
+                -
+                  row-gap: "7px"
+                -
+                  align-items: "center"
+              card:
+                -
+                  padding: "10px"
+                -
+                  border-radius: "16px"
+                -
+                  background: "[[[ return hass.themes?.darkMode ? 'rgba(42,52,65,0.96)' : 'rgba(236,242,248,0.96)'; ]]]"
+                -
+                  border: "[[[ return hass.themes?.darkMode ? '1px solid rgba(126,148,174,0.34)' : '1px solid rgba(73,98,127,0.26)'; ]]]"
+                -
+                  box-shadow: "0 7px 16px rgba(0,0,0,0.12)"
+              icon:
+                -
+                  width: "20px"
+                -
+                  color: "#45e5a4"
+              img_cell:
+                -
+                  width: "24px"
+                -
+                  height: "24px"
+                -
+                  justify-self: "start"
+              name:
+                -
+                  justify-self: "start"
+                -
+                  font-size: "15px"
+                -
+                  font-weight: "750"
+                -
+                  color: "var(--primary-text-color)"
+              custom_fields:
+                content:
+                  -
+                    width: "100%"
+                  -
+                    min-width: "0"
+    animation: true
+  -
+    type: "custom:expander-card"
+    title: "Filtration / General"
+    cards:
+      -
+        type: "custom:button-card"
+        name: "ReefMat 500"
+        icon: "mdi:filter-variant"
+        show_icon: true
+        show_name: true
+        show_state: false
+        tap_action:
+          action: "more-info"
+        entity: "sensor.aquarium_rsmat_500_total_usage"
+        custom_fields:
+          summary: |-
+            [[[
+                const t = Number(states['sensor.aquarium_rsmat_500_total_usage']?.state);
+                const r = Number(states['sensor.aquarium_rsmat_500_remaining_length']?.state);
+                const unit = states['sensor.aquarium_rsmat_500_total_usage']?.attributes?.unit_of_measurement || '';
+                if (!Number.isFinite(t)) return 'Usage unavailable';
+                const totalRoll = Number.isFinite(r) ? t + r : NaN;
+                return '<span style="font-size:12px;color:var(--secondary-text-color)">Total use</span><br>' +
+                  '<span style="font-size:22px;font-weight:750;color:var(--primary-text-color)">' + t.toFixed(1) + '</span>' +
+                  '<span style="font-size:11px;color:var(--secondary-text-color)"> ' + unit +
+                  (Number.isFinite(totalRoll) ? ' / ' + totalRoll.toFixed(1) + ' ' + unit : '') + '</span>';
+              ]]]
+          progress: |-
+            [[[
+                const t = Number(states['sensor.aquarium_rsmat_500_total_usage']?.state);
+                const r = Number(states['sensor.aquarium_rsmat_500_remaining_length']?.state);
+                const pct = Number.isFinite(t) && Number.isFinite(r) && t + r > 0 ? Math.max(0, Math.min(100, t / (t + r) * 100)) : 0;
+                return '<div style="height:10px;border-radius:999px;background:' +
+                  (hass.themes?.darkMode ? '#344258' : '#cad6e3') + ';overflow:hidden">' +
+                  '<div style="height:100%;width:' + pct.toFixed(1) + '%;background:linear-gradient(90deg,#d95bea,#b94fe5);"></div></div>';
+              ]]]
+          stats: |-
+            [[[
+                const today = Number(states['sensor.aquarium_rsmat_500_today_usage']?.state);
+                const avg = Number(states['sensor.aquarium_rsmat_500_daily_average_usage']?.state);
+                const days = Number(states['sensor.aquarium_rsmat_500_days_till_end_of_roll']?.state);
+                const unit = states['sensor.aquarium_rsmat_500_today_usage']?.attributes?.unit_of_measurement || '';
+                const chip = (v) => '<span style="display:inline-block;padding:5px 9px;margin:2px 3px 0 0;border:1px solid var(--divider-color);border-radius:10px;font-size:10px;color:var(--primary-text-color)">' + v + '</span>';
+                return chip((Number.isFinite(today) ? today.toFixed(1) : '—') + ' ' + unit + ' today') +
+                  chip((Number.isFinite(avg) ? avg.toFixed(1) : '—') + ' daily avg') +
+                  chip((Number.isFinite(days) ? Math.round(days) : '—') + ' days left');
+              ]]]
+        styles:
+          grid:
+            -
+              grid-template-areas: "'n i' 'summary summary' 'progress progress' 'stats stats'"
+            -
+              grid-template-columns: "1fr 34px"
+            -
+              grid-template-rows: "30px 48px 12px 38px"
+            -
+              row-gap: "5px"
+          card:
+            -
+              padding: "13px"
+            -
+              border-radius: "18px"
+            -
+              background: "[[[ return hass.themes?.darkMode ? 'rgba(42, 52, 65, 0.96)' : 'rgba(236, 242, 248, 0.96)'; ]]]"
+            -
+              border: "[[[ return hass.themes?.darkMode ? '1px solid rgba(126, 148, 174, 0.34)' : '1px solid rgba(73, 98, 127, 0.26)'; ]]]"
+            -
+              box-shadow: "0 8px 18px rgba(0,0,0,0.14)"
+          name:
+            -
+              justify-self: "start"
+            -
+              font-size: "16px"
+            -
+              font-weight: "700"
+            -
+              color: "var(--primary-text-color)"
+          icon:
+            -
+              width: "25px"
+            -
+              color: "#45e5a4"
+          img_cell:
+            -
+              justify-self: "end"
+            -
+              width: "34px"
+            -
+              height: "34px"
+            -
+              border-radius: "50%"
+            -
+              background: "[[[ return hass.themes?.darkMode ? 'rgba(255,255,255,0.08)' : 'rgba(31,169,255,0.09)'; ]]]"
+          custom_fields:
+            summary:
+              -
+                justify-self: "stretch"
+              -
+                text-align: "left"
+            progress:
+              -
+                width: "100%"
+            stats:
+              -
+                text-align: "left"
+              -
+                white-space: "normal"
+      -
+        type: "custom:button-card"
+        name: "Systems"
+        icon: "mdi:server-network"
+        show_icon: true
+        show_name: true
+        show_state: false
+        tap_action:
+          action: "none"
+        custom_fields:
+          content:
+            card:
+              type: "custom:layout-card"
+              layout_type: "custom:grid-layout"
+              layout:
+                grid-template-columns: "repeat(1, minmax(0, 1fr))"
+                grid-gap: "8px"
+              cards:
+                -
+                  type: "custom:mushroom-chips-card"
+                  alignment: "center"
+                  chips:
+                    -
+                      type: "conditional"
+                      conditions:
+                        -
+                          condition: "state"
+                          entity: "sensor.aquarium_hydros_not_scrubbing"
+                          state: "on"
+                      chip:
+                        type: "template"
+                        icon: "mdi:drag"
+                        content: "Not Scrubbing"
+                        card_mod:
+                          style: |
+                            :host {
+                              --chip-background: rgba(138, 205, 215, 0.25);
+                              --color: var(--primary-text-color);
+                            }
+                    -
+                      type: "conditional"
+                      conditions:
+                        -
+                          condition: "numeric_state"
+                          above: 0
+                          entity: "sensor.aquarium_hydros_sterilizer_power"
+                      chip:
+                        type: "template"
+                        icon: "mdi:water-alert-outline"
+                        content: "Sterilizer {{ states('sensor.aquarium_hydros_sterilizer_power')}}w"
+                        card_mod:
+                          style: |
+                            :host {
+                              --chip-background: rgba(138, 205, 215, 0.25);
+                              --color: var(--primary-text-color);
+                            }
+                    -
+                      type: "conditional"
+                      conditions:
+                        -
+                          condition: "numeric_state"
+                          above: 0
+                          entity: "sensor.aquarium_hydros_sterilizer"
+                      chip:
+                        type: "template"
+                        icon: "mdi:alert"
+                        content: "Sterilizer Off"
+                        card_mod:
+                          style: |
+                            :host {
+                              --chip-background: rgba(255, 164, 169, 0.25);
+                              --color: var(--primary-text-color);
+                            }
+                    -
+                      type: "conditional"
+                      conditions:
+                        -
+                          condition: "numeric_state"
+                          above: 0
+                          entity: "sensor.aquarium_hydros_helios_heater_power"
+                      chip:
+                        type: "template"
+                        content: "Helios - {{ states('sensor.aquarium_hydros_helios_heater_power')}}w"
+                        card_mod:
+                          style: |
+                            :host {
+                              --chip-background: rgba(255, 164, 169, 0.25);
+                              --color: var(--primary-text-color);
+                            }
+                    -
+                      type: "conditional"
+                      conditions:
+                        -
+                          condition: "numeric_state"
+                          above: 0
+                          entity: "sensor.aquarium_hydros_display_fans_power"
+                      chip:
+                        type: "template"
+                        icon: "mdi:fan"
+                        content: "{{states('sensor.aquarium_hydros_display_fans_power')}}"
+                        card_mod:
+                          style: |
+                            :host {
+                              --chip-background: rgba(138, 205, 215, 0.25);
+                              --color: var(--primary-text-color);
+                            }
+                  card_mod:
+                    style: |
+                      ha-card {
+                        background: transparent !important;
+                        box-shadow: none !important;
+                        padding: 0 4px;
+
+                        /* global chip sizing */
+                        --chip-height: 30px;
+                        --chip-icon-size: 20px;
+                        --chip-font-size: 0.8rem;
+                      }
+
+                      ha-card .chip-container {
+                        gap: 8px;
+                        justify-content: center;
+                        align-items: center;
+                      }
+
+                      ha-card mushroom-chip .chip {
+                        border-radius: 999px !important;
+                      }
+                -
+                  type: "custom:mushroom-chips-card"
+                  alignment: "center"
+                  chips:
+                    -
+                      type: "conditional"
+                      conditions:
+                        -
+                          condition: "numeric_state"
+                          above: 0
+                          entity: "sensor.aquarium_hydros_ozotech_power"
+                      chip:
+                        type: "template"
+                        icon: "mdi:air-purifier"
+                        content: "Ozotech {{ states('sensor.aquarium_hydros_ozotech_power')}}w"
+                        card_mod:
+                          style: |
+                            :host {
+                              --chip-background: rgba(158, 203, 145, 0.4);
+                              --color: var(--primary-text-color);
+                            }
+                    -
+                      type: "conditional"
+                      conditions:
+                        -
+                          condition: "numeric_state"
+                          above: 0
+                          entity: "sensor.aquarium_hydros_cabinet_lights_power"
+                      chip:
+                        type: "template"
+                        content: "Cabinet Lights {{ states('sensor.aquarium_hydros_cabinet_lights_power')}}w"
+                        card_mod:
+                          style: |
+                            :host {
+                              --chip-background: rgba(255, 164, 169, 0.25);
+                              --color: var(--primary-text-color);
+                            }
+                        icon: "mdi:led-strip"
+                    -
+                      type: "conditional"
+                      conditions:
+                        -
+                          condition: "numeric_state"
+                          above: 0
+                          entity: "sensor.aquarium_hydros_ozone_air_power"
+                      chip:
+                        type: "template"
+                        icon: "mdi:pump"
+                        content: "Air for Ozone {{states('sensor.aquarium_hydros_ozone_air_power')}}w"
+                        card_mod:
+                          style: |
+                            :host {
+                              --chip-background: rgba(138, 205, 215, 0.25);
+                              --color: var(--primary-text-color);
+                            }
+                  card_mod:
+                    style: |
+                      ha-card {
+                        background: transparent !important;
+                        box-shadow: none !important;
+                        padding: 0 4px;
+
+                        /* global chip sizing */
+                        --chip-height: 30px;
+                        --chip-icon-size: 20px;
+                        --chip-font-size: 0.8rem;
+                      }
+
+                      ha-card .chip-container {
+                        gap: 8px;
+                        justify-content: center;
+                        align-items: center;
+                      }
+
+                      ha-card mushroom-chip .chip {
+                        border-radius: 999px !important;
+                      }
+                -
+                  type: "vertical-stack"
+                  cards:
+                    -
+                      type: "markdown"
+                      content: |
+                        Other Power
+                      text_only: true
+                      card_mod:
+                        style: |
+                          ha-card {
+                            background: none;
+                            box-shadow: none;
+                          }
+                          ha-markdown {
+                            font-size: 12px;
+                            font-weight: 500;
+                            line-height: 2.2;
+                          }
+                          p {
+                            margin: 0;
+                          }
+                    -
+                      type: "custom:mushroom-chips-card"
+                      alignment: "center"
+                      chips:
+                        -
+                          type: "template"
+                          entity: "sensor.aquarium_hydros_ai_blade_1_grow_power"
+                          icon: "mdi:led-strip"
+                          content: "AI Blade 1 Grow {{states('sensor.aquarium_hydros_ai_blade_1_grow_power')}}w"
+                          card_mod:
+                            style: |
+                              :host {
+                                --chip-background: rgba(94, 92, 178, 0.4);
+                                --color: var(--primary-text-color);
+                              }
+                        -
+                          type: "template"
+                          entity: "sensor.aquarium_hydros_ai_blade_2_glow_power"
+                          icon: "mdi:led-strip"
+                          content: "AI Blade 2 Glow {{states('sensor.aquarium_hydros_ai_blade_2_glow_power')}}w"
+                          card_mod:
+                            style: |
+                              :host {
+                                --chip-background: rgba(161, 106, 209, 0.4);
+                                --color: var(--primary-text-color);
+                              }
+                        -
+                          type: "template"
+                          entity: "sensor.aquarium_hydros_ai_blade_3_grow_power"
+                          icon: "mdi:led-strip"
+                          content: "AI Blade 3 Grow {{states('sensor.aquarium_hydros_ai_blade_3_grow_power')}}w"
+                          card_mod:
+                            style: |
+                              :host {
+                                --chip-background: rgba(94, 92, 178, 0.4);
+                                --color: var(--primary-text-color);
+                              }
+                        -
+                          type: "template"
+                          entity: "sensor.aquarium_hydros_wev2_power"
+                          icon: "mdi:waves"
+                          content: "WEv2 {{states('sensor.aquarium_hydros_wev2_power')}}w"
+                          card_mod:
+                            style: |
+                              :host {
+                                --chip-background: rgba(255, 254, 224, 0.4);
+                                --color: var(--primary-text-color);
+                              }
+                        -
+                          type: "template"
+                          entity: "sensor.aquarium_hydros_xp8_total_power"
+                          icon: "mdi:power-plug"
+                          content: "XP8 {{states('sensor.aquarium_hydros_xp8_total_power')}}w"
+                          card_mod:
+                            style: |
+                              :host {
+                                --chip-background: rgba(255, 254, 224, 0.4);
+                                --color: var(--primary-text-color);
+                              }
+                      card_mod:
+                        style: |
+                          ha-card {
+                            background: transparent !important;
+                            box-shadow: none !important;
+                            padding: 0 4px;
+
+                            /* global chip sizing */
+                            --chip-height: 30px;
+                            --chip-icon-size: 20px;
+                            --chip-font-size: 0.8rem;
+                          }
+
+                          ha-card .chip-container {
+                            gap: 8px;
+                            justify-content: center;
+                            align-items: center;
+                          }
+
+                          ha-card mushroom-chip .chip {
+                            border-radius: 999px !important;
+                          }
+        styles:
+          grid:
+            -
+              grid-template-areas: "'i n' 'content content'"
+            -
+              grid-template-columns: "26px 1fr"
+            -
+              grid-template-rows: "30px auto"
+            -
+              column-gap: "7px"
+            -
+              row-gap: "8px"
+            -
+              align-items: "center"
+          card:
+            -
+              padding: "12px"
+            -
+              border-radius: "18px"
+            -
+              background: "[[[ return hass.themes?.darkMode ? 'rgba(42, 52, 65, 0.96)' : 'rgba(236, 242, 248, 0.96)'; ]]]"
+            -
+              border: "[[[ return hass.themes?.darkMode ? '1px solid rgba(126, 148, 174, 0.34)' : '1px solid rgba(73, 98, 127, 0.26)'; ]]]"
+            -
+              box-shadow: "0 8px 18px rgba(0,0,0,0.14)"
+          icon:
+            -
+              width: "21px"
+            -
+              color: "#45e5a4"
+          img_cell:
+            -
+              width: "26px"
+            -
+              height: "26px"
+            -
+              justify-self: "start"
+          name:
+            -
+              justify-self: "start"
+            -
+              font-size: "16px"
+            -
+              font-weight: "700"
+            -
+              color: "var(--primary-text-color)"
+          custom_fields:
+            content:
+              -
+                width: "100%"
+              -
+                min-width: "0"
+    animation: true

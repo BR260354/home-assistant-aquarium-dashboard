@@ -65,24 +65,18 @@ card:
                 --card-primary-font-weight: 500;
               }
   
-        # Native input_select row is used here because Mushroom select dropdowns
-        # can be clipped or fail to open inside expander-card on narrow mobile screens.
-        - type: entities
-          entities:
-            - entity: input_select.awms_workflow
-              name: Used For
-              icon: mdi:format-list-bulleted
-          show_header_toggle: false
+        # A dedicated select card stays subscribed to the workflow helper so its
+        # displayed option changes immediately with the preview and workflow cards.
+        - type: custom:mushroom-select-card
+          entity: input_select.awms_workflow
+          name: Used For
+          icon: mdi:format-list-bulleted
           card_mod:
             style: |
               ha-card {
                 border-radius: 8px;
                 --ha-card-background: rgba(0, 188, 212, 0.08);
                 --paper-item-icon-color: rgb(0, 188, 212);
-              }
-              #states {
-                padding-top: 2px;
-                padding-bottom: 2px;
               }
   
         # These workflow chips are intentionally explicit so each dropdown
@@ -585,8 +579,16 @@ card:
           icon_color: cyan
           layout: horizontal
           tap_action:
-            action: call-service
-            service: script.awms_apply_adjustment
+            action: fire-dom-event
+            browser_mod:
+              service: browser_mod.sequence
+              data:
+                sequence:
+                  - service: script.awms_apply_adjustment
+                  - service: browser_mod.notification
+                    data:
+                      message: Water Management adjustment applied
+                      duration: 4000
           card_mod:
             style: |
               ha-card {

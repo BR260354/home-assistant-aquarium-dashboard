@@ -17,11 +17,23 @@ The Peninsula is a mixed reef and the primary display aquarium in the main livin
 
 | Platform | Equipment |
 | --- | --- |
-| Hydros | Kraken, X4, Launch, Minnow, WaveEngine v2, X2, and XS |
-| Red Sea | ReefRun return pump, RSK-300 skimmer, ReefMat 500, and ReefDose 4 |
+| Hydros | Kraken, X4, Launch, WaveEngine v2, X2, and XS |
+| Red Sea | ReefRun return pump, RSK-300 skimmer, ReefMat 500, ReefDose4 - 4-Part, and ReefDose4-Extra |
 | Other | UV sterilizer, Avast Marine feeder, and ozone |
 
 The Peninsula also uses automatic top off (ATO) and automatic water changes (AWC). Its Hydros collective includes the controllers at the mixing station.
+
+The Hydros Simple Doser and Peninsula OctoPulse 2 have been removed. Current
+Peninsula circulation is provided by **Mid OctoPulse4**, **Upper OctoPulse4**,
+and **Left XF350**.
+
+Both ReefDose controllers are assigned to the Home Assistant **Aquarium** area:
+
+- **ReefDose4 - 4-Part** doses Red Sea Complete 4-Part.
+- **ReefDose4-Extra** handles supplemental and occasional dosing.
+
+Their entities use the prefixes `aquarium_reefdose4_4_part_*` and
+`aquarium_reefdose4_extra_*`.
 
 ### Red Sea 200XL G2
 
@@ -29,10 +41,23 @@ The 200XL is a separate soft coral and anemone aquarium with a couple of clownfi
 
 | Platform | Equipment |
 | --- | --- |
-| Hydros | Launch, WaveEngine LE, WiFi Quad, and WiFi Feeder |
-| Red Sea | ReefDose 4 |
+| Hydros | Launch, WaveEngine LE, WiFi Quad, WiFi Feeder, and Minnow |
+| Red Sea | None currently connected |
 
 It has an independent ATO reservoir and uses manual water changes. The ATO reservoir is manually filled from the Peninsula RODI reservoir.
+
+The ReefDose 4 previously used by the 200XL has been moved to the Peninsula
+and is now `ReefDose4-Extra`.
+
+The Hydros Minnow has moved from the Peninsula to the 200XL. Its first head is
+available in Home Assistant through the `bedroom_aquarium_minnow_head_1*`
+entity family and is shown in the 200XL Dosing expander. The second physical
+head is currently unused and has no Hydros entity, so the dashboard identifies
+it as not configured. The entities have a Home Assistant **Bedroom** area
+override, but Hydros currently still publishes them under the integration-owned
+**Aquarium Hydros** parent device. That parent-device association will remain
+until the Minnow output is assigned to the Bedroom Aquarium collective in
+Hydros and the integration is reloaded.
 
 ### Mixing station
 
@@ -46,7 +71,7 @@ Two TP-Link smart power strips provide additional switched outlets across the sy
 
 AAS brings the independent systems together in one interface:
 
-- A single dashboard for both aquariums
+- Two purpose-built dashboards for both aquariums: Mobile and Tablet
 - Water parameters and equipment state at a glance
 - RODI, saltwater, and 200XL ATO reservoir estimates
 - Guided water-removal and transfer workflows
@@ -54,6 +79,97 @@ AAS brings the independent systems together in one interface:
 - A foundation for activity history, usage statistics, and forecasting
 
 The first major subsystem is the **Aquarium Water Management Suite (AWMS)**. It tracks water even when it leaves the mixing station for something other than an aquarium.
+
+The Water Management **Used For** control is a Mushroom Select card bound directly to `input_select.awms_workflow`, so the selected workflow stays synchronized with the preview and workflow-specific controls.
+
+After **Apply**, a frontend-local Browser Mod sequence runs the adjustment and
+then displays a four-second acknowledgement directly on the browser that
+submitted it. This approach does not require that browser to be registered with
+Browser Mod.
+
+### Dashboard experiences
+
+AAS provides the same monitoring and maintenance model through two native Home
+Assistant dashboards:
+
+- **Aquarium Mobile** is optimized for portrait phones. It uses compact
+  two-column cards and selective expanders for Testing, Dosing, and Filtration
+  & Systems.
+- **Aquarium Tablet** is optimized for a landscape iPad Pro. It uses the full
+  width for side-by-side aquarium summaries, wider equipment groups, and fewer
+  collapsed sections.
+
+Both dashboards use the views **Overview**, **Peninsula**, **200XL**, and
+**Maintenance**. They share the same entities, templates, alert rules, status
+colors, and AWMS workflow. ReefBeat and HYDROS shortcuts open their respective
+apps for advanced maintenance and control; Home Assistant remains the unified
+monitoring surface.
+
+See the [Mobile dashboard walkthrough](docs/mobile-dashboard.md) and
+[Tablet dashboard walkthrough](docs/tablet-dashboard.md).
+
+### Water parameter cards
+
+Both aquarium dashboards use compact, theme-aware parameter cards with an icon,
+current value, range bands, a status dot, and a history line. The cards use two
+columns in the Mobile portrait layout and expand into wider groups on Tablet.
+Main and testing grids use compact gaps between cards.
+
+- **Peninsula:** Display Temperature, pH, ORP, and salinity are always visible
+  with 12-hour graphs sampled at one point per hour.
+- **200XL:** Display Temperature and pH are always visible with the same
+  12-hour presentation. The 200XL does not currently expose ORP or salinity.
+
+On the Peninsula equipment view, **Return 1200** and **Skimmer RSK300** share a
+two-column **ReefRun** card. ReefMat and the remaining systems stay under
+Filtration & Systems. The return ring is blue and the skimmer ring is purple,
+matching ReefBeat. The skimmer box also reports whether sensor control is
+active, restores the pump temperature on the same status line, and shows a red
+**Over-skimming** warning from the ReefRun diagnostic state when needed.
+- **Testing & Hydros Sensors:** A collapsed Mobile expander contains less
+  frequently reviewed values; Tablet presents the same cards in a wide row.
+  Salt Mix uses a 12-hour graph;
+  manually entered weekly test results retain a 30-day window but show only
+  five distinct samples: the current test and the previous four test periods.
+  TDS remains a compact value-only card.
+
+The Peninsula testing section includes Salt Mix, alkalinity, nitrate,
+phosphate, calcium, magnesium, and TDS. The 200XL testing section includes
+alkalinity, nitrate, and phosphate. Mini Graph Card surfaces are forced transparent
+so the operating-range bands remain visible in the Home Assistant mobile app as
+well as desktop browsers.
+
+Weekly-test cards use concise chemistry labels: **Alkalinity dKH**,
+**Nitrate NO₃**, **Phosphate PO₄**, **Calcium Ca**, and **Magnesium Mg**.
+
+### Controller and equipment cards
+
+The aquarium views use ReefBeat-inspired equipment cards while keeping
+Hydros and Red Sea ownership clear:
+
+- **Water Flow** presents the Hydros-controlled Peninsula wave pumps in the
+  physical left-to-right order **Left XF350**, **Upper OctoPulse4**, and
+  **Mid OctoPulse4**, together with the ReefRun return pump. The three dial
+  cells use reduced padding, tighter gaps, and constrained 76px rings so the
+  complete gauges remain visible on mobile.
+- Hydros and ReefRun controller headings use reduced spacing above their inner
+  equipment boxes for a more compact mobile layout.
+- **Dosing** uses compact per-head rows with a daily progress bar, doses
+  completed, current/target daily volume, remaining days, and four head
+  indicators. The active indicator matches that head's dosing color.
+- **ReefDose4 - 4-Part** and **ReefDose4-Extra** are stacked vertically.
+  Remaining-days status is green at 15 days or more, yellow from 6–14 days,
+  and red at 5 days or less.
+- **200XL Dosing** includes the Hydros Minnow. Unused heads remain visible as
+  not configured so the physical expander layout is documented even when a
+  dosing output has no entity.
+- **Filtration & Systems** carries the same compact controller styling for the
+  skimmer, ReefMat, feeder, sterilizer, ozone, and related equipment.
+
+Mobile uses native Home Assistant views and selective expanders to keep long
+sections manageable. Tablet uses the same cards in full-width rows. The three
+Peninsula HYDROS circulation cards show live speed, the active schedule name,
+and direction without duplicating schedule logic in dashboard YAML.
 
 ## Water inventory
 
@@ -83,19 +199,14 @@ The 200XL ATO container can physically hold about 113,562 mL / 30 gallons, but A
 
 ## Dashboard preview
 
-The interface is designed primarily for a mobile portrait layout.
-
-| Peninsula | 200XL |
+| Aquarium Mobile | Aquarium Tablet |
 | --- | --- |
-| <img src="docs/assets/screenshots/dashboard-01.png" alt="Peninsula water parameters and status" width="360"> | <img src="docs/assets/screenshots/dashboard-02.png" alt="200XL water parameters and status" width="360"> |
+| <img src="docs/assets/screenshots/mobile/mobile-peninsula-health.jpeg" alt="Aquarium Mobile Peninsula health view" width="360"> | <img src="docs/assets/screenshots/tablet/tablet-peninsula-health.png" alt="Aquarium Tablet Peninsula health view" width="720"> |
 
-### Water management
-
-<img src="docs/assets/screenshots/dashboard-03.png" alt="Reservoir gauges and AWMS quick actions" width="360"> <img src="docs/assets/screenshots/dashboard-04.png" alt="Make New Salt preview and apply controls" width="360">
-
-### Equipment views
-
-<img src="docs/assets/screenshots/dashboard-05.png" alt="Water flow equipment" width="280"> <img src="docs/assets/screenshots/dashboard-06.png" alt="Dosing equipment" width="280"> <img src="docs/assets/screenshots/dashboard-07.png" alt="Filtration and general equipment" width="280">
+Mobile keeps the complete system usable in portrait orientation; Tablet uses
+landscape width to show related monitoring groups together. The detailed
+[Mobile](docs/mobile-dashboard.md) and [Tablet](docs/tablet-dashboard.md)
+walkthroughs include Overview, both aquariums, dosing, systems, and maintenance.
 
 ## Repository guide
 
@@ -104,6 +215,9 @@ This repository contains reusable portions of the working configuration rather t
 | File | Purpose |
 | --- | --- |
 | [`docs/index.md`](docs/index.md) | Public GitHub Pages project overview |
+| [`docs/mobile-dashboard.md`](docs/mobile-dashboard.md) | Aquarium Mobile design and screenshot walkthrough |
+| [`docs/tablet-dashboard.md`](docs/tablet-dashboard.md) | Aquarium Tablet design and screenshot walkthrough |
+| [`docs/assets/Overview Screen for Aquarium Mobile.docx`](docs/assets/Overview%20Screen%20for%20Aquarium%20Mobile.docx) | Source walkthrough containing the supplied Mobile and Tablet captures |
 | [`snippets/awms-water-management-stack.yaml`](snippets/awms-water-management-stack.yaml) | Main Water Management dashboard panel |
 | [`snippets/awms-water-management-expander.yaml`](snippets/awms-water-management-expander.yaml) | Collapsible Water Management panel |
 | [`snippets/awms-reservoir-gauge-cards.yaml`](snippets/awms-reservoir-gauge-cards.yaml) | Reservoir status gauges |
@@ -111,13 +225,18 @@ This repository contains reusable portions of the working configuration rather t
 | [`snippets/awms-apply-adjustment-full-script.yaml`](snippets/awms-apply-adjustment-full-script.yaml) | Script UI logic for inventory changes |
 | [`snippets/awms-sync-workflow-defaults-automation.yaml`](snippets/awms-sync-workflow-defaults-automation.yaml) | Workflow-aware helper defaults |
 | [`snippets/awms-recent-activity-card.yaml`](snippets/awms-recent-activity-card.yaml) | Optional recent activity card |
+| [`snippets/peninsula-water-parameters-chips.yaml`](snippets/peninsula-water-parameters-chips.yaml) | Current Peninsula parameter, water-level, and additional-parameter card stack |
+| [`snippets/200xl-water-parameters-chips.yaml`](snippets/200xl-water-parameters-chips.yaml) | Current 200XL parameter, water-level, and additional-parameter card stack |
+| [`snippets/peninsula-controller-equipment.yaml`](snippets/peninsula-controller-equipment.yaml) | Peninsula Water Flow, Dosing, and Filtration & Systems expanders |
+| [`snippets/200xl-controller-equipment.yaml`](snippets/200xl-controller-equipment.yaml) | 200XL Water Flow, Dosing, and Filtration & Systems expanders |
+| [`snippets/aquarium-controller-tabs-style.yaml`](snippets/aquarium-controller-tabs-style.yaml) | Legacy Simple Tabs styling retained for reference |
 | [`docs/helper-rename-plan.md`](docs/helper-rename-plan.md) | Helper and entity migration notes |
 
 Home Assistant helpers and the AWMS apply script are created through the Home Assistant UI. Templates remain in `template.yaml`, while automations remain in `automations.yaml`. The snippets are intended to be copied into the corresponding UI editor or configuration file and adapted to local entities.
 
 ## Dashboard components
 
-The visual system uses [Mushroom](https://github.com/piitaya/lovelace-mushroom), [card-mod](https://github.com/thomasloven/lovelace-card-mod), [Expander Card](https://github.com/MelleD/lovelace-expander-card), [Gauge Card Pro](https://github.com/benjamin-dcs/gauge-card-pro), [Bubble Card](https://github.com/Clooos/Bubble-Card), [Mini Graph Card](https://github.com/kalkih/mini-graph-card), [Simple Tabs](https://github.com/agoberg85/home-assistant-simple-tabs), and [Vertical Stack In Card](https://github.com/ofekashery/vertical-stack-in-card). Community frontend components are installed through [HACS](https://www.hacs.xyz/).
+The visual system uses [Mushroom](https://github.com/piitaya/lovelace-mushroom), [Button Card](https://github.com/custom-cards/button-card), [card-mod](https://github.com/thomasloven/lovelace-card-mod), [Expander Card](https://github.com/MelleD/lovelace-expander-card), [Gauge Card Pro](https://github.com/benjamin-dcs/gauge-card-pro), [Bubble Card](https://github.com/Clooos/Bubble-Card), [Mini Graph Card](https://github.com/kalkih/mini-graph-card), [Layout Card](https://github.com/thomasloven/lovelace-layout-card), and [Vertical Stack In Card](https://github.com/ofekashery/vertical-stack-in-card). Community frontend components are installed through [HACS](https://www.hacs.xyz/).
 
 Existing Gauge Card Pro reservoir cards are treated as production components and enhanced rather than replaced. The dashboard uses blue for RODI, purple for saltwater, and green for 200XL ATO so that water sources remain visually consistent throughout the interface.
 

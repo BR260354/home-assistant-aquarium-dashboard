@@ -1,0 +1,17 @@
+# Theme-aware styling fragment for the aquarium Simple Tabs card.
+# Merge these keys into the existing custom:simple-tabs card that owns the Peninsula, 200xl, and Maintenance tabs.
+type: "custom:simple-tabs"
+tabs_alignment: "center"
+tab_position: "top"
+bar_background: "transparent"
+bar_border: "1px solid var(--divider-color)"
+bar_padding: "2px"
+bar_border_radius: "999px"
+button_background: "transparent"
+button_border_color: "transparent"
+button_text_color: "var(--secondary-text-color)"
+button_hover_color: "var(--primary-color)"
+button_hover_border_color: "var(--primary-color)"
+button_active_background: "color-mix(in srgb, var(--primary-color) 30%, var(--card-background-color))"
+button_active_text_color: "var(--primary-text-color)"
+hide_inactive_tab_titles: false
