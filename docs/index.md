@@ -95,7 +95,7 @@ spreads the same cards across full-width rows.
 
 | Aquarium | Always visible | Testing & Hydros Sensors |
 | --- | --- | --- |
-| Peninsula | Display Temperature, pH, ORP, and salinity; 12-hour graphs with one point per hour | Salt Mix with a 12-hour graph; alkalinity, nitrate, phosphate, calcium, and magnesium with five samples across 30 days; compact TDS value |
+| Peninsula | Display Temperature, pH, ORP, and salinity; 12-hour graphs with one point per hour | Salt Mix with a 12-hour graph; alkalinity, nitrate, phosphate, calcium, and magnesium with five samples across 30 days |
 
 On Mobile, **Testing & Hydros Sensors** uses an expander to keep the initial
 scan short. Tablet presents the same content in a wide row. The nested Mini Graph Card surface
@@ -130,6 +130,11 @@ for its longer sections. Tablet uses the same cards in wider rows with fewer
 collapsed groups. Peninsula HYDROS circulation cards combine live output,
 active schedule name, and direction.
 
+Filtration & Systems → Other Devices includes the **TDS - Post DI** reading, and
+Alerts calls out values above 0 ppm. Home Assistant currently exposes only
+that first HYDROS TDS reading; the Pre DI reading is not yet available as an
+entity.
+
 The **Hydros Outputs** controls cover Water Feed, Fresh Stir, Feed Stir, AWC
 ATO, AWC Drain, AWC Fill, Avast Feed, and Display Fans. Each control offers
 **Auto**, **On**, and **Off**, and shows **Running**, the manually selected
@@ -137,7 +142,9 @@ mode, or **Auto · Idle**. Mobile keeps these controls in an expander; Tablet
 shows them together in a cyan-bordered, full-width card that adapts from four
 columns on wide screens to two or one on smaller screens. Drain and Fill use
 the AWC start/stop helpers for their running status because the integration
-does not publish separate running sensors for those phases.
+does not publish separate running sensors for those phases. Both dashboards
+also provide a full-width **HYDROS Mode** row with radio choices for EcoFlow,
+Feeding, Low Power, Normal, and Water Change.
 
 ## Aquarium Water Management Suite
 

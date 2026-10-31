@@ -15,7 +15,7 @@ The Overview view answers the quickest questions first: are there alerts, are th
 
 <img src="assets/screenshots/mobile/mobile-overview-peninsula.jpeg" alt="Aquarium Mobile overview showing the Peninsula summary" width="360">
 
-The alert card changes from green to red when a condition needs attention. Normal optical-sensor states stay out of the way; exceptional states such as a high sump, dry RODI-low sensor, nonzero TDS, or an unexpected dry ATO sensor surface through Alerts.
+The alert card changes from green to red when a condition needs attention. Normal optical-sensor states stay out of the way; exceptional states such as a high sump, dry RODI-low sensor, Post DI TDS above zero, or an unexpected dry ATO sensor surface through Alerts.
 
 The Peninsula view places a compact Tank Health ring immediately above the
 Alerts card. It uses the same circular treatment as the Water Movement pump
@@ -36,9 +36,13 @@ Water movement uses ReefBeat-inspired rings for both Red Sea and HYDROS equipmen
 
 <img src="assets/screenshots/mobile/mobile-peninsula-water-movement.jpeg" alt="Peninsula HYDROS and ReefRun water movement cards" width="360">
 
-The **Hydros Outputs** expander provides **Auto**, **On**, and **Off** controls for Water Feed, Fresh Stir, Feed Stir, AWC ATO, AWC Drain, AWC Fill, Avast Feed, and Display Fans. Each output is grouped with its controls, uses teal accents, and displays its current running or selected mode. The Tablet dashboard keeps the same controls open in a full-width, responsive card.
+The **Hydros Outputs** expander provides **Auto**, **On**, and **Off** controls for Water Feed, Fresh Stir, Feed Stir, AWC ATO, AWC Drain, AWC Fill, Avast Feed, and Display Fans. Each output is grouped with its controls, uses matching cyan borders, icons, and selected radio buttons, and displays its current running or selected mode. The controller-wide **HYDROS Mode** control sits in a full-width row with radio choices for EcoFlow, Feeding, Low Power, Normal, and Water Change. The Tablet dashboard keeps the same controls open in a full-width, responsive card.
 
 The longer **Testing & Hydros Sensors**, **Dosing**, and **Filtration & Systems** groups use expanders on mobile. This keeps the initial scan compact without hiding the detail when it is needed.
+
+Under **Filtration & Systems → Other Devices**, the TDS card shows the first
+HYDROS reading as **TDS - Post DI**. The second, **Pre DI**, reading is not currently
+exposed as a separate Home Assistant entity.
 
 <img src="assets/screenshots/mobile/mobile-peninsula-dosing.jpeg" alt="Expanded ReefDose monitoring cards" width="360">
 

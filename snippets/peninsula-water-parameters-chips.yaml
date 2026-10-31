@@ -738,8 +738,8 @@ cards:
         type: "conditional"
         conditions:
           -
-            entity: "sensor.aquarium_hydros_rodi_top_level"
-            state: "1"
+            entity: "binary_sensor.aquarium_aquarium_hydros_rodi_top_level"
+            state: "on"
         chip:
           type: "template"
           icon: "mdi:water-check"
@@ -1805,83 +1805,3 @@ cards:
                     display: "flex"
                   -
                     align-items: "center"
-      -
-        type: "custom:button-card"
-        entity: "sensor.aquarium_hydros_tds"
-        name: "TDS"
-        icon: "mdi:water-opacity"
-        show_icon: true
-        show_name: true
-        show_state: true
-        state_display: "[[[ const n = Number(entity.state); const unit = entity.attributes.unit_of_measurement || 'ppm'; return Number.isFinite(n) ? `${n.toFixed(2)}${unit ? ' ' + unit : ''}` : 'Unavailable'; ]]]"
-        tap_action:
-          action: "more-info"
-        hold_action:
-          action: "more-info"
-        custom_fields:
-          status: "[[[ const n = Number(entity.state); const c = !Number.isFinite(n) ? '#8a8a8a' : n < 1 ? '#6ecddb' : '#ffb347'; const label = !Number.isFinite(n) ? 'Unavailable' : n < 1 ? 'Good' : 'High'; const ring = hass.themes?.darkMode ? 'rgba(255,255,255,0.72)' : 'rgba(0,0,0,0.36)'; return `<span title=\"${label}\" style=\"display:block;width:11px;height:11px;border-radius:50%;background:${c};border:2px solid ${ring};box-sizing:border-box;\"></span>`; ]]]"
-        styles:
-          grid:
-            -
-              grid-template-areas: "'i n s status'"
-            -
-              grid-template-columns: "24px 1fr min-content 12px"
-            -
-              grid-template-rows: "46px"
-            -
-              column-gap: "8px"
-            -
-              align-items: "center"
-          card:
-            -
-              height: "46px"
-            -
-              padding: "0 10px"
-            -
-              border-radius: "12px"
-            -
-              background: "transparent"
-            -
-              border: "1px solid var(--divider-color)"
-            -
-              box-shadow: "none"
-          icon:
-            -
-              width: "19px"
-            -
-              color: "var(--primary-text-color)"
-          img_cell:
-            -
-              justify-self: "start"
-            -
-              width: "22px"
-            -
-              height: "22px"
-          name:
-            -
-              justify-self: "start"
-            -
-              font-size: "13px"
-            -
-              font-weight: "600"
-            -
-              color: "var(--primary-text-color)"
-          state:
-            -
-              justify-self: "end"
-            -
-              font-size: "16px"
-            -
-              font-weight: "700"
-            -
-              color: "var(--primary-text-color)"
-            -
-              white-space: "nowrap"
-          custom_fields:
-            status:
-              -
-                justify-self: "end"
-              -
-                display: "flex"
-              -
-                align-items: "center"

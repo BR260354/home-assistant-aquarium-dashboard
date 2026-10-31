@@ -1,0 +1,19 @@
+alias: Aquarium - ATO Reservoir Full
+description: >-
+  Reset Peninsula RODI inventory to the configurable usable capacity when the
+  Hydros top sensor reports full.
+triggers:
+  - trigger: state
+    entity_id: binary_sensor.aquarium_aquarium_hydros_rodi_top_level
+conditions:
+  - condition: state
+    entity_id: binary_sensor.aquarium_aquarium_hydros_rodi_top_level
+    state: "on"
+actions:
+  - action: input_number.set_value
+    target:
+      entity_id:
+        - input_number.awms_rodi_remaining_ml
+    data:
+      value: "{{ states('input_number.peninsula_rodi_capacity_ml') | float(111700) }}"
+mode: single
