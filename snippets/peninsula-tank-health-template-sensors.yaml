@@ -1,0 +1,231 @@
+# Peninsula Tank Health Score template sensors
+#
+# Add these sensors under the existing `template:` / `- sensor:` section in
+# template.yaml. The score uses ReefControl's level entities for live water
+# parameters and the existing UI-created input_number helpers for manual tests.
+# Manual test freshness is intentionally separate from the health score: an old
+# result lowers Data Confidence without pretending that an unchanged result is
+# a dangerous result.
+
+- name: "Peninsula Live Water Quality Score"
+  unique_id: peninsula_live_water_quality_score
+  unit_of_measurement: "%"
+  availability: >-
+    {{ has_value('sensor.aquarium_reefcontrol_pro_salinity_62a_temperature_level_2')
+       and has_value('sensor.aquarium_reefcontrol_pro_ph_a4_level_2')
+       and has_value('sensor.aquarium_reefcontrol_pro_salinity_62a_level_2')
+       and has_value('sensor.aquarium_reefcontrol_pro_orp_285_level_2') }}
+  state: >-
+    {% set ns = namespace(total=0, weight=0) %}
+    {# ORP is intentionally lower-weight than temperature and pH. #}
+    {% for item in [
+      {'entity': 'sensor.aquarium_reefcontrol_pro_salinity_62a_temperature_level_2', 'weight': 15},
+      {'entity': 'sensor.aquarium_reefcontrol_pro_ph_a4_level_2', 'weight': 15},
+      {'entity': 'sensor.aquarium_reefcontrol_pro_salinity_62a_level_2', 'weight': 10},
+      {'entity': 'sensor.aquarium_reefcontrol_pro_orp_285_level_2', 'weight': 5}
+    ] %}
+      {% set level = states(item.entity) %}
+      {% set points = {
+        'desired': 100,
+        'acceptable': 80,
+        'danger': 25,
+        'sensor_data_error': 0
+      }.get(level, 0) %}
+      {% set ns.total = ns.total + (points * item.weight) %}
+      {% set ns.weight = ns.weight + item.weight %}
+    {% endfor %}
+    {{ (ns.total / ns.weight) | round(0) if ns.weight else 'unknown' }}
+  attributes:
+    temperature_level: "{{ states('sensor.aquarium_reefcontrol_pro_salinity_62a_temperature_level_2') }}"
+    ph_level: "{{ states('sensor.aquarium_reefcontrol_pro_ph_a4_level_2') }}"
+    salinity_level: "{{ states('sensor.aquarium_reefcontrol_pro_salinity_62a_level_2') }}"
+    orp_level: "{{ states('sensor.aquarium_reefcontrol_pro_orp_285_level_2') }}"
+    orp_included_in_score: true
+
+- name: "Peninsula Manual Chemistry Score"
+  unique_id: peninsula_manual_chemistry_score
+  unit_of_measurement: "%"
+  state: >-
+    {% set now_ts = as_timestamp(now()) %}
+    {% set ns = namespace(total=0, weight=0) %}
+
+    {# Alkalinity: weekly test, preferred 7-11 dKH, caution 6-12 dKH. #}
+    {% set value = states('input_number.peninsula_alkalinity_dkh') | float(none) %}
+    {% set age = (now_ts - as_timestamp(states.input_number.peninsula_alkalinity_dkh.last_changed, now_ts)) / 86400 %}
+    {% if value is not none and age <= 8 %}
+      {% set points = 100 if 7 <= value <= 11 else (75 if 6 <= value <= 12 else 25) %}
+      {% set ns.total = ns.total + (points * 12) %}{% set ns.weight = ns.weight + 12 %}
+    {% endif %}
+
+    {# Calcium: biweekly test, preferred 400-460 ppm, caution 380-480 ppm. #}
+    {% set value = states('input_number.peninsula_calcium_ca_ppm') | float(none) %}
+    {% set age = (now_ts - as_timestamp(states.input_number.peninsula_calcium_ca_ppm.last_changed, now_ts)) / 86400 %}
+    {% if value is not none and age <= 17 %}
+      {% set points = 100 if 400 <= value <= 460 else (75 if 380 <= value <= 480 else 25) %}
+      {% set ns.total = ns.total + (points * 8) %}{% set ns.weight = ns.weight + 8 %}
+    {% endif %}
+
+    {# Magnesium: infrequent test, preferred 1250-1400 ppm, caution 1200-1450 ppm. #}
+    {% set value = states('input_number.peninsula_magnesium_mg_ppm') | float(none) %}
+    {% set age = (now_ts - as_timestamp(states.input_number.peninsula_magnesium_mg_ppm.last_changed, now_ts)) / 86400 %}
+    {% if value is not none and age <= 35 %}
+      {% set points = 100 if 1250 <= value <= 1400 else (75 if 1200 <= value <= 1450 else 25) %}
+      {% set ns.total = ns.total + (points * 5) %}{% set ns.weight = ns.weight + 5 %}
+    {% endif %}
+
+    {{ (ns.total / ns.weight) | round(0) if ns.weight else 'unknown' }}
+  attributes:
+    alkalinity_age_days: >-
+      {{ ((as_timestamp(now()) - as_timestamp(states.input_number.peninsula_alkalinity_dkh.last_changed, as_timestamp(now()))) / 86400) | round(1) }}
+    calcium_age_days: >-
+      {{ ((as_timestamp(now()) - as_timestamp(states.input_number.peninsula_calcium_ca_ppm.last_changed, as_timestamp(now()))) / 86400) | round(1) }}
+    magnesium_age_days: >-
+      {{ ((as_timestamp(now()) - as_timestamp(states.input_number.peninsula_magnesium_mg_ppm.last_changed, as_timestamp(now()))) / 86400) | round(1) }}
+
+- name: "Peninsula Nutrient Balance Score"
+  unique_id: peninsula_nutrient_balance_score
+  unit_of_measurement: "%"
+  state: >-
+    {% set nitrate = states('input_number.peninsula_nitrate_no3_ppm') | float(none) %}
+    {% set phosphate = states('input_number.peninsula_phosphate_po4_ppm') | float(none) %}
+    {% set no3_age = (as_timestamp(now()) - as_timestamp(states.input_number.peninsula_nitrate_no3_ppm.last_changed, as_timestamp(now()))) / 86400 %}
+    {% set po4_age = (as_timestamp(now()) - as_timestamp(states.input_number.peninsula_phosphate_po4_ppm.last_changed, as_timestamp(now()))) / 86400 %}
+    {% if nitrate is none or phosphate is none or no3_age > 8 or po4_age > 8 %}
+      unknown
+    {% else %}
+      {% set availability = 100 if nitrate > 0 and phosphate > 0 else 0 %}
+      {% if phosphate > 0 %}
+        {% set ratio = nitrate / phosphate %}
+        {% set balance = 100 if 50 <= ratio <= 100 else (80 if 25 <= ratio < 50 or 100 < ratio <= 200 else (60 if 10 <= ratio < 25 or 200 < ratio <= 500 else 30)) %}
+      {% else %}
+        {% set ratio = 0 %}
+        {% set balance = 0 %}
+      {% endif %}
+      {% set no3_points = 100 if 2 <= nitrate <= 10 else (70 if 0 < nitrate < 2 else (80 if 10 < nitrate <= 20 else (60 if 20 < nitrate <= 30 else 20))) %}
+      {% set po4_points = 100 if 0.02 <= phosphate <= 0.10 else (70 if 0 < phosphate < 0.02 else (75 if 0.10 < phosphate <= 0.20 else (50 if 0.20 < phosphate <= 0.50 else 20))) %}
+      {% set absolute = (no3_points + po4_points) / 2 %}
+      {{ ((balance * 0.65) + (absolute * 0.25) + (availability * 0.10)) | round(0) }}
+    {% endif %}
+  attributes:
+    nitrate_ppm: "{{ states('input_number.peninsula_nitrate_no3_ppm') }}"
+    phosphate_ppm: "{{ states('input_number.peninsula_phosphate_po4_ppm') }}"
+    nitrate_phosphate_ratio: >-
+      {% set nitrate = states('input_number.peninsula_nitrate_no3_ppm') | float(0) %}
+      {% set phosphate = states('input_number.peninsula_phosphate_po4_ppm') | float(0) %}
+      {{ (nitrate / phosphate) | round(0) if phosphate > 0 else 'Unavailable' }}
+    balance_status: >-
+      {% set nitrate = states('input_number.peninsula_nitrate_no3_ppm') | float(0) %}
+      {% set phosphate = states('input_number.peninsula_phosphate_po4_ppm') | float(0) %}
+      {% set ratio = nitrate / phosphate if phosphate > 0 else 0 %}
+      {% if nitrate <= 0 or phosphate <= 0 %} Nutrient floor concern
+      {% elif 50 <= ratio <= 100 and phosphate <= 0.10 and nitrate <= 10 %} Balanced
+      {% elif 50 <= ratio <= 100 %} Balanced — elevated
+      {% else %} Imbalanced
+      {% endif %}
+    caution: >-
+      {{ states('input_number.peninsula_nitrate_no3_ppm') | float(0) > 10 or states('input_number.peninsula_phosphate_po4_ppm') | float(0) > 0.10 }}
+
+- name: "Peninsula Tank Data Confidence"
+  unique_id: peninsula_tank_data_confidence
+  unit_of_measurement: "%"
+  state: >-
+    {% set now_ts = as_timestamp(now()) %}
+    {% set ns = namespace(total=0, weight=0, missing_live=0) %}
+    {% for item in [
+      {'entity': 'sensor.aquarium_reefcontrol_pro_salinity_62a_temperature_level_2', 'weight': 15},
+      {'entity': 'sensor.aquarium_reefcontrol_pro_ph_a4_level_2', 'weight': 15},
+      {'entity': 'sensor.aquarium_reefcontrol_pro_salinity_62a_level_2', 'weight': 10},
+      {'entity': 'sensor.aquarium_reefcontrol_pro_orp_285_level_2', 'weight': 5}
+    ] %}
+      {% if states(item.entity) in ['desired', 'acceptable', 'danger'] %}
+        {% set ns.total = ns.total + item.weight %}
+      {% else %}
+        {% set ns.missing_live = ns.missing_live + 1 %}
+      {% endif %}
+      {% set ns.weight = ns.weight + item.weight %}
+    {% endfor %}
+    {% for item in [
+      {'entity': 'input_number.peninsula_alkalinity_dkh', 'weight': 12, 'days': 8},
+      {'entity': 'input_number.peninsula_calcium_ca_ppm', 'weight': 8, 'days': 17},
+      {'entity': 'input_number.peninsula_magnesium_mg_ppm', 'weight': 5, 'days': 35},
+      {'entity': 'input_number.peninsula_nitrate_no3_ppm', 'weight': 8, 'days': 8},
+      {'entity': 'input_number.peninsula_phosphate_po4_ppm', 'weight': 8, 'days': 8}
+    ] %}
+      {% set age = (now_ts - as_timestamp(states[item.entity].last_changed, now_ts)) / 86400 %}
+      {% set freshness = 100 if age <= item.days else (0 if age >= item.days * 2 else ((item.days * 2 - age) / item.days * 100)) %}
+      {% set ns.total = ns.total + (freshness * item.weight) %}
+      {% set ns.weight = ns.weight + item.weight %}
+    {% endfor %}
+    {{ 'unknown' if ns.missing_live else ((ns.total / ns.weight) | round(0) if ns.weight else 0) }}
+
+- name: "Peninsula Tank Health Score"
+  unique_id: peninsula_tank_health_score
+  unit_of_measurement: "%"
+  availability: "{{ has_value('sensor.peninsula_live_water_quality_score') }}"
+  state: >-
+    {% set live = states('sensor.peninsula_live_water_quality_score') | float(0) %}
+    {% set chemistry_state = states('sensor.peninsula_manual_chemistry_score') %}
+    {% set nutrients_state = states('sensor.peninsula_nutrient_balance_score') %}
+    {% set chemistry = chemistry_state | float(0) %}
+    {% set nutrients = nutrients_state | float(0) %}
+    {% set total = 45 %}
+    {% set weighted = live * 45 %}
+    {% if chemistry_state not in ['unknown', 'unavailable'] %}
+      {% set weighted = weighted + (chemistry * 25) %}
+      {% set total = total + 25 %}
+    {% endif %}
+    {% if nutrients_state not in ['unknown', 'unavailable'] %}
+      {% set weighted = weighted + (nutrients * 25) %}
+      {% set total = total + 25 %}
+    {% endif %}
+    {% set score = weighted / total %}
+    {% set reefcontrol_danger = [
+      states('sensor.aquarium_reefcontrol_pro_salinity_62a_temperature_level_2'),
+      states('sensor.aquarium_reefcontrol_pro_ph_a4_level_2'),
+      states('sensor.aquarium_reefcontrol_pro_salinity_62a_level_2')
+    ] | select('equalto', 'danger') | list | count > 0 %}
+    {% set orp_danger = states('sensor.aquarium_reefcontrol_pro_orp_285_level_2') == 'danger' %}
+    {% set leak_bad = is_state('binary_sensor.rscontrolpro_415492340_leak_detector', 'off') %}
+    {% set nitrate_high = states('input_number.peninsula_nitrate_no3_ppm') | float(0) > 30 %}
+    {% set phosphate_high = states('input_number.peninsula_phosphate_po4_ppm') | float(0) > 2 %}
+    {% if leak_bad %}{{ [score, 39] | min | round(0) }}
+    {% elif reefcontrol_danger or nitrate_high or phosphate_high %}{{ [score, 59] | min | round(0) }}
+    {% elif orp_danger %}{{ [score, 74] | min | round(0) }}
+    {% else %}{{ score | round(0) }}
+    {% endif %}
+  attributes:
+    water_quality_score: "{{ states('sensor.peninsula_live_water_quality_score') }}"
+    manual_chemistry_score: "{{ states('sensor.peninsula_manual_chemistry_score') }}"
+    nutrient_balance_score: "{{ states('sensor.peninsula_nutrient_balance_score') }}"
+    data_confidence: "{{ states('sensor.peninsula_tank_data_confidence') }}"
+    primary_concern: >-
+      {% if is_state('binary_sensor.rscontrolpro_415492340_leak_detector', 'off') %}Leak detector reports a leak
+      {% elif states('sensor.aquarium_reefcontrol_pro_salinity_62a_temperature_level_2') == 'danger' %}Temperature needs attention
+      {% elif states('sensor.aquarium_reefcontrol_pro_ph_a4_level_2') == 'danger' %}pH needs attention
+      {% elif states('sensor.aquarium_reefcontrol_pro_orp_285_level_2') == 'danger' %}ORP needs attention
+      {% elif states('sensor.aquarium_reefcontrol_pro_salinity_62a_level_2') == 'danger' %}Salinity needs attention
+      {% elif state_attr('sensor.peninsula_nutrient_balance_score', 'balance_status') | string | trim == 'Imbalanced' %}Nitrate and phosphate are imbalanced
+      {% elif is_state_attr('sensor.peninsula_nutrient_balance_score', 'caution', true) %}Nutrients are balanced but elevated
+      {% else %}No active concern
+      {% endif %}
+
+- name: "Peninsula Tank Health Status"
+  unique_id: peninsula_tank_health_status
+  availability: "{{ has_value('sensor.peninsula_tank_health_score') }}"
+  state: >-
+    {% set score = states('sensor.peninsula_tank_health_score') | float(0) %}
+    {% set nutrient_caution = is_state_attr('sensor.peninsula_nutrient_balance_score', 'caution', true) %}
+    {% set leak_bad = is_state('binary_sensor.rscontrolpro_415492340_leak_detector', 'off') %}
+    {% set reefcontrol_danger = [
+      states('sensor.aquarium_reefcontrol_pro_salinity_62a_temperature_level_2'),
+      states('sensor.aquarium_reefcontrol_pro_ph_a4_level_2'),
+      states('sensor.aquarium_reefcontrol_pro_salinity_62a_level_2')
+    ] | select('equalto', 'danger') | list | count > 0 %}
+    {% set orp_danger = states('sensor.aquarium_reefcontrol_pro_orp_285_level_2') == 'danger' %}
+    {% if leak_bad or score < 40 %} Critical
+    {% elif reefcontrol_danger or score < 60 %} Attention
+    {% elif orp_danger or nutrient_caution %} Caution
+    {% elif score < 75 %} Watch
+    {% elif score < 90 %} Healthy
+    {% else %} Excellent
+    {% endif %}

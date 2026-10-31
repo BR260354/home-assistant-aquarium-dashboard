@@ -653,12 +653,13 @@ cards:
                       type: "conditional"
                       conditions:
                         -
-                          entity: "sensor.aquarium_hydros_sump_stir"
+                          entity: "sensor.aquarium_hydros_feed_stir"
                           state: "on"
                       chip:
                         type: "template"
-                        icon: "mdi:pot-mix-outline"
-                        content: "Sump Stir"
+                        icon: "mdi:water-alert-outline"
+                        content: "Feed Stir"
+                        icon_color: "blue"
                         card_mod:
                           style: |
                             :host {
@@ -669,7 +670,7 @@ cards:
                       type: "conditional"
                       conditions:
                         -
-                          entity: "sensor.aquarium_hydros_feed_stir"
+                          entity: "sensor.aquarium_hydros_fresh_stir"
                           state: "on"
                       chip:
                         type: "template"
@@ -2268,62 +2269,63 @@ cards:
                       conditions:
                         -
                           condition: "state"
-                          entity: "sensor.aquarium_hydros_not_scrubbing"
+                          entity: "switch.aquarium_reefpower_s4"
                           state: "on"
                       chip:
                         type: "template"
-                        icon: "mdi:drag"
-                        content: "Not Scrubbing"
+                        icon: "mdi:valve-open"
+                        content: "CO₂ Bypass Open"
                         card_mod:
                           style: |
                             :host {
-                              --chip-background: rgba(138, 205, 215, 0.25);
+                              --chip-background: rgba(255, 152, 0, 0.20);
                               --color: var(--primary-text-color);
                             }
                     -
                       type: "conditional"
                       conditions:
                         -
-                          condition: "numeric_state"
-                          above: 0
-                          entity: "sensor.aquarium_hydros_sterilizer_power"
+                          condition: "state"
+                          entity: "switch.aquarium_reefpower_s4"
+                          state: "off"
                       chip:
                         type: "template"
-                        icon: "mdi:water-alert-outline"
-                        content: "Sterilizer {{ states('sensor.aquarium_hydros_sterilizer_power')}}w"
+                        icon: "mdi:air-filter"
+                        content: "CO₂ Scrubbing On"
                         card_mod:
                           style: |
                             :host {
-                              --chip-background: rgba(138, 205, 215, 0.25);
+                              --chip-background: rgba(76, 175, 80, 0.18);
                               --color: var(--primary-text-color);
                             }
                     -
                       type: "conditional"
                       conditions:
                         -
-                          condition: "numeric_state"
-                          above: 0
-                          entity: "sensor.aquarium_hydros_sterilizer"
+                          condition: "state"
+                          entity: "switch.aquarium_reefpower_s2"
+                          state: "on"
                       chip:
                         type: "template"
-                        icon: "mdi:alert"
-                        content: "Sterilizer Off"
+                        icon: "mdi:water-sync"
+                        content: "Sterilizer {{ states('sensor.aquarium_reefpower_socket_2_consumption') | float(0) | round(1) }} W"
                         card_mod:
                           style: |
                             :host {
-                              --chip-background: rgba(255, 164, 169, 0.25);
+                              --chip-background: rgba(158, 203, 145, 0.4);
                               --color: var(--primary-text-color);
                             }
                     -
                       type: "conditional"
                       conditions:
                         -
-                          condition: "numeric_state"
-                          above: 0
-                          entity: "sensor.aquarium_hydros_helios_heater_power"
+                          condition: "state"
+                          entity: "switch.aquarium_reefpower_s1"
+                          state: "on"
                       chip:
                         type: "template"
-                        content: "Helios - {{ states('sensor.aquarium_hydros_helios_heater_power')}}w"
+                        icon: "mdi:radiator"
+                        content: "Helios {{ states('sensor.aquarium_reefpower_socket_1_consumption') | float(0) | round(1) }} W"
                         card_mod:
                           style: |
                             :host {
@@ -2377,13 +2379,13 @@ cards:
                       type: "conditional"
                       conditions:
                         -
-                          condition: "numeric_state"
-                          above: 0
-                          entity: "sensor.aquarium_hydros_ozotech_power"
+                          condition: "state"
+                          entity: "switch.aquarium_reefpower_s3"
+                          state: "on"
                       chip:
                         type: "template"
-                        icon: "mdi:air-purifier"
-                        content: "Ozotech {{ states('sensor.aquarium_hydros_ozotech_power')}}w"
+                        icon: "mdi:air-filter"
+                        content: "Ozone System {{ states('sensor.aquarium_reefpower_socket_3_consumption') | float(0) | round(1) }} W"
                         card_mod:
                           style: |
                             :host {
@@ -2407,23 +2409,6 @@ cards:
                               --color: var(--primary-text-color);
                             }
                         icon: "mdi:led-strip"
-                    -
-                      type: "conditional"
-                      conditions:
-                        -
-                          condition: "numeric_state"
-                          above: 0
-                          entity: "sensor.aquarium_hydros_ozone_air_power"
-                      chip:
-                        type: "template"
-                        icon: "mdi:pump"
-                        content: "Air for Ozone {{states('sensor.aquarium_hydros_ozone_air_power')}}w"
-                        card_mod:
-                          style: |
-                            :host {
-                              --chip-background: rgba(138, 205, 215, 0.25);
-                              --color: var(--primary-text-color);
-                            }
                   card_mod:
                     style: |
                       ha-card {

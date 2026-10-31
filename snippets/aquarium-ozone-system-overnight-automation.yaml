@@ -1,0 +1,53 @@
+# Reference export of the production Home Assistant UI automation.
+# Live entity: automation.aquarium_ozone_system_overnight_schedule
+alias: Aquarium Ozone System Overnight Schedule
+description: >-
+  Runs the Peninsula ReefPower Ozone System from 11:00 PM until 7:00 AM.
+  Reconciles the outlet after Home Assistant starts; manual changes remain in
+  effect until the next schedule boundary.
+triggers:
+  - trigger: time
+    at: "23:00:00"
+    id: scheduled_on
+  - trigger: time
+    at: "07:00:00"
+    id: scheduled_off
+  - trigger: homeassistant
+    event: start
+    id: startup_sync
+conditions: []
+actions:
+  - if:
+      - condition: trigger
+        id: scheduled_on
+    then:
+      - action: switch.turn_on
+        target:
+          entity_id: switch.aquarium_reefpower_s3
+  - if:
+      - condition: trigger
+        id: scheduled_off
+    then:
+      - action: switch.turn_off
+        target:
+          entity_id: switch.aquarium_reefpower_s3
+  - if:
+      - condition: trigger
+        id: startup_sync
+    then:
+      - if:
+          - condition: or
+            conditions:
+              - condition: time
+                after: "22:59:59"
+              - condition: time
+                before: "07:00:00"
+        then:
+          - action: switch.turn_on
+            target:
+              entity_id: switch.aquarium_reefpower_s3
+        else:
+          - action: switch.turn_off
+            target:
+              entity_id: switch.aquarium_reefpower_s3
+mode: single

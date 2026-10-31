@@ -26,8 +26,8 @@ cards:
     cards:
       -
         type: "custom:button-card"
-        entity: "sensor.aquarium_hydros_display_temp"
-        name: "Display Temp"
+        entity: "sensor.aquarium_reefcontrol_pro_salinity_62a_temperature"
+        name: "Temperature"
         icon: "mdi:thermometer"
         show_icon: true
         show_name: true
@@ -42,7 +42,7 @@ cards:
             card:
               type: "custom:mini-graph-card"
               entities:
-                - "sensor.aquarium_hydros_display_temp"
+                - "sensor.aquarium_reefcontrol_pro_salinity_62a_temperature"
               group: true
               hours_to_show: 12
               points_per_hour: 1
@@ -75,7 +75,7 @@ cards:
                     box-shadow: none !important;
                     border: none !important;
                   }
-          status: "[[[ const n = Number(entity.state); const c = !Number.isFinite(n) ? '#8a8a8a' : n < 77 ? '#6ecddb' : n < 78 ? '#9ecb91' : n < 78.9 ? '#f6d55c' : '#c25964'; const label = !Number.isFinite(n) ? 'Unavailable' : n < 77 ? 'Low' : n < 78 ? 'Good' : n < 78.9 ? 'Watch' : 'High'; const ring = hass.themes?.darkMode ? 'rgba(255,255,255,0.72)' : 'rgba(0,0,0,0.36)'; return `<span title=\"${label}\" style=\"display:block;width:11px;height:11px;border-radius:50%;background:${c};border:2px solid ${ring};box-sizing:border-box;\"></span>`; ]]]"
+          status: "[[[ const level = states['sensor.aquarium_reefcontrol_pro_salinity_62a_temperature_level']?.state; const map = { desired: ['#9ecb91','Desired'], acceptable: ['#f6d55c','Acceptable'], danger: ['#c25964','Danger'], sensor_data_error: ['#8a8a8a','Sensor data error'] }; const [c,label] = map[level] || ['#8a8a8a','Unavailable']; const ring = hass.themes?.darkMode ? 'rgba(255,255,255,0.72)' : 'rgba(0,0,0,0.36)'; return `<span title=\"${label}\" style=\"display:flex;align-items:center;gap:4px;white-space:nowrap;\"><span style=\"display:block;width:9px;height:9px;border-radius:50%;background:${c};border:1.5px solid ${ring};box-sizing:border-box;\"></span><span>${label}</span></span>`; ]]]"
         styles:
           grid:
             -
@@ -180,7 +180,7 @@ cards:
                 align-items: "center"
       -
         type: "custom:button-card"
-        entity: "sensor.aquarium_hydros_ph_ii"
+        entity: "sensor.aquarium_reefcontrol_pro_ph_a4_ph"
         name: "pH"
         icon: "mdi:fish"
         show_icon: true
@@ -196,7 +196,7 @@ cards:
             card:
               type: "custom:mini-graph-card"
               entities:
-                - "sensor.aquarium_hydros_ph_ii"
+                - "sensor.aquarium_reefcontrol_pro_ph_a4_ph"
               group: true
               hours_to_show: 12
               points_per_hour: 1
@@ -229,7 +229,7 @@ cards:
                     box-shadow: none !important;
                     border: none !important;
                   }
-          status: "[[[ const n = Number(entity.state); const c = !Number.isFinite(n) ? '#8a8a8a' : n < 7.7 ? '#c25964' : n < 8.5 ? '#9ecb91' : '#ffb347'; const label = !Number.isFinite(n) ? 'Unavailable' : n < 7.7 ? 'Low' : n < 8.5 ? 'Good' : 'High'; const ring = hass.themes?.darkMode ? 'rgba(255,255,255,0.72)' : 'rgba(0,0,0,0.36)'; return `<span title=\"${label}\" style=\"display:block;width:11px;height:11px;border-radius:50%;background:${c};border:2px solid ${ring};box-sizing:border-box;\"></span>`; ]]]"
+          status: "[[[ const level = states['sensor.aquarium_reefcontrol_pro_ph_a4_level']?.state; const map = { desired: ['#9ecb91','Desired'], acceptable: ['#f6d55c','Acceptable'], danger: ['#c25964','Danger'], sensor_data_error: ['#8a8a8a','Sensor data error'] }; const [c,label] = map[level] || ['#8a8a8a','Unavailable']; const ring = hass.themes?.darkMode ? 'rgba(255,255,255,0.72)' : 'rgba(0,0,0,0.36)'; return `<span title=\"${label}\" style=\"display:flex;align-items:center;gap:4px;white-space:nowrap;\"><span style=\"display:block;width:9px;height:9px;border-radius:50%;background:${c};border:1.5px solid ${ring};box-sizing:border-box;\"></span><span>${label}</span></span>`; ]]]"
         styles:
           grid:
             -
@@ -334,7 +334,7 @@ cards:
                 align-items: "center"
       -
         type: "custom:button-card"
-        entity: "sensor.aquarium_hydros_orp"
+        entity: "sensor.aquarium_reefcontrol_pro_orp_1dc_orp"
         name: "ORP"
         icon: "mdi:water-percent"
         show_icon: true
@@ -350,7 +350,7 @@ cards:
             card:
               type: "custom:mini-graph-card"
               entities:
-                - "sensor.aquarium_hydros_orp"
+                - "sensor.aquarium_reefcontrol_pro_orp_1dc_orp"
               group: true
               hours_to_show: 12
               points_per_hour: 1
@@ -383,7 +383,7 @@ cards:
                     box-shadow: none !important;
                     border: none !important;
                   }
-          status: "[[[ const n = Number(entity.state); const c = !Number.isFinite(n) ? '#8a8a8a' : n < 275 ? '#f6d55c' : n < 401 ? '#9ecb91' : '#ffb347'; const label = !Number.isFinite(n) ? 'Unavailable' : n < 275 ? 'Low' : n < 401 ? 'Good' : 'High'; const ring = hass.themes?.darkMode ? 'rgba(255,255,255,0.72)' : 'rgba(0,0,0,0.36)'; return `<span title=\"${label}\" style=\"display:block;width:11px;height:11px;border-radius:50%;background:${c};border:2px solid ${ring};box-sizing:border-box;\"></span>`; ]]]"
+          status: "[[[ const level = states['sensor.aquarium_reefcontrol_pro_orp_1dc_level']?.state; const map = { desired: ['#9ecb91','Desired'], acceptable: ['#f6d55c','Acceptable'], danger: ['#c25964','Danger'], sensor_data_error: ['#8a8a8a','Sensor data error'] }; const [c,label] = map[level] || ['#8a8a8a','Unavailable']; const ring = hass.themes?.darkMode ? 'rgba(255,255,255,0.72)' : 'rgba(0,0,0,0.36)'; return `<span title=\"${label}\" style=\"display:flex;align-items:center;gap:4px;white-space:nowrap;\"><span style=\"display:block;width:9px;height:9px;border-radius:50%;background:${c};border:1.5px solid ${ring};box-sizing:border-box;\"></span><span>${label}</span></span>`; ]]]"
         styles:
           grid:
             -
@@ -488,13 +488,13 @@ cards:
                 align-items: "center"
       -
         type: "custom:button-card"
-        entity: "sensor.aquarium_hydros_salinity"
+        entity: "sensor.aquarium_reefcontrol_pro_salinity_62a_salinity"
         name: "Salinity"
         icon: "mdi:water-circle"
         show_icon: true
         show_name: true
         show_state: true
-        state_display: "[[[ const n = Number(entity.state); const unit = entity.attributes.unit_of_measurement || 'ppt'; return Number.isFinite(n) ? `${n.toFixed(1)}${unit ? ' ' + unit : ''}` : 'Unavailable'; ]]]"
+        state_display: "[[[ const n = Number(entity.state); return Number.isFinite(n) ? `${n.toFixed(1)} PSU` : 'Unavailable'; ]]]"
         tap_action:
           action: "more-info"
         hold_action:
@@ -504,7 +504,7 @@ cards:
             card:
               type: "custom:mini-graph-card"
               entities:
-                - "sensor.aquarium_hydros_salinity"
+                - "sensor.aquarium_reefcontrol_pro_salinity_62a_salinity"
               group: true
               hours_to_show: 12
               points_per_hour: 1
@@ -537,7 +537,7 @@ cards:
                     box-shadow: none !important;
                     border: none !important;
                   }
-          status: "[[[ const n = Number(entity.state); const c = !Number.isFinite(n) ? '#8a8a8a' : n < 33 ? '#c25964' : n < 34.4 ? '#f6d55c' : n < 36.2 ? '#9ecb91' : '#ffb347'; const label = !Number.isFinite(n) ? 'Unavailable' : n < 33 ? 'Low' : n < 34.4 ? 'Watch' : n < 36.2 ? 'Good' : 'High'; const ring = hass.themes?.darkMode ? 'rgba(255,255,255,0.72)' : 'rgba(0,0,0,0.36)'; return `<span title=\"${label}\" style=\"display:block;width:11px;height:11px;border-radius:50%;background:${c};border:2px solid ${ring};box-sizing:border-box;\"></span>`; ]]]"
+          status: "[[[ const level = states['sensor.aquarium_reefcontrol_pro_salinity_62a_level']?.state; const map = { desired: ['#9ecb91','Desired'], acceptable: ['#f6d55c','Acceptable'], danger: ['#c25964','Danger'], sensor_data_error: ['#8a8a8a','Sensor data error'] }; const [c,label] = map[level] || ['#8a8a8a','Unavailable']; const ring = hass.themes?.darkMode ? 'rgba(255,255,255,0.72)' : 'rgba(0,0,0,0.36)'; return `<span title=\"${label}\" style=\"display:flex;align-items:center;gap:4px;white-space:nowrap;\"><span style=\"display:block;width:9px;height:9px;border-radius:50%;background:${c};border:1.5px solid ${ring};box-sizing:border-box;\"></span><span>${label}</span></span>`; ]]]"
         styles:
           grid:
             -

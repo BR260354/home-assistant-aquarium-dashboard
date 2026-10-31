@@ -1,0 +1,127 @@
+# Peninsula Tank Health dial cards
+#
+# Add the compact card to the Overview view and the detailed stack to the
+# Peninsula view. Both cards use the same template sensor and color bands.
+
+# Overview: compact Tank Health dial
+type: custom:gauge-card-pro
+header: Tank Health
+entity: sensor.peninsula_tank_health_score
+needle: true
+gradient: true
+gradient_resolution: auto
+min: 0
+max: 100
+round: full
+titles:
+  primary:
+    value: >-
+      {{ states('sensor.peninsula_tank_health_score') }}% {{ states('sensor.peninsula_tank_health_status') }}
+  secondary:
+    value: >-
+      {{ state_attr('sensor.peninsula_tank_health_score', 'primary_concern') }}
+value_texts:
+  primary:
+    unit_before_value: false
+    value: >-
+      {{ states('sensor.peninsula_tank_health_score') }}
+  secondary:
+    unit_before_value: false
+segments:
+  - pos: 0
+    color: rgba(194, 89, 100, 1)
+  - pos: 40
+    color: rgba(224, 139, 69, 1)
+  - pos: 60
+    color: rgba(246, 213, 92, 1)
+  - pos: 75
+    color: rgba(183, 211, 128, 1)
+  - pos: 90
+    color: rgba(104, 178, 105, 1)
+icons: {}
+card_mod:
+  style: |
+    ha-card {
+      --ha-card-header-font-size: 13px;
+    }
+
+---
+
+# Peninsula: detailed Tank Health dial and component chips
+type: vertical-stack
+cards:
+  - type: custom:gauge-card-pro
+    header: Tank Health Score
+    entity: sensor.peninsula_tank_health_score
+    needle: true
+    gradient: true
+    gradient_resolution: auto
+    min: 0
+    max: 100
+    round: full
+    titles:
+      primary:
+        value: >-
+          {{ states('sensor.peninsula_tank_health_score') }}% {{ states('sensor.peninsula_tank_health_status') }}
+      secondary:
+        value: >-
+          {{ state_attr('sensor.peninsula_tank_health_score', 'primary_concern') }}
+    value_texts:
+      primary:
+        unit_before_value: false
+        value: >-
+          {{ states('sensor.peninsula_tank_health_score') }}
+      secondary:
+        unit_before_value: false
+    segments:
+      - pos: 0
+        color: rgba(194, 89, 100, 1)
+      - pos: 40
+        color: rgba(224, 139, 69, 1)
+      - pos: 60
+        color: rgba(246, 213, 92, 1)
+      - pos: 75
+        color: rgba(183, 211, 128, 1)
+      - pos: 90
+        color: rgba(104, 178, 105, 1)
+    icons: {}
+    card_mod:
+      style: |
+        ha-card {
+          --ha-card-header-font-size: 13px;
+        }
+  - type: custom:mushroom-chips-card
+    alignment: start
+    chips:
+      - type: template
+        entity: sensor.peninsula_live_water_quality_score
+        icon: mdi:water-check
+        content: >-
+          Water {{ states('sensor.peninsula_live_water_quality_score') }}%
+        icon_color: >-
+          {% set n = states('sensor.peninsula_live_water_quality_score') | int(0) %}
+          {{ 'green' if n >= 90 else 'light-green' if n >= 75 else 'amber' if n >= 60 else 'red' }}
+      - type: template
+        entity: sensor.peninsula_manual_chemistry_score
+        icon: mdi:test-tube
+        content: >-
+          Chemistry {{ states('sensor.peninsula_manual_chemistry_score') }}%
+        icon_color: >-
+          {% set n = states('sensor.peninsula_manual_chemistry_score') | int(0) %}
+          {{ 'green' if n >= 90 else 'light-green' if n >= 75 else 'amber' if n >= 60 else 'red' }}
+      - type: template
+        entity: sensor.peninsula_nutrient_balance_score
+        icon: mdi:scale-balance
+        content: >-
+          Nutrients {{ states('sensor.peninsula_nutrient_balance_score') }}%
+        icon_color: >-
+          {% set n = states('sensor.peninsula_nutrient_balance_score') | int(0) %}
+          {{ 'green' if n >= 90 else 'light-green' if n >= 75 else 'amber' if n >= 60 else 'red' }}
+      - type: template
+        entity: sensor.peninsula_tank_data_confidence
+        icon: mdi:database-check
+        content: >-
+          Data {{ states('sensor.peninsula_tank_data_confidence') }}%
+        icon_color: >-
+          {% set n = states('sensor.peninsula_tank_data_confidence') | int(0) %}
+          {{ 'green' if n >= 90 else 'light-green' if n >= 75 else 'amber' if n >= 60 else 'red' }}

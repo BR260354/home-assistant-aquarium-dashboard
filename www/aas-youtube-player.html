@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <title>Totally Essential Aquarium Training</title>
+    <style>
+      html,
+      body,
+      #player {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+        background: #000;
+      }
+
+      #player {
+        display: block;
+        border: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <iframe
+      id="player"
+      title="Totally Essential Aquarium Training"
+      allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+      allowfullscreen
+      referrerpolicy="strict-origin-when-cross-origin"
+    ></iframe>
+    <script>
+      const videoId = "TepWfVIaWv8";
+      const parameters = new URLSearchParams({
+        autoplay: "0",
+        controls: "1",
+        playsinline: "1",
+        rel: "0",
+        origin: window.location.origin,
+        widget_referrer: window.location.href,
+      });
+
+      document.getElementById("player").src =
+        `https://www.youtube.com/embed/${videoId}?${parameters.toString()}`;
+    </script>
+  </body>
+</html>

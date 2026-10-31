@@ -1,0 +1,4 @@
+interface:
+  display_name: "Aquarium Management"
+  short_description: "Diagnose the Peninsula aquarium from live Home Assistant state"
+  default_prompt: "Use $aquarium-management to assess the Peninsula aquarium and explain any active issues."

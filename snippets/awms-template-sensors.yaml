@@ -25,12 +25,6 @@
   state: >
     {{ (states('input_number.awms_salt_remaining_ml') | float(0) / 3785.41) | round(2) }}
 
-- name: "AWMS 200xl ATO Remaining Gallons"
-  unique_id: awms_200xl_ato_remaining_gallons
-  unit_of_measurement: gal
-  state: >
-    {{ (states('input_number.awms_200xl_ato_remaining_ml') | float(0) / 3785.41) | round(2) }}
-
 - name: "AWMS RODI Remaining Percent"
   unique_id: awms_rodi_remaining_percent
   unit_of_measurement: "%"
@@ -42,12 +36,6 @@
   unit_of_measurement: "%"
   state: >
     {{ ((states('input_number.awms_salt_remaining_ml') | float(0) / 111700) * 100) | round(0) }}
-
-- name: "AWMS 200xl ATO Remaining Percent"
-  unique_id: awms_200xl_ato_remaining_percent
-  unit_of_measurement: "%"
-  state: >
-    {{ ((states('input_number.awms_200xl_ato_remaining_ml') | float(0) / 75708) * 100) | round(0) }}
 
 - name: "AWMS Adjustment Amount ML"
   unique_id: awms_adjustment_amount_ml

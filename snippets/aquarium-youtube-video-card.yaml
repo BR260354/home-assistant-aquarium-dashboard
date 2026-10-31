@@ -1,0 +1,19 @@
+# Totally essential aquarium training.
+#
+# First copy `www/aas-youtube-player.html` into the `www` directory under the
+# Home Assistant configuration directory. Then paste this card into the desired
+# Aquarium dashboard view. Home Assistant serves the local player page at the
+# `/local/` URL used below.
+#
+# The local wrapper supplies the referrer information required by YouTube and
+# avoids player error 153 in companion-app webviews. Playback stays inside Home
+# Assistant with YouTube's fullscreen, captions, volume, and playback controls.
+#
+# Autoplay remains disabled so the card does not unexpectedly begin playing
+# whenever the dashboard loads, especially in the iPad companion app.
+type: "iframe"
+title: "Totally Essential Aquarium Training"
+url: "/local/aas-youtube-player.html?v=1"
+aspect_ratio: "16:9"
+allow: "autoplay; encrypted-media; picture-in-picture; fullscreen"
+allow_open_top_navigation: false

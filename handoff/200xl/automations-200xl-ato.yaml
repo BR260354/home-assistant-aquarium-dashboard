@@ -1,0 +1,83 @@
+# Portable 200XL ATO inventory automations.
+# Pump estimate: 280 mL/minute = 4.6667 mL/second.
+# Reservoir operating capacity: 18,000 mL (18 L / approximately 4.75 gal).
+#
+# Before importing, map the Hydros ATO-running binary sensor to
+# binary_sensor.200xl_ato as described in README.md.
+
+- id: 200xl_ato_runtime_inventory
+  alias: "200XL - Track ATO Reservoir Usage"
+  description: >-
+    Records when the Hydros ATO output starts and deducts estimated water use
+    from the 18-liter ATO reservoir when the output stops.
+  triggers:
+    - trigger: state
+      entity_id: binary_sensor.200xl_ato
+      from: "off"
+      to: "on"
+      id: "started"
+      note: "Hydros ATO output began running."
+    - trigger: state
+      entity_id: binary_sensor.200xl_ato
+      from: "on"
+      to: "off"
+      id: "stopped"
+      note: "Hydros ATO output stopped; calculate estimated consumption."
+  conditions: []
+  actions:
+    - if:
+        - condition: trigger
+          id: "started"
+      then:
+        - action: input_datetime.set_datetime
+          target:
+            entity_id: input_datetime.200xl_ato_started_at
+          data:
+            datetime: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}"
+          note: "Store the start timestamp for the later stop event."
+      else:
+        - variables:
+            pump_rate_ml_per_second: 4.6667
+            started_at: >-
+              {{ as_timestamp(states('input_datetime.200xl_ato_started_at'),
+                 default=as_timestamp(now())) }}
+            runtime_seconds: >-
+              {{ [as_timestamp(now()) - started_at, 0] | max }}
+            volume_ml: >-
+              {{ [runtime_seconds * pump_rate_ml_per_second, 18000] | min | round(0) }}
+            current_remaining_ml: >-
+              {{ states('input_number.200xl_ato_remaining_ml') | float(0) }}
+            remaining_ml: >-
+              {{ [current_remaining_ml - volume_ml, 0] | max | round(0) }}
+        - action: input_number.set_value
+          target:
+            entity_id: input_number.200xl_ato_last_usage_ml
+          data:
+            value: "{{ volume_ml }}"
+          note: "Keep the most recent estimated top-off event for troubleshooting."
+        - action: input_number.set_value
+          target:
+            entity_id: input_number.200xl_ato_remaining_ml
+          data:
+            value: "{{ remaining_ml }}"
+          note: "Inventory is clamped at zero and is never allowed to go negative."
+  mode: queued
+  max: 5
+
+- id: 200xl_ato_mark_reservoir_full
+  alias: "200XL - Mark ATO Reservoir Full"
+  description: >-
+    Resets the estimated ATO inventory to 18,000 mL after the physical
+    reservoir has actually been refilled.
+  triggers:
+    - trigger: state
+      entity_id: input_button.200xl_ato_mark_full
+      note: "The dashboard button is intentionally guarded by confirmation."
+  conditions: []
+  actions:
+    - action: input_number.set_value
+      target:
+        entity_id: input_number.200xl_ato_remaining_ml
+      data:
+        value: 18000
+  mode: single

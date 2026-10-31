@@ -1,0 +1,272 @@
+# Add this complete entry beneath `tabs:` in a `custom:simple-tabs` card.
+#
+# JavaScript-free HYDROS flow preview. It prefers future schedule entities and
+# otherwise uses the normal daily program captured on 2026-08-01.
+- title: "Trying Something"
+  icon: "mdi:waves-arrow-right"
+  id: "trying-something"
+  card:
+    type: "custom:mod-card"
+    card_mod:
+      style: |
+        ha-card {
+          padding: 8px;
+          border-radius: 18px;
+          background: var(--card-background-color);
+          border: 1px solid var(--divider-color);
+          box-shadow: 0 8px 18px rgba(0, 0, 0, 0.14);
+        }
+    card:
+      type: "vertical-stack"
+      cards:
+        - type: "custom:mushroom-template-card"
+          primary: "HYDROS Flow"
+          secondary: "Live output and current flow program"
+          icon: "mdi:waves-arrow-right"
+          icon_color: "cyan"
+          tap_action:
+            action: "none"
+          card_mod:
+            style: |
+              ha-card {
+                background: transparent !important;
+                border: none !important;
+                box-shadow: none !important;
+              }
+
+        - type: "custom:layout-card"
+          layout_type: "custom:grid-layout"
+          layout:
+            grid-template-columns: "repeat(3, minmax(0, 1fr))"
+            grid-gap: "8px"
+            margin: "0"
+            mediaquery:
+              "(max-width: 767px)":
+                grid-template-columns: "1fr"
+          cards:
+            - type: "custom:vertical-stack-in-card"
+              card_mod:
+                style: |
+                  ha-card {
+                    border-radius: 14px;
+                    border: 1px solid var(--divider-color);
+                    box-shadow: none;
+                  }
+              cards:
+                - type: "custom:button-card"
+                  entity: "sensor.aquarium_aquarium_hydros_left_xf350"
+                  name: "Left XF350"
+                  show_icon: false
+                  show_name: true
+                  show_state: false
+                  tap_action:
+                    action: "more-info"
+                  hold_action:
+                    action: "more-info"
+                  custom_fields:
+                    ring: |-
+                      [[[
+                          const raw = Number(states['sensor.aquarium_aquarium_hydros_left_xf350']?.state);
+                          const value = Number.isFinite(raw) ? raw : 0;
+                          const pct = Math.max(0, Math.min(100, Math.abs(value)));
+                          const dash = (pct * 2.513).toFixed(1);
+                          const label = Number.isFinite(raw) ? Math.round(Math.abs(value)) + '%' : '—';
+                          const text = hass.themes?.darkMode ? '#f7fbff' : '#172033';
+                          const track = hass.themes?.darkMode ? '#31465b' : '#c7d6e5';
+                          return '<svg viewBox="0 0 100 100" style="width:86px;height:86px;display:block;margin:auto">' +
+                            '<circle cx="50" cy="50" r="40" fill="none" stroke="' + track + '" stroke-width="9"></circle>' +
+                            '<circle cx="50" cy="50" r="40" fill="none" stroke="#1fa9ff" stroke-width="9" stroke-linecap="round" transform="rotate(-90 50 50)" stroke-dasharray="' + dash + ' 251.3"></circle>' +
+                            '<text x="50" y="56" text-anchor="middle" fill="' + text + '" font-size="20" font-weight="700">' + label + '</text>' +
+                            '</svg>';
+                        ]]]
+                  styles: &reefbeat_dial_styles
+                    grid:
+                      - grid-template-areas: "'n' 'ring'"
+                      - grid-template-columns: "1fr"
+                      - grid-template-rows: "20px 92px"
+                      - row-gap: "2px"
+                    card:
+                      - height: "124px"
+                      - padding: "6px"
+                      - border-radius: "14px 14px 0 0"
+                      - background: "transparent"
+                      - border: "none"
+                      - box-shadow: "none"
+                    name:
+                      - font-size: "12px"
+                      - font-weight: "600"
+                      - color: "var(--primary-text-color)"
+                    custom_fields:
+                      ring:
+                        - align-self: "center"
+                - type: "custom:mushroom-template-card"
+                  entity: "sensor.aquarium_aquarium_hydros_left_xf350"
+                  primary: &left_schedule >-
+                    {% set schedule = 'sensor.aquarium_aquarium_hydros_left_xf350_flow_schedule' %}
+                    {% if has_value(schedule) %}
+                      {% set name = states(schedule) | trim %}
+                      {% set pattern = state_attr(schedule, 'pattern') | default('', true) | trim %}
+                      {{ name if not pattern or pattern | lower in name | lower else name ~ ' · ' ~ pattern }}
+                    {% else %}
+                      {% set minute = now().hour * 60 + now().minute %}
+                      {% if 480 <= minute < 630 %}Morning · Gyre
+                      {% elif 630 <= minute < 975 %}Midday · Random
+                      {% elif 975 <= minute < 990 %}Afternoon · Nutrient Export
+                      {% elif 990 <= minute < 1155 %}Evening · Gyre
+                      {% else %}Overnight · Sine Wave{% endif %}
+                    {% endif %}
+                  secondary: >-
+                    {% if has_value('sensor.aquarium_aquarium_hydros_left_xf350') %}
+                      {{ 'Reverse' if states('sensor.aquarium_aquarium_hydros_left_xf350') | float(0) < 0 else 'Forward' }} direction
+                    {% else %}
+                      Direction unavailable
+                    {% endif %}
+                  icon: "mdi:waves-arrow-right"
+                  icon_color: &schedule_color >-
+                    {% set minute = now().hour * 60 + now().minute %}
+                    {% if 975 <= minute < 990 %}orange
+                    {% elif 630 <= minute < 975 %}blue
+                    {% elif minute >= 1155 or minute < 480 %}purple
+                    {% else %}cyan{% endif %}
+                  tap_action:
+                    action: "more-info"
+                  card_mod: &schedule_style
+                    style: |
+                      ha-card {
+                        background: transparent !important;
+                        border: none !important;
+                        box-shadow: none !important;
+                      }
+                      mushroom-state-info {
+                        --card-primary-font-size: 12px;
+                        --card-primary-font-weight: 700;
+                        --card-secondary-font-size: 10px;
+                      }
+
+            - type: "custom:vertical-stack-in-card"
+              card_mod:
+                style: |
+                  ha-card {
+                    border-radius: 14px;
+                    border: 1px solid var(--divider-color);
+                    box-shadow: none;
+                  }
+              cards:
+                - type: "custom:button-card"
+                  entity: "sensor.aquarium_aquarium_hydros_upper_octopulse4"
+                  name: "Upper OctoPulse4"
+                  show_icon: false
+                  show_name: true
+                  show_state: false
+                  tap_action:
+                    action: "more-info"
+                  hold_action:
+                    action: "more-info"
+                  custom_fields:
+                    ring: |-
+                      [[[
+                          const raw = Number(states['sensor.aquarium_aquarium_hydros_upper_octopulse4']?.state);
+                          const value = Number.isFinite(raw) ? raw : 0;
+                          const pct = Math.max(0, Math.min(100, Math.abs(value)));
+                          const dash = (pct * 2.513).toFixed(1);
+                          const label = Number.isFinite(raw) ? Math.round(Math.abs(value)) + '%' : '—';
+                          const text = hass.themes?.darkMode ? '#f7fbff' : '#172033';
+                          const track = hass.themes?.darkMode ? '#31465b' : '#c7d6e5';
+                          return '<svg viewBox="0 0 100 100" style="width:86px;height:86px;display:block;margin:auto">' +
+                            '<circle cx="50" cy="50" r="40" fill="none" stroke="' + track + '" stroke-width="9"></circle>' +
+                            '<circle cx="50" cy="50" r="40" fill="none" stroke="#1fa9ff" stroke-width="9" stroke-linecap="round" transform="rotate(-90 50 50)" stroke-dasharray="' + dash + ' 251.3"></circle>' +
+                            '<text x="50" y="56" text-anchor="middle" fill="' + text + '" font-size="20" font-weight="700">' + label + '</text>' +
+                            '</svg>';
+                        ]]]
+                  styles: *reefbeat_dial_styles
+                - type: "custom:mushroom-template-card"
+                  entity: "sensor.aquarium_aquarium_hydros_upper_octopulse4"
+                  primary: >-
+                    {% set schedule = 'sensor.aquarium_aquarium_hydros_upper_octopulse4_flow_schedule' %}
+                    {% if has_value(schedule) %}
+                      {% set name = states(schedule) | trim %}
+                      {% set pattern = state_attr(schedule, 'pattern') | default('', true) | trim %}
+                      {{ name if not pattern or pattern | lower in name | lower else name ~ ' · ' ~ pattern }}
+                    {% else %}
+                      {% set minute = now().hour * 60 + now().minute %}
+                      {% if 480 <= minute < 630 %}Morning · Gyre
+                      {% elif 630 <= minute < 975 %}Midday · Random
+                      {% elif 975 <= minute < 990 %}Afternoon · Nutrient Export
+                      {% elif 990 <= minute < 1155 %}Evening · Gyre
+                      {% else %}Overnight · Sine Wave{% endif %}
+                    {% endif %}
+                  secondary: >-
+                    {% if has_value('sensor.aquarium_aquarium_hydros_upper_octopulse4') %}
+                      {{ 'Reverse' if states('sensor.aquarium_aquarium_hydros_upper_octopulse4') | float(0) < 0 else 'Forward' }} direction
+                    {% else %}
+                      Direction unavailable
+                    {% endif %}
+                  icon: "mdi:waves-arrow-right"
+                  icon_color: *schedule_color
+                  tap_action:
+                    action: "more-info"
+                  card_mod: *schedule_style
+
+            - type: "custom:vertical-stack-in-card"
+              card_mod:
+                style: |
+                  ha-card {
+                    border-radius: 14px;
+                    border: 1px solid var(--divider-color);
+                    box-shadow: none;
+                  }
+              cards:
+                - type: "custom:button-card"
+                  entity: "sensor.aquarium_aquarium_hydros_mid_octopulse4"
+                  name: "Mid OctoPulse4"
+                  show_icon: false
+                  show_name: true
+                  show_state: false
+                  tap_action:
+                    action: "more-info"
+                  hold_action:
+                    action: "more-info"
+                  custom_fields:
+                    ring: |-
+                      [[[
+                          const raw = Number(states['sensor.aquarium_aquarium_hydros_mid_octopulse4']?.state);
+                          const value = Number.isFinite(raw) ? raw : 0;
+                          const pct = Math.max(0, Math.min(100, Math.abs(value)));
+                          const dash = (pct * 2.513).toFixed(1);
+                          const label = Number.isFinite(raw) ? Math.round(Math.abs(value)) + '%' : '—';
+                          const text = hass.themes?.darkMode ? '#f7fbff' : '#172033';
+                          const track = hass.themes?.darkMode ? '#31465b' : '#c7d6e5';
+                          return '<svg viewBox="0 0 100 100" style="width:86px;height:86px;display:block;margin:auto">' +
+                            '<circle cx="50" cy="50" r="40" fill="none" stroke="' + track + '" stroke-width="9"></circle>' +
+                            '<circle cx="50" cy="50" r="40" fill="none" stroke="#1fa9ff" stroke-width="9" stroke-linecap="round" transform="rotate(-90 50 50)" stroke-dasharray="' + dash + ' 251.3"></circle>' +
+                            '<text x="50" y="56" text-anchor="middle" fill="' + text + '" font-size="20" font-weight="700">' + label + '</text>' +
+                            '</svg>';
+                        ]]]
+                  styles: *reefbeat_dial_styles
+                - type: "custom:mushroom-template-card"
+                  entity: "sensor.aquarium_aquarium_hydros_mid_octopulse4"
+                  primary: >-
+                    {% set schedule = 'sensor.aquarium_aquarium_hydros_mid_octopulse4_flow_schedule' %}
+                    {% if has_value(schedule) %}
+                      {% set name = states(schedule) | trim %}
+                      {% set pattern = state_attr(schedule, 'pattern') | default('', true) | trim %}
+                      {{ name if not pattern or pattern | lower in name | lower else name ~ ' · ' ~ pattern }}
+                    {% else %}
+                      {% set minute = now().hour * 60 + now().minute %}
+                      {% if 480 <= minute < 630 %}Morning · Gyre
+                      {% elif 630 <= minute < 975 %}Midday · Random
+                      {% elif 975 <= minute < 990 %}Afternoon · Nutrient Export
+                      {% elif 990 <= minute < 1155 %}Evening · Gyre
+                      {% else %}Overnight · Sine Wave{% endif %}
+                    {% endif %}
+                  secondary: >-
+                    {% if has_value('sensor.aquarium_aquarium_hydros_mid_octopulse4') %}
+                      {{ 'Reverse' if states('sensor.aquarium_aquarium_hydros_mid_octopulse4') | float(0) < 0 else 'Forward' }} direction
+                    {% else %}
+                      Direction unavailable
+                    {% endif %}
+                  icon: "mdi:waves-arrow-right"
+                  icon_color: *schedule_color
+                  tap_action:
+                    action: "more-info"
+                  card_mod: *schedule_style

@@ -1,0 +1,1236 @@
+# Portable 200XL Lovelace dashboard exported from Aquarium Mobile.
+# This is a complete raw dashboard configuration with one view.
+# Rename the recipient's integration entities to the canonical IDs documented in README.md
+# before pasting this into Home Assistant.
+
+views:
+  - title: "200XL Aquarium"
+    path: "200xl"
+    type: "sections"
+    max_columns: 1
+    sections:
+      - type: "grid"
+        column_span: 4
+        cards:
+          - type: "heading"
+            heading: "200XL Health"
+            heading_style: "title"
+            icon: "mdi:heart-pulse"
+            grid_options:
+              columns: "full"
+              rows: "auto"
+          - type: "custom:layout-card"
+            layout_type: "custom:grid-layout"
+            layout:
+              grid-template-columns: "1fr"
+              grid-gap: "6px"
+              margin: "0"
+            cards:
+              - type: "custom:mushroom-template-card"
+                entity: "sensor.200xl_alerts"
+                primary: "200XL Alerts"
+                secondary: |-
+                  {% set ns=namespace(items=[]) %}
+                  {% for a in state_attr('sensor.200xl_alerts','alerts') or [] %}
+                    {% set ns.items=ns.items+[a] %}
+                  {% endfor %}
+                  {% set sump=states('sensor.200xl_sump_level') %}
+                  {% if sump | lower not in ['normal','unknown','unavailable','none',''] %}{% set ns.items=ns.items+['Sump Level: ' ~ sump] %}{% endif %}
+                  {% set mqtt=states('sensor.200xl_mqtt_health') | lower %}
+                  {% if mqtt != 'online' %}{% set ns.items=ns.items+['Hydros MQTT: ' ~ (mqtt | title)] %}{% endif %}
+                  {% set ato=states('sensor.200xl_ato_remaining_percent') | float(-1) %}
+                  {% if ato >= 0 and ato < 20 %}{% set ns.items=ns.items+['ATO Reservoir Low: ' ~ (ato | round(0)) ~ '%'] %}{% endif %}
+                  {% set shown=ns.items | unique | list %}
+                  {{ shown | join(' | ') if shown else 'No active alerts' }}
+                icon: "mdi:alert-circle"
+                icon_color: |-
+                  {% set ns=namespace(items=[]) %}
+                  {% for a in state_attr('sensor.200xl_alerts','alerts') or [] %}
+                    {% set ns.items=ns.items+[a] %}
+                  {% endfor %}
+                  {% set sump=states('sensor.200xl_sump_level') %}
+                  {% if sump | lower not in ['normal','unknown','unavailable','none',''] %}{% set ns.items=ns.items+['Sump Level: ' ~ sump] %}{% endif %}
+                  {% set mqtt=states('sensor.200xl_mqtt_health') | lower %}
+                  {% if mqtt != 'online' %}{% set ns.items=ns.items+['Hydros MQTT: ' ~ (mqtt | title)] %}{% endif %}
+                  {% set ato=states('sensor.200xl_ato_remaining_percent') | float(-1) %}
+                  {% if ato >= 0 and ato < 20 %}{% set ns.items=ns.items+['ATO Reservoir Low: ' ~ (ato | round(0)) ~ '%'] %}{% endif %}
+                  {{ 'red' if ns.items | count else 'green' }}
+                multiline_secondary: true
+                tap_action:
+                  action: "more-info"
+                card_mod:
+                  style: |-
+                    {% set ns=namespace(items=[]) %}
+                    {% for a in state_attr('sensor.200xl_alerts','alerts') or [] %}
+                      {% set ns.items=ns.items+[a] %}
+                    {% endfor %}
+                    {% set sump=states('sensor.200xl_sump_level') %}
+                    {% if sump | lower not in ['normal','unknown','unavailable','none',''] %}{% set ns.items=ns.items+['Sump Level: ' ~ sump] %}{% endif %}
+                    {% set mqtt=states('sensor.200xl_mqtt_health') | lower %}
+                    {% if mqtt != 'online' %}{% set ns.items=ns.items+['Hydros MQTT: ' ~ (mqtt | title)] %}{% endif %}
+                    {% set ato=states('sensor.200xl_ato_remaining_percent') | float(-1) %}
+                    {% if ato >= 0 and ato < 20 %}{% set ns.items=ns.items+['ATO Reservoir Low: ' ~ (ato | round(0)) ~ '%'] %}{% endif %}
+                    ha-card {
+                     height:100%; border-radius:14px; box-shadow:none;
+                     {% if ns.items | count %}border:2px solid rgba(244,67,54,.78);--ha-card-background:rgba(244,67,54,.16);
+                     {% else %}border:1px solid rgba(76,175,80,.40);--ha-card-background:rgba(76,175,80,.08);{% endif %}
+                    }
+              - type: "custom:mushroom-template-card"
+                primary: "Other Active Devices"
+                secondary: |-
+                  {% set ns=namespace(items=[]) %}
+                  {% if is_state('binary_sensor.200xl_ato','on') %}{% set ns.items=ns.items+['ATO'] %}{% endif %}
+                  {% if is_state('binary_sensor.200xl_minnow_doser_1','on') %}{% set ns.items=ns.items+['Minnow Head 1 dosing'] %}{% endif %}
+                  {% if is_state('binary_sensor.200xl_minnow_doser_2','on') %}{% set ns.items=ns.items+['Minnow Head 2 dosing'] %}{% endif %}
+                  {% if is_state('binary_sensor.200xl_helios_heater','on') %}{% set ns.items=ns.items+['Helios Heater'] %}{% endif %}
+                  {% if states('sensor.200xl_fans_power') | float(0) > 0 %}{% set ns.items=ns.items+['Display Fans'] %}{% endif %}
+                  {% if is_state('binary_sensor.200xl_cabinet_light','on') %}{% set ns.items=ns.items+['Cabinet Lights'] %}{% endif %}
+                  {{ ns.items | join(' · ') if ns.items else 'No intermittent devices active' }}
+                icon: "mdi:power-plug-outline"
+                icon_color: |-
+                  {% set ns=namespace(items=[]) %}
+                  {% if is_state('binary_sensor.200xl_ato','on') %}{% set ns.items=ns.items+['ATO'] %}{% endif %}
+                  {% if is_state('binary_sensor.200xl_minnow_doser_1','on') %}{% set ns.items=ns.items+['Minnow Head 1 dosing'] %}{% endif %}
+                  {% if is_state('binary_sensor.200xl_minnow_doser_2','on') %}{% set ns.items=ns.items+['Minnow Head 2 dosing'] %}{% endif %}
+                  {% if is_state('binary_sensor.200xl_helios_heater','on') %}{% set ns.items=ns.items+['Helios Heater'] %}{% endif %}
+                  {% if states('sensor.200xl_fans_power') | float(0) > 0 %}{% set ns.items=ns.items+['Display Fans'] %}{% endif %}
+                  {% if is_state('binary_sensor.200xl_cabinet_light','on') %}{% set ns.items=ns.items+['Cabinet Lights'] %}{% endif %}
+                  {{ 'cyan' if ns.items | count else 'grey' }}
+                multiline_secondary: true
+                tap_action:
+                  action: "none"
+                card_mod:
+                  style: |-
+                    {% set ns=namespace(items=[]) %}
+                    {% if is_state('binary_sensor.200xl_ato','on') %}{% set ns.items=ns.items+['ATO'] %}{% endif %}
+                    {% if is_state('binary_sensor.200xl_minnow_doser_1','on') %}{% set ns.items=ns.items+['Minnow Head 1 dosing'] %}{% endif %}
+                    {% if is_state('binary_sensor.200xl_minnow_doser_2','on') %}{% set ns.items=ns.items+['Minnow Head 2 dosing'] %}{% endif %}
+                    {% if is_state('binary_sensor.200xl_helios_heater','on') %}{% set ns.items=ns.items+['Helios Heater'] %}{% endif %}
+                    {% if states('sensor.200xl_fans_power') | float(0) > 0 %}{% set ns.items=ns.items+['Display Fans'] %}{% endif %}
+                    {% if is_state('binary_sensor.200xl_cabinet_light','on') %}{% set ns.items=ns.items+['Cabinet Lights'] %}{% endif %}
+                    ha-card {
+                     height:100%; border-radius:14px; box-shadow:none;
+                     border:1px solid {% if ns.items | count %}rgba(0,188,212,.55){% else %}var(--divider-color){% endif %};
+                     --ha-card-background:{% if ns.items | count %}rgba(0,188,212,.09){% else %}var(--card-background-color){% endif %};
+                    }
+            grid_options:
+              columns: "full"
+              rows: "auto"
+          - type: "custom:layout-card"
+            layout_type: "custom:grid-layout"
+            layout:
+              grid-template-columns: "repeat(2, minmax(0, 1fr))"
+              grid-gap: "6px"
+              margin: "0"
+              mediaquery:
+                "(max-width: 1100px)":
+                  grid-template-columns: "repeat(2, minmax(0, 1fr))"
+                "(max-width: 700px)":
+                  grid-template-columns: "repeat(1, minmax(0, 1fr))"
+            cards:
+              - type: "custom:button-card"
+                entity: "sensor.200xl_temperature"
+                name: "Temperature"
+                icon: "mdi:thermometer"
+                show_icon: true
+                show_name: true
+                show_state: true
+                state_display: "[[[ const n = Number(entity.state); const unit = entity.attributes.unit_of_measurement || '°F'; return Number.isFinite(n) ? `${n.toFixed(1)}${unit ? ' ' + unit : ''}` : 'Unavailable'; ]]]"
+                tap_action:
+                  action: "more-info"
+                hold_action:
+                  action: "more-info"
+                custom_fields:
+                  graph:
+                    card:
+                      type: "custom:mini-graph-card"
+                      entities:
+                        - "sensor.200xl_temperature"
+                      group: true
+                      hours_to_show: 12
+                      points_per_hour: 1
+                      aggregate_func: "avg"
+                      height: 48
+                      line_width: 2.5
+                      line_color: "var(--aas-param-line-color, #245f9e)"
+                      smoothing: true
+                      animate: true
+                      show:
+                        name: false
+                        icon: false
+                        state: false
+                        fill: true
+                        points: true
+                        labels: false
+                        extrema: false
+                        average: false
+                        legend: false
+                      tap_action:
+                        action: "none"
+                      card_mod:
+                        style: |-
+                          ha-card {
+                            background: transparent !important;
+                            --ha-card-background: transparent !important;
+                            box-shadow: none !important;
+                            border: none !important;
+                          }
+
+                  status: "[[[ const n = Number(entity.state); const c = !Number.isFinite(n) ? '#8a8a8a' : n < 77 ? '#6ecddb' : n < 78 ? '#9ecb91' : n < 78.9 ? '#f6d55c' : '#c25964'; const label = !Number.isFinite(n) ? 'Unavailable' : n < 77 ? 'Low' : n < 78 ? 'Good' : n < 78.9 ? 'Watch' : 'High'; const ring = hass.themes?.darkMode ? 'rgba(255,255,255,0.72)' : 'rgba(0,0,0,0.36)'; return `<span title=\"${label}\" style=\"display:block;width:11px;height:11px;border-radius:50%;background:${c};border:2px solid ${ring};box-sizing:border-box;\"></span>`; ]]]"
+                  range: "12h"
+                styles:
+                  grid:
+                    - grid-template-areas: "'i n s status' 'graph graph graph graph' 'range range range range'"
+                    - grid-template-columns: "24px 1fr min-content 12px"
+                    - grid-template-rows: "26px 50px 12px"
+                    - column-gap: "8px"
+                    - row-gap: "3px"
+                    - align-items: "center"
+                  card:
+                    - height: "106px"
+                    - padding: "6px 8px"
+                    - border-radius: "14px"
+                    - background: "transparent"
+                    - border: "1px solid var(--divider-color)"
+                    - box-shadow: "none"
+                    - overflow: "hidden"
+                    - "--aas-param-line-color": "[[[ return hass.themes?.darkMode ? '#6ecddb' : '#245f9e'; ]]]"
+                  icon:
+                    - width: "19px"
+                    - color: "var(--primary-text-color)"
+                  img_cell:
+                    - justify-self: "start"
+                    - align-self: "center"
+                    - width: "22px"
+                    - height: "22px"
+                  name:
+                    - justify-self: "start"
+                    - align-self: "center"
+                    - font-size: "13px"
+                    - font-weight: "600"
+                    - line-height: "1.1"
+                    - color: "var(--primary-text-color)"
+                    - white-space: "nowrap"
+                  state:
+                    - justify-self: "end"
+                    - align-self: "center"
+                    - font-size: "16px"
+                    - font-weight: "700"
+                    - line-height: "1.1"
+                    - color: "var(--primary-text-color)"
+                    - white-space: "nowrap"
+                  custom_fields:
+                    graph:
+                      - align-self: "stretch"
+                      - width: "100%"
+                      - height: "50px"
+                      - display: "flex"
+                      - align-items: "center"
+                      - overflow: "hidden"
+                      - border-radius: "7px"
+                    status:
+                      - justify-self: "end"
+                      - align-self: "center"
+                      - display: "flex"
+                      - align-items: "center"
+                    range:
+                      - justify-self: "end"
+                      - align-self: "center"
+                      - font-size: "9px"
+                      - line-height: "1"
+                      - color: "var(--secondary-text-color)"
+                      - padding-right: "1px"
+              - type: "custom:button-card"
+                entity: "sensor.200xl_ph"
+                name: "pH"
+                icon: "mdi:fish"
+                show_icon: true
+                show_name: true
+                show_state: true
+                state_display: "[[[ const n = Number(entity.state); const unit = entity.attributes.unit_of_measurement || ''; return Number.isFinite(n) ? `${n.toFixed(2)}${unit ? ' ' + unit : ''}` : 'Unavailable'; ]]]"
+                tap_action:
+                  action: "more-info"
+                hold_action:
+                  action: "more-info"
+                custom_fields:
+                  graph:
+                    card:
+                      type: "custom:mini-graph-card"
+                      entities:
+                        - "sensor.200xl_ph"
+                      group: true
+                      hours_to_show: 12
+                      points_per_hour: 1
+                      aggregate_func: "avg"
+                      height: 48
+                      line_width: 2.5
+                      line_color: "var(--aas-param-line-color, #245f9e)"
+                      smoothing: true
+                      animate: true
+                      show:
+                        name: false
+                        icon: false
+                        state: false
+                        fill: true
+                        points: true
+                        labels: false
+                        extrema: false
+                        average: false
+                        legend: false
+                      tap_action:
+                        action: "none"
+                      card_mod:
+                        style: |-
+                          ha-card {
+                            background: transparent !important;
+                            --ha-card-background: transparent !important;
+                            box-shadow: none !important;
+                            border: none !important;
+                          }
+
+                  status: "[[[ const n = Number(entity.state); const c = !Number.isFinite(n) ? '#8a8a8a' : n < 7.7 ? '#c25964' : n < 8.5 ? '#9ecb91' : '#ffb347'; const label = !Number.isFinite(n) ? 'Unavailable' : n < 7.7 ? 'Low' : n < 8.5 ? 'Good' : 'High'; const ring = hass.themes?.darkMode ? 'rgba(255,255,255,0.72)' : 'rgba(0,0,0,0.36)'; return `<span title=\"${label}\" style=\"display:block;width:11px;height:11px;border-radius:50%;background:${c};border:2px solid ${ring};box-sizing:border-box;\"></span>`; ]]]"
+                  range: "12h"
+                styles:
+                  grid:
+                    - grid-template-areas: "'i n s status' 'graph graph graph graph' 'range range range range'"
+                    - grid-template-columns: "24px 1fr min-content 12px"
+                    - grid-template-rows: "26px 50px 12px"
+                    - column-gap: "8px"
+                    - row-gap: "3px"
+                    - align-items: "center"
+                  card:
+                    - height: "106px"
+                    - padding: "6px 8px"
+                    - border-radius: "14px"
+                    - background: "transparent"
+                    - border: "1px solid var(--divider-color)"
+                    - box-shadow: "none"
+                    - overflow: "hidden"
+                    - "--aas-param-line-color": "[[[ return hass.themes?.darkMode ? '#6ecddb' : '#245f9e'; ]]]"
+                  icon:
+                    - width: "19px"
+                    - color: "var(--primary-text-color)"
+                  img_cell:
+                    - justify-self: "start"
+                    - align-self: "center"
+                    - width: "22px"
+                    - height: "22px"
+                  name:
+                    - justify-self: "start"
+                    - align-self: "center"
+                    - font-size: "13px"
+                    - font-weight: "600"
+                    - line-height: "1.1"
+                    - color: "var(--primary-text-color)"
+                    - white-space: "nowrap"
+                  state:
+                    - justify-self: "end"
+                    - align-self: "center"
+                    - font-size: "16px"
+                    - font-weight: "700"
+                    - line-height: "1.1"
+                    - color: "var(--primary-text-color)"
+                    - white-space: "nowrap"
+                  custom_fields:
+                    graph:
+                      - align-self: "stretch"
+                      - width: "100%"
+                      - height: "50px"
+                      - display: "flex"
+                      - align-items: "center"
+                      - overflow: "hidden"
+                      - border-radius: "7px"
+                    status:
+                      - justify-self: "end"
+                      - align-self: "center"
+                      - display: "flex"
+                      - align-items: "center"
+                    range:
+                      - justify-self: "end"
+                      - align-self: "center"
+                      - font-size: "9px"
+                      - line-height: "1"
+                      - color: "var(--secondary-text-color)"
+                      - padding-right: "1px"
+            grid_options:
+              columns: 36
+              rows: "auto"
+          - type: "heading"
+            heading: "Water Movement"
+            heading_style: "title"
+            icon: "mdi:waves-arrow-right"
+            grid_options:
+              columns: "full"
+              rows: "auto"
+          - type: "custom:button-card"
+            name: "Flow"
+            icon: "mdi:waves"
+            show_icon: true
+            show_name: true
+            show_state: false
+            tap_action:
+              action: "none"
+            custom_fields:
+              content:
+                card:
+                  type: "custom:layout-card"
+                  layout_type: "custom:grid-layout"
+                  layout:
+                    grid-template-columns: "repeat(2, minmax(0, 1fr))"
+                    grid-gap: "6px"
+                  cards:
+                    - type: "custom:button-card"
+                      entity: "sensor.200xl_octopulse_2"
+                      name: "OctoPulse 2"
+                      show_icon: false
+                      show_name: true
+                      show_state: false
+                      tap_action:
+                        action: "more-info"
+                      hold_action:
+                        action: "more-info"
+                      custom_fields:
+                        ring: "[[[ const raw=Number(states['sensor.200xl_octopulse_2']?.state); return Number.isFinite(raw) ? Math.round(Math.abs(raw)) + '%' : '—'; ]]]"
+                        detail: "[[[ const n=Number(states['sensor.200xl_octopulse_2']?.state); return Number.isFinite(n) && n < 0 ? 'Reverse direction' : 'Forward direction'; ]]]"
+                      styles:
+                        grid:
+                          - grid-template-areas: "'n' 'ring' 'detail'"
+                          - grid-template-columns: "1fr"
+                          - grid-template-rows: "22px 88px 18px"
+                          - row-gap: "3px"
+                        card:
+                          - height: "142px"
+                          - padding: "6px"
+                          - border-radius: "14px"
+                          - background: "[[[ return hass.themes?.darkMode ? 'rgba(53, 64, 80, 0.98)' : 'rgba(255, 255, 255, 0.78)'; ]]]"
+                          - border: "[[[ return hass.themes?.darkMode ? '1px solid rgba(126, 148, 174, 0.34)' : '1px solid rgba(73, 98, 127, 0.26)'; ]]]"
+                          - box-shadow: "none"
+                        name:
+                          - font-size: "12px"
+                          - font-weight: "600"
+                          - color: "var(--primary-text-color)"
+                          - white-space: "normal"
+                          - line-height: "1.05"
+                        custom_fields:
+                          ring:
+                            - align-self: "center"
+                            - justify-self: "center"
+                            - width: "86px"
+                            - height: "86px"
+                            - border-radius: "50%"
+                            - display: "flex"
+                            - align-items: "center"
+                            - justify-content: "center"
+                            - box-sizing: "border-box"
+                            - font-size: "20px"
+                            - font-weight: "700"
+                            - line-height: "1"
+                            - color: "[[[ return hass.themes?.darkMode ? '#f7fbff' : '#172033'; ]]]"
+                            - "--aas-progress": "[[[ const n=Number(states['sensor.200xl_octopulse_2']?.state); return Number.isFinite(n) ? Math.max(0,Math.min(100,Math.abs(n))) : 0; ]]]"
+                            - "--aas-track": "[[[ return hass.themes?.darkMode ? '#31465b' : '#c7d6e5'; ]]]"
+                            - "--aas-cap-opacity": "[[[ const n=Number(states['sensor.200xl_octopulse_2']?.state); return Number.isFinite(n) && Math.abs(n) > 0 ? 1 : 0; ]]]"
+                            - background: "radial-gradient(circle at center, var(--card-background-color) 0 33px, transparent 34px), conic-gradient(from 0deg, #1fa9ff calc(var(--aas-progress) * 1%), var(--aas-track) 0)"
+                            - transition: "--aas-progress 280ms ease-out"
+                            - position: "relative"
+                          detail:
+                            - font-size: "10px"
+                            - color: "var(--secondary-text-color)"
+                            - white-space: "nowrap"
+                            - overflow: "hidden"
+                            - text-overflow: "ellipsis"
+                      extra_styles: |-
+                        @property --aas-progress {
+                          syntax: '<number>';
+                          inherits: false;
+                          initial-value: 0;
+                        }
+                        #ring::before,
+                        #ring::after {
+                          content: '';
+                          position: absolute;
+                          left: 38.5px;
+                          top: 38.5px;
+                          width: 9px;
+                          height: 9px;
+                          border-radius: 50%;
+                          background: #1fa9ff;
+                          opacity: var(--aas-cap-opacity);
+                          pointer-events: none;
+                          z-index: 2;
+                        }
+                        #ring::before {
+                          transform: translateY(-38.5px);
+                        }
+                        #ring::after {
+                          transform: rotate(calc(var(--aas-progress) * 3.6deg)) translateY(-38.5px);
+                          transition: transform 280ms ease-out, opacity 120ms linear;
+                        }
+                    - type: "custom:button-card"
+                      entity: "sensor.200xl_return"
+                      name: "Return"
+                      show_icon: false
+                      show_name: true
+                      show_state: false
+                      tap_action:
+                        action: "more-info"
+                      hold_action:
+                        action: "more-info"
+                      custom_fields:
+                        ring: "[[[ const raw=Number(states['sensor.200xl_return']?.state); return Number.isFinite(raw) ? Math.round(Math.abs(raw)) + '%' : '—'; ]]]"
+                        detail: ""
+                      styles:
+                        grid:
+                          - grid-template-areas: "'n' 'ring' 'detail'"
+                          - grid-template-columns: "1fr"
+                          - grid-template-rows: "22px 88px 18px"
+                          - row-gap: "3px"
+                        card:
+                          - height: "142px"
+                          - padding: "6px"
+                          - border-radius: "14px"
+                          - background: "[[[ return hass.themes?.darkMode ? 'rgba(53, 64, 80, 0.98)' : 'rgba(255, 255, 255, 0.78)'; ]]]"
+                          - border: "[[[ return hass.themes?.darkMode ? '1px solid rgba(126, 148, 174, 0.34)' : '1px solid rgba(73, 98, 127, 0.26)'; ]]]"
+                          - box-shadow: "none"
+                        name:
+                          - font-size: "12px"
+                          - font-weight: "600"
+                          - color: "var(--primary-text-color)"
+                          - white-space: "normal"
+                          - line-height: "1.05"
+                        custom_fields:
+                          ring:
+                            - align-self: "center"
+                            - justify-self: "center"
+                            - width: "86px"
+                            - height: "86px"
+                            - border-radius: "50%"
+                            - display: "flex"
+                            - align-items: "center"
+                            - justify-content: "center"
+                            - box-sizing: "border-box"
+                            - font-size: "20px"
+                            - font-weight: "700"
+                            - line-height: "1"
+                            - color: "[[[ return hass.themes?.darkMode ? '#f7fbff' : '#172033'; ]]]"
+                            - "--aas-progress": "[[[ const n=Number(states['sensor.200xl_return']?.state); return Number.isFinite(n) ? Math.max(0,Math.min(100,Math.abs(n))) : 0; ]]]"
+                            - "--aas-track": "[[[ return hass.themes?.darkMode ? '#31465b' : '#c7d6e5'; ]]]"
+                            - "--aas-cap-opacity": "[[[ const n=Number(states['sensor.200xl_return']?.state); return Number.isFinite(n) && Math.abs(n) > 0 ? 1 : 0; ]]]"
+                            - background: "radial-gradient(circle at center, var(--card-background-color) 0 33px, transparent 34px), conic-gradient(from 0deg, #1fa9ff calc(var(--aas-progress) * 1%), var(--aas-track) 0)"
+                            - transition: "--aas-progress 280ms ease-out"
+                            - position: "relative"
+                          detail:
+                            - font-size: "10px"
+                            - color: "var(--secondary-text-color)"
+                            - white-space: "nowrap"
+                            - overflow: "hidden"
+                            - text-overflow: "ellipsis"
+                      extra_styles: |-
+                        @property --aas-progress {
+                          syntax: '<number>';
+                          inherits: false;
+                          initial-value: 0;
+                        }
+                        #ring::before,
+                        #ring::after {
+                          content: '';
+                          position: absolute;
+                          left: 38.5px;
+                          top: 38.5px;
+                          width: 9px;
+                          height: 9px;
+                          border-radius: 50%;
+                          background: #1fa9ff;
+                          opacity: var(--aas-cap-opacity);
+                          pointer-events: none;
+                          z-index: 2;
+                        }
+                        #ring::before {
+                          transform: translateY(-38.5px);
+                        }
+                        #ring::after {
+                          transform: rotate(calc(var(--aas-progress) * 3.6deg)) translateY(-38.5px);
+                          transition: transform 280ms ease-out, opacity 120ms linear;
+                        }
+            styles:
+              grid:
+                - grid-template-areas: "'i n' 'content content'"
+                - grid-template-columns: "26px 1fr"
+                - grid-template-rows: "30px auto"
+                - column-gap: "7px"
+                - row-gap: "8px"
+                - align-items: "center"
+              card:
+                - padding: "8px"
+                - border-radius: "18px"
+                - background: "[[[ return hass.themes?.darkMode ? 'rgba(42, 52, 65, 0.96)' : 'rgba(236, 242, 248, 0.96)'; ]]]"
+                - border: "[[[ return hass.themes?.darkMode ? '1px solid rgba(126, 148, 174, 0.34)' : '1px solid rgba(73, 98, 127, 0.26)'; ]]]"
+                - box-shadow: "0 8px 18px rgba(0,0,0,0.14)"
+              icon:
+                - width: "21px"
+                - color: "#45e5a4"
+              img_cell:
+                - width: "26px"
+                - height: "26px"
+                - justify-self: "start"
+              name:
+                - justify-self: "start"
+                - font-size: "16px"
+                - font-weight: "700"
+                - color: "var(--primary-text-color)"
+              custom_fields:
+                content:
+                  - width: "100%"
+                  - min-width: "0"
+            grid_options:
+              columns: "full"
+              rows: "auto"
+          - type: "custom:expander-card"
+            title-card:
+              type: "heading"
+              heading: "Dosing"
+              heading_style: "title"
+              icon: "mdi:eyedropper"
+              grid_options:
+                columns: "full"
+                rows: "auto"
+            cards:
+              - type: "grid"
+                columns: 2
+                square: false
+                cards:
+                  - type: "custom:mushroom-template-card"
+                    entity: "binary_sensor.200xl_minnow_doser_1"
+                    primary: "Minnow Head 1"
+                    secondary: "{% set active=is_state('binary_sensor.200xl_minnow_doser_1','on') %}{% set today=states('sensor.200xl_minnow_doser_1_dosed_today') %}{% set remaining=states('sensor.200xl_minnow_doser_1_reservoir_remaining') %}{{ 'Dosing' if active else 'Idle' }} · {{ today }} mL today · {{ remaining }} mL remaining"
+                    icon: "mdi:eyedropper"
+                    icon_color: "{% set s=states('binary_sensor.200xl_minnow_doser_1') %}{% if s in ['unknown','unavailable'] %}red{% elif s == 'on' %}blue{% else %}green{% endif %}"
+                    tap_action:
+                      action: "more-info"
+                    card_mod:
+                      style: "ha-card { border-radius:13px; border:1px solid var(--divider-color); box-shadow:none; }"
+                  - type: "custom:mushroom-template-card"
+                    entity: "binary_sensor.200xl_minnow_doser_2"
+                    primary: "Minnow Head 2"
+                    secondary: "{% set active=is_state('binary_sensor.200xl_minnow_doser_2','on') %}{% set today=states('sensor.200xl_minnow_doser_2_dosed_today') %}{% set remaining=states('sensor.200xl_minnow_doser_2_reservoir_remaining') %}{{ 'Dosing' if active else 'Idle' }} · {{ today }} mL today · {{ remaining }} mL remaining"
+                    icon: "mdi:eyedropper"
+                    icon_color: "{% set s=states('binary_sensor.200xl_minnow_doser_2') %}{% if s in ['unknown','unavailable'] %}red{% elif s == 'on' %}blue{% else %}green{% endif %}"
+                    tap_action:
+                      action: "more-info"
+                    card_mod:
+                      style: "ha-card { border-radius:13px; border:1px solid var(--divider-color); box-shadow:none; }"
+                grid_options:
+                  columns: "full"
+                  rows: "auto"
+            expanded: false
+            animation: true
+            clear: false
+            clear-children: false
+            expander-card-id: "mobile-200xl-dosing"
+            grid_options:
+              columns: "full"
+              rows: "auto"
+          - type: "custom:expander-card"
+            title-card:
+              type: "heading"
+              heading: "Filtration & Systems"
+              heading_style: "title"
+              icon: "mdi:filter-cog"
+              grid_options:
+                columns: "full"
+                rows: "auto"
+            cards:
+              - type: "custom:layout-card"
+                layout_type: "custom:grid-layout"
+                layout:
+                  grid-template-columns: "1fr"
+                  grid-gap: "6px"
+                  margin: "0"
+                cards:
+                  - type: "custom:button-card"
+                    name: "ReefMat 250"
+                    icon: "mdi:filter-variant"
+                    show_icon: true
+                    show_name: true
+                    show_state: false
+                    tap_action:
+                      action: "more-info"
+                    entity: "sensor.200xl_reefmat_total_usage"
+                    custom_fields:
+                      summary: |-
+                        [[[
+                            const t = Number(states['sensor.200xl_reefmat_total_usage']?.state);
+                            const r = Number(states['sensor.200xl_reefmat_remaining_length']?.state);
+                            const unit = states['sensor.200xl_reefmat_total_usage']?.attributes?.unit_of_measurement || '';
+                            if (!Number.isFinite(t)) return 'Usage unavailable';
+                            const totalRoll = Number.isFinite(r) ? t + r : NaN;
+                            return '<span style="font-size:12px;color:var(--secondary-text-color)">Total use</span><br>' +
+                              '<span style="font-size:22px;font-weight:750;color:var(--primary-text-color)">' + t.toFixed(1) + '</span>' +
+                              '<span style="font-size:11px;color:var(--secondary-text-color)"> ' + unit +
+                              (Number.isFinite(totalRoll) ? ' / ' + totalRoll.toFixed(1) + ' ' + unit : '') + '</span>';
+                          ]]]
+                      progress: |-
+                        [[[
+                            const t = Number(states['sensor.200xl_reefmat_total_usage']?.state);
+                            const r = Number(states['sensor.200xl_reefmat_remaining_length']?.state);
+                            const pct = Number.isFinite(t) && Number.isFinite(r) && t + r > 0 ? Math.max(0, Math.min(100, t / (t + r) * 100)) : 0;
+                            return '<div style="height:10px;border-radius:999px;background:' +
+                              (hass.themes?.darkMode ? '#344258' : '#cad6e3') + ';overflow:hidden">' +
+                              '<div style="height:100%;width:' + pct.toFixed(1) + '%;background:linear-gradient(90deg,#d95bea,#b94fe5);"></div></div>';
+                          ]]]
+                      stats: |-
+                        [[[
+                            const today = Number(states['sensor.200xl_reefmat_today_usage']?.state);
+                            const avg = Number(states['sensor.200xl_reefmat_daily_average_usage']?.state);
+                            const days = Number(states['sensor.200xl_reefmat_days_till_end_of_roll']?.state);
+                            const unit = states['sensor.200xl_reefmat_today_usage']?.attributes?.unit_of_measurement || '';
+                            const chip = (v) => '<span style="display:inline-block;padding:5px 9px;margin:2px 3px 0 0;border:1px solid var(--divider-color);border-radius:10px;font-size:10px;color:var(--primary-text-color)">' + v + '</span>';
+                            return chip((Number.isFinite(today) ? today.toFixed(1) : '—') + ' ' + unit + ' today') +
+                              chip((Number.isFinite(avg) ? avg.toFixed(1) : '—') + ' daily avg') +
+                              chip((Number.isFinite(days) ? Math.round(days) : '—') + ' days left');
+                          ]]]
+                    styles:
+                      grid:
+                        - grid-template-areas: "'n i' 'summary summary' 'progress progress' 'stats stats'"
+                        - grid-template-columns: "1fr 34px"
+                        - grid-template-rows: "30px 48px 12px 38px"
+                        - row-gap: "5px"
+                      card:
+                        - padding: "9px"
+                        - border-radius: "18px"
+                        - background: "[[[ return hass.themes?.darkMode ? 'rgba(42, 52, 65, 0.96)' : 'rgba(236, 242, 248, 0.96)'; ]]]"
+                        - border: "[[[ return hass.themes?.darkMode ? '1px solid rgba(126, 148, 174, 0.34)' : '1px solid rgba(73, 98, 127, 0.26)'; ]]]"
+                        - box-shadow: "0 8px 18px rgba(0,0,0,0.14)"
+                      name:
+                        - justify-self: "start"
+                        - font-size: "16px"
+                        - font-weight: "700"
+                        - color: "var(--primary-text-color)"
+                      icon:
+                        - width: "25px"
+                        - color: "#45e5a4"
+                      img_cell:
+                        - justify-self: "end"
+                        - width: "34px"
+                        - height: "34px"
+                        - border-radius: "50%"
+                        - background: "[[[ return hass.themes?.darkMode ? 'rgba(255,255,255,0.08)' : 'rgba(31,169,255,0.09)'; ]]]"
+                      custom_fields:
+                        summary:
+                          - justify-self: "stretch"
+                          - text-align: "left"
+                        progress:
+                          - width: "100%"
+                        stats:
+                          - text-align: "left"
+                          - white-space: "normal"
+                  - type: "custom:mod-card"
+                    card_mod:
+                      style: "ha-card { padding:8px; border-radius:18px; background:var(--card-background-color); border:1px solid rgba(69,229,164,.36); box-shadow:0 8px 18px rgba(0,0,0,.12); }"
+                    card:
+                      type: "vertical-stack"
+                      cards:
+                        - type: "custom:mushroom-template-card"
+                          primary: "Systems"
+                          secondary: "Live operating state · no graphs"
+                          icon: "mdi:server-network"
+                          icon_color: "green"
+                          tap_action:
+                            action: "none"
+                          card_mod:
+                            style: "ha-card { background:transparent!important; border:none!important; box-shadow:none!important; }"
+                        - type: "custom:layout-card"
+                          layout_type: "custom:grid-layout"
+                          layout:
+                            grid-template-columns: "repeat(2,minmax(0,1fr))"
+                            grid-gap: "5px"
+                            margin: "0"
+                          cards:
+                            - type: "custom:mushroom-template-card"
+                              entity: "sensor.200xl_sterilizer"
+                              primary: "Sterilizer"
+                              secondary: "{{ 'Running' if is_state('sensor.200xl_sterilizer','on') else 'Off' }}"
+                              icon: "mdi:water-sync"
+                              icon_color: "{% if is_state('sensor.200xl_sterilizer','on') %}green{% else %}red{% endif %}"
+                              tap_action:
+                                action: "more-info"
+                              card_mod:
+                                style: "ha-card { border-radius:13px; border:1px solid var(--divider-color); box-shadow:none; }"
+                            - type: "conditional"
+                              conditions:
+                                - condition: "state"
+                                  entity: "binary_sensor.200xl_helios_heater"
+                                  state: "on"
+                              card:
+                                type: "custom:mushroom-template-card"
+                                entity: "binary_sensor.200xl_helios_heater"
+                                primary: "Helios Heater"
+                                secondary: "Heating"
+                                icon: "mdi:radiator"
+                                icon_color: "orange"
+                                tap_action:
+                                  action: "more-info"
+                                card_mod:
+                                  style: "ha-card { border-radius:13px; border:1px solid var(--divider-color); box-shadow:none; }"
+                            - type: "conditional"
+                              conditions:
+                                - condition: "numeric_state"
+                                  entity: "sensor.200xl_fans_power"
+                                  above: 0
+                              card:
+                                type: "custom:mushroom-template-card"
+                                entity: "sensor.200xl_fans_power"
+                                primary: "Display Fans"
+                                secondary: "{{ states('sensor.200xl_fans_power') | float(0) | round(1) }} W"
+                                icon: "mdi:fan"
+                                icon_color: "blue"
+                                tap_action:
+                                  action: "more-info"
+                                card_mod:
+                                  style: "ha-card { border-radius:13px; border:1px solid var(--divider-color); box-shadow:none; }"
+                            - type: "conditional"
+                              conditions:
+                                - condition: "state"
+                                  entity: "binary_sensor.200xl_cabinet_light"
+                                  state: "on"
+                              card:
+                                type: "custom:mushroom-template-card"
+                                entity: "binary_sensor.200xl_cabinet_light"
+                                primary: "Cabinet Lights"
+                                secondary: "On"
+                                icon: "mdi:led-strip"
+                                icon_color: "amber"
+                                tap_action:
+                                  action: "more-info"
+                                card_mod:
+                                  style: "ha-card { border-radius:13px; border:1px solid var(--divider-color); box-shadow:none; }"
+                grid_options:
+                  columns: "full"
+                  rows: "auto"
+            expanded: false
+            animation: true
+            clear: false
+            clear-children: false
+            expander-card-id: "mobile-200xl-systems"
+            grid_options:
+              columns: "full"
+              rows: "auto"
+          - type: "custom:expander-card"
+            title-card:
+              type: "heading"
+              heading: "Testing & Hydros Sensors"
+              heading_style: "title"
+              icon: "mdi:flask-round-bottom"
+              grid_options:
+                columns: "full"
+                rows: "auto"
+            cards:
+              - type: "custom:layout-card"
+                layout_type: "custom:grid-layout"
+                layout:
+                  grid-template-columns: "repeat(2,minmax(0,1fr))"
+                  grid-gap: "6px"
+                  margin: "0"
+                cards:
+                  - type: "custom:button-card"
+                    entity: "input_number.200xl_alkalinity_dkh"
+                    name: "Alkalinity dKH"
+                    icon: "mdi:water-check"
+                    show_icon: true
+                    show_name: true
+                    show_state: true
+                    state_display: "[[[ const n = Number(entity.state); const unit = entity.attributes.unit_of_measurement || 'dKH'; return Number.isFinite(n) ? `${n.toFixed(2)}${unit ? ' ' + unit : ''}` : 'Unavailable'; ]]]"
+                    tap_action:
+                      action: "more-info"
+                    hold_action:
+                      action: "more-info"
+                    custom_fields:
+                      graph:
+                        card:
+                          type: "custom:mini-graph-card"
+                          entities:
+                            - "input_number.200xl_alkalinity_dkh"
+                          group: true
+                          hours_to_show: 720
+                          points_per_hour: 0.0069444444
+                          aggregate_func: "last"
+                          group_by: "interval"
+                          height: 48
+                          line_width: 2.5
+                          line_color: "var(--aas-param-line-color, #245f9e)"
+                          smoothing: false
+                          animate: true
+                          show:
+                            name: false
+                            icon: false
+                            state: false
+                            fill: true
+                            points: true
+                            labels: false
+                            extrema: false
+                            average: false
+                            legend: false
+                          tap_action:
+                            action: "none"
+                          card_mod:
+                            style: |-
+                              ha-card {
+                                background: transparent !important;
+                                --ha-card-background: transparent !important;
+                                box-shadow: none !important;
+                                border: none !important;
+                              }
+
+                      status: "[[[ const n = Number(entity.state); const c = !Number.isFinite(n) ? '#8a8a8a' : n < 7.7 ? '#c25964' : n < 8 ? '#f6d55c' : n < 11.5 ? '#9ecb91' : '#ffb347'; const label = !Number.isFinite(n) ? 'Unavailable' : n < 7.7 ? 'Low' : n < 8 ? 'Watch' : n < 11.5 ? 'Good' : 'High'; const ring = hass.themes?.darkMode ? 'rgba(255,255,255,0.72)' : 'rgba(0,0,0,0.36)'; return `<span title=\"${label}\" style=\"display:block;width:11px;height:11px;border-radius:50%;background:${c};border:2px solid ${ring};box-sizing:border-box;\"></span>`; ]]]"
+                      range: "30d · ~5 readings"
+                    styles:
+                      grid:
+                        - grid-template-areas: "'i n s status' 'graph graph graph graph' 'range range range range'"
+                        - grid-template-columns: "24px 1fr min-content 12px"
+                        - grid-template-rows: "26px 50px 12px"
+                        - column-gap: "8px"
+                        - row-gap: "3px"
+                        - align-items: "center"
+                      card:
+                        - height: "106px"
+                        - padding: "6px 8px"
+                        - border-radius: "14px"
+                        - background: "transparent"
+                        - border: "1px solid var(--divider-color)"
+                        - box-shadow: "none"
+                        - overflow: "hidden"
+                        - "--aas-param-line-color": "[[[ return hass.themes?.darkMode ? '#6ecddb' : '#245f9e'; ]]]"
+                      icon:
+                        - width: "19px"
+                        - color: "var(--primary-text-color)"
+                      img_cell:
+                        - justify-self: "start"
+                        - align-self: "center"
+                        - width: "22px"
+                        - height: "22px"
+                      name:
+                        - justify-self: "start"
+                        - align-self: "center"
+                        - font-size: "13px"
+                        - font-weight: "600"
+                        - line-height: "1.1"
+                        - color: "var(--primary-text-color)"
+                        - white-space: "nowrap"
+                      state:
+                        - justify-self: "end"
+                        - align-self: "center"
+                        - font-size: "16px"
+                        - font-weight: "700"
+                        - line-height: "1.1"
+                        - color: "var(--primary-text-color)"
+                        - white-space: "nowrap"
+                      custom_fields:
+                        graph:
+                          - align-self: "stretch"
+                          - width: "100%"
+                          - height: "50px"
+                          - display: "flex"
+                          - align-items: "center"
+                          - overflow: "hidden"
+                          - border-radius: "7px"
+                        status:
+                          - justify-self: "end"
+                          - align-self: "center"
+                          - display: "flex"
+                          - align-items: "center"
+                        range:
+                          - justify-self: "end"
+                          - align-self: "center"
+                          - font-size: "9px"
+                          - line-height: "1"
+                          - color: "var(--secondary-text-color)"
+                          - padding-right: "1px"
+                  - type: "custom:button-card"
+                    entity: "input_number.200xl_nitrate_no3_ppm"
+                    name: "Nitrate NO₃"
+                    icon: "mdi:molecule"
+                    show_icon: true
+                    show_name: true
+                    show_state: true
+                    state_display: "[[[ const n = Number(entity.state); const unit = entity.attributes.unit_of_measurement || 'ppm'; return Number.isFinite(n) ? `${n.toFixed(1)}${unit ? ' ' + unit : ''}` : 'Unavailable'; ]]]"
+                    tap_action:
+                      action: "more-info"
+                    hold_action:
+                      action: "more-info"
+                    custom_fields:
+                      graph:
+                        card:
+                          type: "custom:mini-graph-card"
+                          entities:
+                            - "input_number.200xl_nitrate_no3_ppm"
+                          group: true
+                          hours_to_show: 720
+                          points_per_hour: 0.0069444444
+                          aggregate_func: "last"
+                          group_by: "interval"
+                          height: 48
+                          line_width: 2.5
+                          line_color: "var(--aas-param-line-color, #245f9e)"
+                          smoothing: false
+                          animate: true
+                          show:
+                            name: false
+                            icon: false
+                            state: false
+                            fill: true
+                            points: true
+                            labels: false
+                            extrema: false
+                            average: false
+                            legend: false
+                          tap_action:
+                            action: "none"
+                          card_mod:
+                            style: |-
+                              ha-card {
+                                background: transparent !important;
+                                --ha-card-background: transparent !important;
+                                box-shadow: none !important;
+                                border: none !important;
+                              }
+
+                      status: "[[[ const n = Number(entity.state); const c = !Number.isFinite(n) ? '#8a8a8a' : n < 5 ? '#c25964' : n < 10 ? '#9ecb91' : n < 20 ? '#f6d55c' : '#ffb347'; const label = !Number.isFinite(n) ? 'Unavailable' : n < 5 ? 'Low' : n < 10 ? 'Good' : n < 20 ? 'Watch' : 'High'; const ring = hass.themes?.darkMode ? 'rgba(255,255,255,0.72)' : 'rgba(0,0,0,0.36)'; return `<span title=\"${label}\" style=\"display:block;width:11px;height:11px;border-radius:50%;background:${c};border:2px solid ${ring};box-sizing:border-box;\"></span>`; ]]]"
+                      range: "30d · ~5 readings"
+                    styles:
+                      grid:
+                        - grid-template-areas: "'i n s status' 'graph graph graph graph' 'range range range range'"
+                        - grid-template-columns: "24px 1fr min-content 12px"
+                        - grid-template-rows: "26px 50px 12px"
+                        - column-gap: "8px"
+                        - row-gap: "3px"
+                        - align-items: "center"
+                      card:
+                        - height: "106px"
+                        - padding: "6px 8px"
+                        - border-radius: "14px"
+                        - background: "transparent"
+                        - border: "1px solid var(--divider-color)"
+                        - box-shadow: "none"
+                        - overflow: "hidden"
+                        - "--aas-param-line-color": "[[[ return hass.themes?.darkMode ? '#6ecddb' : '#245f9e'; ]]]"
+                      icon:
+                        - width: "19px"
+                        - color: "var(--primary-text-color)"
+                      img_cell:
+                        - justify-self: "start"
+                        - align-self: "center"
+                        - width: "22px"
+                        - height: "22px"
+                      name:
+                        - justify-self: "start"
+                        - align-self: "center"
+                        - font-size: "13px"
+                        - font-weight: "600"
+                        - line-height: "1.1"
+                        - color: "var(--primary-text-color)"
+                        - white-space: "nowrap"
+                      state:
+                        - justify-self: "end"
+                        - align-self: "center"
+                        - font-size: "16px"
+                        - font-weight: "700"
+                        - line-height: "1.1"
+                        - color: "var(--primary-text-color)"
+                        - white-space: "nowrap"
+                      custom_fields:
+                        graph:
+                          - align-self: "stretch"
+                          - width: "100%"
+                          - height: "50px"
+                          - display: "flex"
+                          - align-items: "center"
+                          - overflow: "hidden"
+                          - border-radius: "7px"
+                        status:
+                          - justify-self: "end"
+                          - align-self: "center"
+                          - display: "flex"
+                          - align-items: "center"
+                        range:
+                          - justify-self: "end"
+                          - align-self: "center"
+                          - font-size: "9px"
+                          - line-height: "1"
+                          - color: "var(--secondary-text-color)"
+                          - padding-right: "1px"
+                  - type: "custom:button-card"
+                    entity: "input_number.200xl_phosphate_po4_ppm"
+                    name: "Phosphate PO₄"
+                    icon: "mdi:flask-outline"
+                    show_icon: true
+                    show_name: true
+                    show_state: true
+                    state_display: "[[[ const n = Number(entity.state); const unit = entity.attributes.unit_of_measurement || 'ppm'; return Number.isFinite(n) ? `${n.toFixed(3)}${unit ? ' ' + unit : ''}` : 'Unavailable'; ]]]"
+                    tap_action:
+                      action: "more-info"
+                    hold_action:
+                      action: "more-info"
+                    custom_fields:
+                      graph:
+                        card:
+                          type: "custom:mini-graph-card"
+                          entities:
+                            - "input_number.200xl_phosphate_po4_ppm"
+                          group: true
+                          hours_to_show: 720
+                          points_per_hour: 0.0069444444
+                          aggregate_func: "last"
+                          group_by: "interval"
+                          height: 48
+                          line_width: 2.5
+                          line_color: "var(--aas-param-line-color, #245f9e)"
+                          smoothing: false
+                          animate: true
+                          show:
+                            name: false
+                            icon: false
+                            state: false
+                            fill: true
+                            points: true
+                            labels: false
+                            extrema: false
+                            average: false
+                            legend: false
+                          tap_action:
+                            action: "none"
+                          card_mod:
+                            style: |-
+                              ha-card {
+                                background: transparent !important;
+                                --ha-card-background: transparent !important;
+                                box-shadow: none !important;
+                                border: none !important;
+                              }
+
+                      status: "[[[ const n = Number(entity.state); const c = !Number.isFinite(n) ? '#8a8a8a' : n < 0.03 ? '#c25964' : n < 0.1 ? '#9ecb91' : n < 0.2 ? '#f6d55c' : '#ffb347'; const label = !Number.isFinite(n) ? 'Unavailable' : n < 0.03 ? 'Low' : n < 0.1 ? 'Good' : n < 0.2 ? 'Watch' : 'High'; const ring = hass.themes?.darkMode ? 'rgba(255,255,255,0.72)' : 'rgba(0,0,0,0.36)'; return `<span title=\"${label}\" style=\"display:block;width:11px;height:11px;border-radius:50%;background:${c};border:2px solid ${ring};box-sizing:border-box;\"></span>`; ]]]"
+                      range: "30d · ~5 readings"
+                    styles:
+                      grid:
+                        - grid-template-areas: "'i n s status' 'graph graph graph graph' 'range range range range'"
+                        - grid-template-columns: "24px 1fr min-content 12px"
+                        - grid-template-rows: "26px 50px 12px"
+                        - column-gap: "8px"
+                        - row-gap: "3px"
+                        - align-items: "center"
+                      card:
+                        - height: "106px"
+                        - padding: "6px 8px"
+                        - border-radius: "14px"
+                        - background: "transparent"
+                        - border: "1px solid var(--divider-color)"
+                        - box-shadow: "none"
+                        - overflow: "hidden"
+                        - "--aas-param-line-color": "[[[ return hass.themes?.darkMode ? '#6ecddb' : '#245f9e'; ]]]"
+                      icon:
+                        - width: "19px"
+                        - color: "var(--primary-text-color)"
+                      img_cell:
+                        - justify-self: "start"
+                        - align-self: "center"
+                        - width: "22px"
+                        - height: "22px"
+                      name:
+                        - justify-self: "start"
+                        - align-self: "center"
+                        - font-size: "13px"
+                        - font-weight: "600"
+                        - line-height: "1.1"
+                        - color: "var(--primary-text-color)"
+                        - white-space: "nowrap"
+                      state:
+                        - justify-self: "end"
+                        - align-self: "center"
+                        - font-size: "16px"
+                        - font-weight: "700"
+                        - line-height: "1.1"
+                        - color: "var(--primary-text-color)"
+                        - white-space: "nowrap"
+                      custom_fields:
+                        graph:
+                          - align-self: "stretch"
+                          - width: "100%"
+                          - height: "50px"
+                          - display: "flex"
+                          - align-items: "center"
+                          - overflow: "hidden"
+                          - border-radius: "7px"
+                        status:
+                          - justify-self: "end"
+                          - align-self: "center"
+                          - display: "flex"
+                          - align-items: "center"
+                        range:
+                          - justify-self: "end"
+                          - align-self: "center"
+                          - font-size: "9px"
+                          - line-height: "1"
+                          - color: "var(--secondary-text-color)"
+                          - padding-right: "1px"
+                grid_options:
+                  columns: "full"
+                  rows: "auto"
+            expanded: false
+            animation: true
+            clear: false
+            clear-children: false
+            expander-card-id: "mobile-200xl-testing"
+            grid_options:
+              columns: "full"
+              rows: "auto"
+      - type: "grid"
+        cards:
+          - type: "heading"
+            heading: "ATO Reservoir"
+            heading_style: "title"
+            icon: "mdi:water-pump"
+            grid_options:
+              columns: "full"
+              rows: "auto"
+          - type: "custom:layout-card"
+            layout_type: "custom:grid-layout"
+            layout:
+              grid-template-columns: "repeat(2,minmax(0,1fr))"
+              grid-gap: "6px"
+              margin: "0"
+            cards:
+              - type: "custom:mushroom-template-card"
+                entity: "input_number.200xl_ato_remaining_ml"
+                primary: "ATO Remaining"
+                secondary: >-
+                  {% set ml = states('input_number.200xl_ato_remaining_ml') | float(0) %}
+                  {{ (ml / 1000) | round(1) }} L · {{ (ml / 3785.41) | round(2) }} gal · {{ ((ml / 18000) * 100) | round(0) }}%
+                icon: "mdi:water"
+                icon_color: >-
+                  {% set pct = (states('input_number.200xl_ato_remaining_ml') | float(0) / 18000) * 100 %}
+                  {% if pct < 20 %}red{% elif pct < 40 %}amber{% else %}green{% endif %}
+                tap_action:
+                  action: "more-info"
+                card_mod:
+                  style: "ha-card { border-radius:14px; border:1px solid var(--divider-color); box-shadow:none; }"
+              - type: "custom:mushroom-template-card"
+                entity: "input_button.200xl_ato_mark_full"
+                primary: "Mark Reservoir Full"
+                secondary: "Reset estimate to 18 L / 4.75 gal"
+                icon: "mdi:water-plus"
+                icon_color: "blue"
+                tap_action:
+                  action: "perform-action"
+                  perform_action: "input_button.press"
+                  target:
+                    entity_id: "input_button.200xl_ato_mark_full"
+                  confirmation:
+                    text: "Set the 200XL ATO estimate to 18 liters?"
+                hold_action:
+                  action: "more-info"
+                card_mod:
+                  style: "ha-card { border-radius:14px; border:1px solid rgba(33,150,243,.45); box-shadow:none; }"
+            grid_options:
+              columns: "full"
+              rows: "auto"
+    cards:
+      []
+    icon: "mdi:fishbowl"

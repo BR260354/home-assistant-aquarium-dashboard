@@ -1,0 +1,109 @@
+# Aquarium Mobile Peninsula Tank Health card
+#
+# Place this card inside the same custom:grid-layout as Peninsula Alerts and
+# Other Active Devices. `section_mode` is required for correct sizing when the
+# parent dashboard uses Home Assistant Sections.
+
+type: custom:button-card
+section_mode: true
+entity: sensor.peninsula_tank_health_score
+icon: mdi:heart-pulse
+name: "[[[ return 'Current Tank Health: ' + (states['sensor.peninsula_tank_health_status']?.state || 'Unavailable'); ]]]"
+show_icon: true
+show_name: true
+show_state: false
+view_layout:
+  grid-column: 1 / -1
+  place-self: stretch
+tap_action:
+  action: more-info
+hold_action:
+  action: more-info
+custom_fields:
+  health: |-
+    [[[
+      const health = states['sensor.peninsula_tank_health_score'];
+      const nutrient = states['sensor.peninsula_nutrient_balance_score'];
+      const status = states['sensor.peninsula_tank_health_status']?.state || 'Unavailable';
+      const raw = Number(health?.state);
+      const value = Number.isFinite(raw) ? Math.max(0, Math.min(100, raw)) : 0;
+      const label = Number.isFinite(raw) ? Math.round(raw) + '%' : '—';
+      const dash = (value * 2.513).toFixed(1);
+      const color = value >= 90 ? '#67b269' : value >= 75 ? '#b7d180' : value >= 60 ? '#efd269' : value >= 40 ? '#e38b52' : '#d36571';
+      const text = hass.themes?.darkMode ? '#f7fbff' : '#172033';
+      const track = hass.themes?.darkMode ? '#31465b' : '#c7d6e5';
+      const confidenceRaw = Number(states['sensor.peninsula_tank_data_confidence']?.state);
+      const confidence = Number.isFinite(confidenceRaw) ? Math.round(confidenceRaw) + '%' : 'Unavailable';
+      const concern = health?.attributes?.primary_concern || 'No active concern';
+      const balance = nutrient?.attributes?.balance_status || 'Unavailable';
+      const ratioRaw = Number(nutrient?.attributes?.nitrate_phosphate_ratio);
+      const ratio = Number.isFinite(ratioRaw) ? Math.round(ratioRaw) + ':1' : 'Unavailable';
+      const nitrate = nutrient?.attributes?.nitrate_ppm ?? '—';
+      const phosphate = nutrient?.attributes?.phosphate_ppm ?? '—';
+
+      return `
+        <div style="width:100%;min-width:0;box-sizing:border-box">
+          <div style="display:grid;grid-template-columns:104px minmax(0,1fr);column-gap:14px;align-items:center">
+            <svg viewBox="0 0 100 100" role="img" aria-label="Tank Health ${label} ${status}" style="width:96px;height:96px;display:block">
+              <circle cx="50" cy="50" r="40" fill="none" stroke="${track}" stroke-width="9"></circle>
+              <circle cx="50" cy="50" r="40" fill="none" stroke="${color}" stroke-width="9" stroke-linecap="round" transform="rotate(-90 50 50)" stroke-dasharray="${dash} 251.3"></circle>
+              <text x="50" y="56" text-anchor="middle" fill="${text}" font-size="20" font-weight="700">${label}</text>
+            </svg>
+            <div style="display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,0.75fr);gap:9px 18px;min-width:0;text-align:left;white-space:normal">
+              <div style="min-width:0">
+                <div style="color:var(--secondary-text-color);font-size:11px">Primary Read</div>
+                <div style="font-size:12px;line-height:16px;white-space:normal;overflow-wrap:break-word;max-width:28ch">${concern}</div>
+              </div>
+              <div style="min-width:0">
+                <div style="color:var(--secondary-text-color);font-size:11px">Nutrient Balance</div>
+                <div style="font-size:12px;line-height:16px;white-space:normal">${balance}</div>
+              </div>
+              <div style="min-width:0">
+                <div style="color:var(--secondary-text-color);font-size:11px">NO₃ : PO₄ Ratio</div>
+                <div style="font-size:12px;line-height:16px;white-space:nowrap">${nitrate} : ${phosphate} ppm · ${ratio}</div>
+              </div>
+              <div style="min-width:0">
+                <div style="color:var(--secondary-text-color);font-size:11px">Data Confidence</div>
+                <div style="font-size:12px;line-height:16px">${confidence}</div>
+              </div>
+            </div>
+          </div>
+        </div>`;
+    ]]]
+styles:
+  grid:
+    - grid-template-areas: "'i n' 'health health'"
+    - grid-template-columns: "22px minmax(0, 1fr)"
+    - grid-template-rows: "20px auto"
+    - column-gap: "7px"
+    - row-gap: "8px"
+  card:
+    - padding: "12px 14px"
+    - border-radius: "14px"
+    - background: "[[[ return hass.themes?.darkMode ? 'rgba(53, 64, 80, 0.98)' : 'rgba(255, 255, 255, 0.78)'; ]]]"
+    - border: "[[[ const n=Number(states['sensor.peninsula_tank_health_score']?.state); const c=n >= 90 ? '#67b269' : n >= 75 ? '#b7d180' : n >= 60 ? '#efd269' : n >= 40 ? '#e38b52' : '#d36571'; return '2px solid ' + c + '66'; ]]]"
+    - box-shadow: "none"
+    - box-sizing: "border-box"
+  icon:
+    - width: "19px"
+    - color: "[[[ const n=Number(states['sensor.peninsula_tank_health_score']?.state); return n >= 90 ? '#67b269' : n >= 75 ? '#b7d180' : n >= 60 ? '#efd269' : n >= 40 ? '#e38b52' : '#d36571'; ]]]"
+  img_cell:
+    - width: "22px"
+    - height: "20px"
+    - justify-self: "start"
+    - align-self: "center"
+  name:
+    - justify-self: "start"
+    - align-self: "center"
+    - color: "var(--primary-text-color)"
+    - font-size: "15px"
+    - font-weight: "700"
+    - line-height: "20px"
+    - white-space: "nowrap"
+  custom_fields:
+    health:
+      - width: "100%"
+      - min-width: "0"
+      - justify-self: "stretch"
+      - overflow: "visible"
+      - white-space: "normal"

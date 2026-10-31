@@ -1,5 +1,7 @@
 alias: Aquarium - Fill Stop Automation
-description: Calculate AWC Fill volume pumped and update remaining volume.
+description: >-
+  Calculate Peninsula HYDROS AWC fill volume using the configurable pump-rate
+  helper and update saltwater inventory.
 triggers:
   - trigger: state
     entity_id:
@@ -19,14 +21,20 @@ actions:
         trigger.to_state.attributes.payload_fillpowerI }}
     enabled: false
   - variables:
-      pump_rate: 6.67
-      runtime: |
+      pump_rate_ml_min: >-
+        {{ states('input_number.peninsula_awc_fill_pump_rate_ml_min') |
+           float(400.2) }}
+      runtime_seconds: |
         {{ as_timestamp(now()) -
            as_timestamp(states('input_datetime.awms_salt_last_filled_at')) }}
       volume: |
-        {{ (runtime * pump_rate) | round(0) }}
-      current_remaining: >
-        {{ states('input_number.awms_salt_remaining_ml') | float(111700) }}
+        {{ (runtime_seconds * pump_rate_ml_min / 60) | round(0) }}
+      capacity_ml: >-
+        {{ states('input_number.peninsula_salt_capacity_ml') |
+           float(111700) }}
+      current_remaining: >-
+        {{ states('input_number.awms_salt_remaining_ml') |
+           float(capacity_ml) }}
       remaining: |
         {{ [current_remaining - volume, 0] | max }}
   - action: input_number.set_value
