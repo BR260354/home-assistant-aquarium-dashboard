@@ -1,33 +1,27 @@
 ---
 title: Aquarium Tablet Dashboard
-description: Full-width iPad monitoring and maintenance for the Aquarium Automation Suite.
+description: Full-width iPad monitoring and HYDROS output controls for the Aquarium Automation Suite.
 ---
 
 # Aquarium Tablet dashboard
 
-**Aquarium Tablet** is the landscape, full-width AAS interface intended for the iPad Pro beside the Peninsula. It shares the same entities, templates, alerts, and maintenance workflows as Aquarium Mobile, but uses the available width to reduce scrolling and keep related equipment visible together.
+**Aquarium Tablet** is the landscape, full-width AAS interface intended for the iPad Pro beside the Peninsula. It shares the live Peninsula entities, alerts, and maintenance workflows with Aquarium Mobile, and uses the available width to keep related equipment visible together.
 
 ## Overview
 
-Peninsula and 200XL summaries sit side by side. Each panel is also a navigation target for its detailed aquarium view. The overview emphasizes current health, exceptions, core water quality, circulation, filtration, and reservoir inventory.
+The Overview view summarizes Peninsula health, alerts, active devices, water quality, and circulation. The detailed Peninsula view carries the equipment controls and monitoring cards; Maintenance contains AWMS and service actions.
 
-![Full-width Aquarium Tablet overview](assets/screenshots/tablet/tablet-overview.png)
+[View the current full-page Aquarium Tablet capture](assets/screenshots/tablet/tablet-peninsula-current.png)
 
 ## Peninsula
 
-The Peninsula view places Alerts and Other Active Devices on one row, four water-quality graphs on the next, and the HYDROS WaveEngine and ReefRun groups together. Testing uses four cards across; the two ReefDose controllers can share a row.
+Alerts and Other Active Devices lead the Peninsula view, followed by the four water-quality graphs and the HYDROS WaveEngine and ReefRun groups. The HYDROS circulation dials show the current pump speed together with the active schedule and direction. Testing uses a wide multi-card row, and dosing and filtration equipment remain grouped in their own sections.
 
-![Tablet Peninsula health, movement, and testing](assets/screenshots/tablet/tablet-peninsula-health.png)
+### HYDROS Outputs
 
-![Tablet Peninsula dosing and filtration](assets/screenshots/tablet/tablet-peninsula-dosing.png)
+The HYDROS Outputs panel is a full-width card rather than an expander. Its cyan outline matches the surrounding equipment panels, and each output is grouped with its own **Auto**, **On**, and **Off** radio-style controls. The layout uses four columns on wide screens, two on tablet widths, and one on narrow screens.
 
-## 200XL
-
-The 200XL view follows the same hierarchy with fewer devices: exception-based alerts, active devices, temperature and pH, flow, Minnow monitoring, ReefMat, systems, and chemistry testing.
-
-![Tablet 200XL health and equipment](assets/screenshots/tablet/tablet-200xl-health.png)
-
-![Tablet 200XL filtration and testing](assets/screenshots/tablet/tablet-200xl-systems.png)
+The controls cover **Water Feed**, **Fresh Stir**, **Feed Stir**, **AWC ATO**, **AWC Drain**, **AWC Fill**, **Avast Feed**, and **Display Fans**. Each output shows **Running** when its running indicator is active, the selected **On** or **Off** mode when manually set, or **Auto · Idle** while waiting for its schedule or condition. Drain and Fill status uses the AWC start/stop helpers because the integration does not expose separate running sensors for those phases.
 
 ## Maintenance
 
@@ -41,7 +35,8 @@ The landscape maintenance view puts quick actions and maintenance status above a
 
 - Full-width layout is optimized for landscape iPad use.
 - Related systems share rows instead of becoming one long vertical stack.
-- Primary information remains visible without expanders where space permits.
+- The Hydros Outputs controls stay visible without an expander and resize for tablet and phone widths.
+- Teal output icons and active radio choices sit inside a cyan-bordered group that matches the dashboard's existing card styling.
 - Wider cards preserve complete labels, graphs, schedule names, and equipment state.
 - The visual hierarchy and color rules match Aquarium Mobile.
 
