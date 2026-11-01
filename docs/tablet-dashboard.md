@@ -7,26 +7,35 @@ description: Full-width iPad monitoring and HYDROS output controls for the Aquar
 
 **Aquarium Tablet** is the landscape, full-width AAS interface intended for the iPad Pro beside the Peninsula. It shares the live Peninsula entities, alerts, and maintenance workflows with Aquarium Mobile, and uses the available width to keep related equipment visible together.
 
-## Overview
+## Aquarium
 
-The Overview view summarizes Peninsula health, alerts, active devices, water quality, and circulation. The detailed Peninsula view carries the equipment controls and monitoring cards; Maintenance contains AWMS and service actions.
+Aquarium and Maintenance are the two views. The former Overview was removed.
+Current Alerts and Active Devices lead the Aquarium view, followed by eight
+water-quality graphs: Temperature, pH, ORP, Salinity, Alkalinity, Nitrate,
+Phosphates, and Calcium. The four manual chemistry graphs keep their 30-day
+history windows.
 
-[View the current full-page Aquarium Tablet capture](assets/screenshots/tablet/tablet-peninsula-current.png)
+One blue-backed Water Movement panel combines the four HYDROS circulation
+pumps and the two ReefRun pumps, marked (H) and (RS). Its six columns reflow
+for narrower displays.
 
-## Peninsula
+Equipment & Outputs sits directly below Dosing, is collapsed by default, and
+spans the full width. It
+combines lighting/WaveEngine, water/feeding outputs, systems, and accessories.
+The three AI Blades and WEv2 join the original eight HYDROS outputs with
+confirmed Auto/On/Off choices and available power readings. AWC Drain and Fill
+use their existing running helpers without inventing separate power readings.
+Active Devices shows running or manually On water/feeding HYDROS outputs and the current
+HYDROS Mode, excluding AI Blades and WEv2. Mode controls now sit in Maintenance Status.
 
-Alerts and Other Active Devices lead the Peninsula view, followed by the four water-quality graphs and the HYDROS WaveEngine and ReefRun groups. The HYDROS circulation dials show the current pump speed together with the active schedule and direction. Testing uses a wide multi-card row, and dosing and filtration equipment remain grouped in their own sections.
+H means HYDROS, RS means Red Sea, and HA means Home Assistant. RS · HA marks
+Red Sea equipment governed by HA safety/schedule automation. CO₂ Scrubber
+Bypass remains status-only. Salt Mix and Magnesium stay under Additional
+Sensors; dosing and ReefMat information remain available below.
 
-The **Other Devices** group under Filtration & Systems includes the first
-HYDROS TDS reading labeled **TDS - Post DI**. Alerts show it when it rises above
-zero. The second **Pre DI** reading is not currently exposed as a separate
-Home Assistant entity.
-
-### HYDROS Outputs
-
-The HYDROS Outputs panel is a full-width card rather than an expander. Its cyan outline matches the surrounding equipment panels, and each output is grouped with its own **Auto**, **On**, and **Off** radio-style controls. The layout uses four columns on wide screens, two on tablet widths, and one on narrow screens.
-
-The controls cover **Water Feed**, **Fresh Stir**, **Feed Stir**, **AWC ATO**, **AWC Drain**, **AWC Fill**, **Avast Feed**, and **Display Fans**. Each output shows **Running** when its running indicator is active, the selected **On** or **Off** mode when manually set, or **Auto · Idle** while waiting for its schedule or condition. Drain and Fill status uses the AWC start/stop helpers because the integration does not expose separate running sensors for those phases. A full-width **HYDROS Mode** row adds radio choices for EcoFlow, Feeding, Low Power, Normal, and Water Change.
+For the verified current configuration and recovery notes, see
+[Live dashboard snapshots](../dashboards/README.md). Existing screenshots are
+historical and predate this November 1 update.
 
 ## Maintenance
 
@@ -40,7 +49,7 @@ The landscape maintenance view puts quick actions and maintenance status above a
 
 - Full-width layout is optimized for landscape iPad use.
 - Related systems share rows instead of becoming one long vertical stack.
-- The Hydros Outputs controls stay visible without an expander and resize for tablet and phone widths.
+- Equipment & Outputs stays collapsed until needed, then opens across the full width.
 - Cyan output icons, tile borders, and active radio choices match the full-width group border.
 - Wider cards preserve complete labels, graphs, schedule names, and equipment state.
 - The visual hierarchy and color rules match Aquarium Mobile.

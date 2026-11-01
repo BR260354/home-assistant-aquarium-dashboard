@@ -5,46 +5,41 @@ description: Portrait-oriented Home Assistant monitoring and maintenance for the
 
 # Aquarium Mobile dashboard
 
-**Aquarium Mobile** is the everyday phone interface for AAS. It uses native Home Assistant views for **Overview**, **Peninsula**, and **Maintenance**, keeping navigation available in the Companion app without nesting the whole dashboard inside a custom tab card.
+**Aquarium Mobile** is the everyday phone interface for AAS. It uses native Home Assistant views for **Aquarium** and **Maintenance**, keeping navigation available in the Companion app without nesting the whole dashboard inside a custom tab card.
 
 The interface is monitoring-first, with Home Assistant controls for selected HYDROS outputs alongside status, alerts, trends, guarded maintenance actions, and the Aquarium Water Management Suite (AWMS) workflow. ReefBeat and HYDROS remain useful for device setup and advanced configuration.
 
-## Overview
+## Aquarium
 
-The Overview view answers the quickest questions first: are there alerts, are the core water parameters in range, are circulation and life-support devices running, and how much water remains? The live dashboards focus on the Peninsula.
+The single-tank Aquarium view replaces Overview and Peninsula. Current Alerts
+and Active Devices lead the page. Active Devices shows HYDROS Mode and every
+water/feeding HYDROS output that is running or manually On. AI Blades and WEv2
+are excluded from Active Devices.
 
-<img src="assets/screenshots/mobile/mobile-overview-peninsula.jpeg" alt="Aquarium Mobile overview showing the Peninsula summary" width="360">
+Temperature, pH, ORP, Salinity, Alkalinity, Nitrate, Phosphates, and Calcium are
+visible together. Each parameter has its own graph color. ReefControl level
+entities drive the four live probe indicators; manual chemistry graphs retain
+their 30-day windows. Salt Mix temperature and Magnesium remain in Additional
+Sensors.
 
-The alert card changes from green to red when a condition needs attention. Normal optical-sensor states stay out of the way; exceptional states such as a high sump, dry RODI-low sensor, Post DI TDS above zero, or an unexpected dry ATO sensor surface through Alerts.
+Water Movement combines the HYDROS and ReefRun dials in one blue-backed panel.
+Names use (H) for HYDROS and (RS) for Red Sea.
 
-The Peninsula view places a compact Tank Health ring immediately above the
-Alerts card. It uses the same circular treatment as the Water Movement pump
-dials, changes color across Critical, Attention, Watch, Healthy, and Excellent
-ranges, and keeps Primary Read, Nutrient Balance, and Data Confidence inside
-the same box without repeating the Core Parameters cards.
+Equipment & Outputs combines the former Hydros Outputs, Systems, and Other
+Devices groups in one collapsed expander directly below Dosing. Lighting &
+WaveEngine, Water &
+Feeding, Systems, and Accessories keep related controls together. All three AI
+Blades, WEv2, and the original eight HYDROS outputs have confirmed Auto/On/Off
+choices. Wattage appears where a power sensor is available. Red Sea equipment
+with an HA safety or schedule automation uses (RS · HA); accessories managed
+through Home Assistant use (HA). CO₂ Scrubber Bypass remains status-only.
 
-## Aquarium views
+Dosing and Filtration remain separate expanders. HYDROS Mode controls are now
+in Maintenance Status, while its current value stays visible in Active Devices.
 
-The Peninsula view starts with **Alerts** and **Other Active Devices**. Other Active Devices is reserved for equipment that is expected to cycle—stir pumps, fans, ozone, AWC phases, and similar loads—rather than devices that normally run continuously.
-
-Water-quality cards use compact 12-hour history lines and a colored status dot. Manually entered chemistry tests use a 30-day window representing roughly five readings.
-
-<img src="assets/screenshots/mobile/mobile-peninsula-health.jpeg" alt="Peninsula health cards and active devices" width="360">
-<img src="assets/screenshots/mobile/mobile-peninsula-testing.jpeg" alt="Expanded Peninsula testing and Hydros sensor cards" width="360">
-
-Water movement uses ReefBeat-inspired rings for both Red Sea and HYDROS equipment. HYDROS wave-pump cards add the current schedule name and direction beneath the live percentage.
-
-<img src="assets/screenshots/mobile/mobile-peninsula-water-movement.jpeg" alt="Peninsula HYDROS and ReefRun water movement cards" width="360">
-
-The **Hydros Outputs** expander provides **Auto**, **On**, and **Off** controls for Water Feed, Fresh Stir, Feed Stir, AWC ATO, AWC Drain, AWC Fill, Avast Feed, and Display Fans. Each output is grouped with its controls, uses matching cyan borders, icons, and selected radio buttons, and displays its current running or selected mode. The controller-wide **HYDROS Mode** control sits in a full-width row with radio choices for EcoFlow, Feeding, Low Power, Normal, and Water Change. The Tablet dashboard keeps the same controls open in a full-width, responsive card.
-
-The longer **Testing & Hydros Sensors**, **Dosing**, and **Filtration & Systems** groups use expanders on mobile. This keeps the initial scan compact without hiding the detail when it is needed.
-
-Under **Filtration & Systems → Other Devices**, the TDS card shows the first
-HYDROS reading as **TDS - Post DI**. The second, **Pre DI**, reading is not currently
-exposed as a separate Home Assistant entity.
-
-<img src="assets/screenshots/mobile/mobile-peninsula-dosing.jpeg" alt="Expanded ReefDose monitoring cards" width="360">
+The screenshots below the Maintenance section predate the November 1 layout.
+For the verified current configuration and recovery notes, see
+[Live dashboard snapshots](../dashboards/README.md).
 
 ## Maintenance
 
